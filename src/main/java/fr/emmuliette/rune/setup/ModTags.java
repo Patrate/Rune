@@ -8,7 +8,7 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
-
+@SuppressWarnings("unused")
 public class ModTags {
 	
 	public static final class Blocks {
@@ -25,6 +25,9 @@ public class ModTags {
 	public static final class Items {
 		public static final INamedTag<Item> CASTER_BLOCK = forge("storage_blocks/caster");
 		public static final INamedTag<Item> BLANK_RUNE = forge("runes/blank");
+
+		public static final INamedTag<Item> PROJECTILE_RUNE = forge("runes/projectile");
+		public static final INamedTag<Item> FIRE_RUNE = forge("runes/fire");
 		
 		private static INamedTag<Item> forge(String path) {
 			return ItemTags.bind(new ResourceLocation("forge", path).toString());

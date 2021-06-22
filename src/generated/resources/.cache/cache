@@ -2,6 +2,10 @@
 3aebd4860e532208331f36aa6c15886aef7049bc assets/rune/models/block/caster_block.json
 eee3d95b1f5217dc2b7d18b3456ab61960b79aa4 assets/rune/models/item/blank_rune.json
 c32aa689a4e532a781ffeca334a7166783eff508 assets/rune/models/item/caster_block.json
+d510f89ab6e24947afa1225c66190e05dadafa59 assets/rune/models/item/fire_rune.json
+acfa5fa96a37ad43a37ddb614708f3a394be6c9b assets/rune/models/item/projectile_rune.json
+9cd88cf750d419915a570c18bc3f8b2c41f0dd6e data/forge/tags/blocks/storage_blocks.json
 dccc75afee42b692cd9e3d0c2f7975452ad5b23e data/forge/tags/blocks/storage_blocks/caster.json
 cb98e7a3fe56c9d82cd590bb60c4c5212609a96d data/forge/tags/items/runes/blank.json
+9cd88cf750d419915a570c18bc3f8b2c41f0dd6e data/forge/tags/items/storage_blocks.json
 dccc75afee42b692cd9e3d0c2f7975452ad5b23e data/forge/tags/items/storage_blocks/caster.json
