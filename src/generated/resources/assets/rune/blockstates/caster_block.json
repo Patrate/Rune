@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rune:block/caster_block"
+    }
+  }
+}
