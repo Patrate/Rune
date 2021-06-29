@@ -2,8 +2,9 @@ package fr.emmuliette.rune.data.client;
 
 import java.util.function.Consumer;
 
-import fr.emmuliette.rune.setup.ModBlocks;
-import fr.emmuliette.rune.setup.ModItems;
+import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.NotABlockException;
+import fr.emmuliette.rune.mod.NotAnItemException;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
@@ -20,13 +21,22 @@ public class ModRecipeProvider extends RecipeProvider {
 
 	@Override
 	protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(ModBlocks.CASTER_BLOCK.get()).define('A', ModItems.BLANK_RUNE.get())
-				.define('B', ItemTags.LOGS).pattern("BBB").pattern("BAB")
-				.pattern("BBB").unlockedBy("has_item", has(ModItems.BLANK_RUNE.get()))
-				.unlockedBy("has_log", has(ItemTags.LOGS)).save(consumer);
-		;
+		try {
+			ShapedRecipeBuilder.shaped(ModObjects.CASTER_BLOCK.getModBlock()).define('A', ModObjects.BLANK_RUNE.getModItem())
+			.define('B', ItemTags.LOGS).pattern("BBB").pattern("BAB")
+			.pattern("BBB").unlockedBy("has_item", has(ModObjects.BLANK_RUNE.getModItem()))
+			.unlockedBy("has_log", has(ItemTags.LOGS)).save(consumer);
+			;
+		} catch (NotABlockException | NotAnItemException e) {
+			e.printStackTrace();
+		}
+		
 
-		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_RUNE.get()).requires(Items.FLINT).requires(Items.STONE)
-				.unlockedBy("has_flint", has(Items.FLINT)).unlockedBy("has_stone", has(Items.STONE)).save(consumer);
+		try {
+			ShapelessRecipeBuilder.shapeless(ModObjects.BLANK_RUNE.getModItem()).requires(Items.FLINT).requires(Items.STONE)
+					.unlockedBy("has_flint", has(Items.FLINT)).unlockedBy("has_stone", has(Items.STONE)).save(consumer);
+		} catch (NotAnItemException e) {
+			e.printStackTrace();
+		}
 	}
 }

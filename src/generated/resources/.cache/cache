@@ -9,8 +9,8 @@ dccc75afee42b692cd9e3d0c2f7975452ad5b23e data/forge/tags/blocks/storage_blocks/c
 cb98e7a3fe56c9d82cd590bb60c4c5212609a96d data/forge/tags/items/runes/blank.json
 9cd88cf750d419915a570c18bc3f8b2c41f0dd6e data/forge/tags/items/storage_blocks.json
 dccc75afee42b692cd9e3d0c2f7975452ad5b23e data/forge/tags/items/storage_blocks/caster.json
-840fcda761ea70a44205b59a7ef00928f6ef8c52 data/rune/advancements/recipes/building_blocks/caster_block.json
 be1194ee514b5cc0bc5cbd48f28013758327ffb8 data/rune/advancements/recipes/misc/blank_rune.json
+840fcda761ea70a44205b59a7ef00928f6ef8c52 data/rune/advancements/recipes/misc/caster_block.json
 edc5e9d4b2561f3aaf180cdd1f1c61194942caee data/rune/loot_tables/blocks/caster_block.json
 c040a123e54ba54c893ec9ab73c7960d76efc6b4 data/rune/recipes/blank_rune.json
 e18c115bb981f6c1c478e11ccd7b62ab2d0fc0b3 data/rune/recipes/caster_block.json

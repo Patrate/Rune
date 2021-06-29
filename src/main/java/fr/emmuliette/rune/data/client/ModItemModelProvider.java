@@ -3,6 +3,8 @@ package fr.emmuliette.rune.data.client;
 import javax.annotation.Nonnull;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.AbstractModObject;
+import fr.emmuliette.rune.mod.ModObjectsManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -26,10 +28,9 @@ public class ModItemModelProvider extends ItemModelProvider {
 		withExistingParent("caster_block", modLoc("block/caster_block"));
 
 		ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
-		builder(itemGenerated, "blank_rune");
-		builder(itemGenerated, "fire_rune");
-		builder(itemGenerated, "projectile_rune");
-		
+		for(AbstractModObject entity:ModObjectsManager.getItemRegister()) {
+			builder(itemGenerated, entity.getName());
+		}
 	}
 
 	private ItemModelBuilder builder(ModelFile itemGenerated, String name) {

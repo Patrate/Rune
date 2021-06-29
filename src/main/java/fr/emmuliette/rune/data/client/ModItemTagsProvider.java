@@ -1,7 +1,8 @@
 package fr.emmuliette.rune.data.client;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.setup.ModItems;
+import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.NotAnItemException;
 import fr.emmuliette.rune.setup.ModTags;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
@@ -20,7 +21,11 @@ public class ModItemTagsProvider extends ItemTagsProvider{
 	protected void addTags() {
 		copy(ModTags.Blocks.CASTER_BLOCK, ModTags.Items.CASTER_BLOCK);
 		copy(Tags.Blocks.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS);
-		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_RUNE.get());
+		try {
+			tag(ModTags.Items.BLANK_RUNE).add(ModObjects.BLANK_RUNE.getModItem());
+		} catch (NotAnItemException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

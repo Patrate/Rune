@@ -10,7 +10,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
-import fr.emmuliette.rune.setup.ModBlocks;
+import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.NotABlockException;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
@@ -44,7 +45,11 @@ public class ModLootTableProvider extends LootTableProvider{
 	public static class ModBlockLootTables extends BlockLootTables {
 		@Override
 		protected void addTables() {
-			dropSelf(ModBlocks.CASTER_BLOCK.get());
+			try {
+				dropSelf(ModObjects.CASTER_BLOCK.getModBlock());
+			} catch (NotABlockException e) {
+				e.printStackTrace();
+			}
 		}
 		@Override
 		protected Iterable<Block> getKnownBlocks() {

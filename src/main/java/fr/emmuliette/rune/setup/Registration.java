@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.setup;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.ModObjects;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,8 +18,7 @@ public class Registration {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		BLOCKS.register(modEventBus);
 		ITEMS.register(modEventBus);
-		ModItems.register();
-		ModBlocks.register();
+		ModObjects.register();
 	}
 	
 }

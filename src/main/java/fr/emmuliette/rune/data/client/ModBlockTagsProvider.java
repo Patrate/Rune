@@ -1,7 +1,8 @@
 package fr.emmuliette.rune.data.client;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.setup.ModBlocks;
+import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.NotABlockException;
 import fr.emmuliette.rune.setup.ModTags;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
@@ -16,7 +17,11 @@ public class ModBlockTagsProvider extends BlockTagsProvider{
 	
 	@Override
 	protected void addTags() {
-		tag(ModTags.Blocks.CASTER_BLOCK).add(ModBlocks.CASTER_BLOCK.get());
+		try {
+			tag(ModTags.Blocks.CASTER_BLOCK).add(ModObjects.CASTER_BLOCK.getModBlock());
+		} catch (NotABlockException e) {
+			e.printStackTrace();
+		}
 		tag(Tags.Blocks.STORAGE_BLOCKS).addTag(ModTags.Blocks.CASTER_BLOCK);
 	}
 

@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.setup;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.items.ModItem;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tags.BlockTags;
@@ -24,8 +25,8 @@ public class ModTags {
 	
 	public static final class Items {
 		public static final INamedTag<Item> CASTER_BLOCK = forge("storage_blocks/caster");
+		
 		public static final INamedTag<Item> BLANK_RUNE = forge("runes/blank");
-
 		public static final INamedTag<Item> PROJECTILE_RUNE = forge("runes/projectile");
 		public static final INamedTag<Item> FIRE_RUNE = forge("runes/fire");
 		
