@@ -15,8 +15,10 @@ public enum ModObjects {
 	FIRE_RUNE(new ModItem("fire_rune", RuneMain.RUNE_GROUP)),
 	CASTER_BLOCK(new ModBlock("caster_block", RuneMain.RUNE_GROUP,
 			() -> new Block(net.minecraft.block.AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f)
-					.harvestLevel(1).harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK))));
-
+					.harvestLevel(1).harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK)))),
+	SPELLBINDING_BLOCK(new ModBlock("spellbinding_block", RuneMain.RUNE_GROUP,
+		() -> new Block(net.minecraft.block.AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f).harvestLevel(1).harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK)))),
+	;
 	private AbstractModObject entity;
 
 	private ModObjects(AbstractModObject entity) {

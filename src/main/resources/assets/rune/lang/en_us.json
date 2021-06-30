@@ -3,5 +3,6 @@
 	"item.rune.projectile_rune": "Projectile Rune",
 	"item.rune.fire_rune": "Fire Rune",
 	"block.rune.caster_block": "Caster Block",
+	"block.rune.spellbinding_block": "Spellbinding Block",
 	"itemGroup.Rune": "Rune Mod"
 }
