@@ -16,6 +16,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import fr.emmuliette.rune.mod.RuneItemGroup;
 import fr.emmuliette.rune.setup.Registration;
 
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 public class RuneMain {
 	
 	public static final String MOD_ID = "rune";
+	
+	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("Rune");
 	
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
