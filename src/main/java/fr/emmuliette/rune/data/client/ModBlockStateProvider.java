@@ -1,8 +1,8 @@
 package fr.emmuliette.rune.data.client;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.NotABlockException;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

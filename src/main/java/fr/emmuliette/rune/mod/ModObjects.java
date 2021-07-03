@@ -1,6 +1,8 @@
 package fr.emmuliette.rune.mod;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.exception.NotABlockException;
+import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.mod.blocks.ModBlock;
 import fr.emmuliette.rune.mod.items.ModItem;
 import net.minecraft.block.Block;

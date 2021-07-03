@@ -1,4 +1,6 @@
-package fr.emmuliette.rune.mod;
+package fr.emmuliette.rune.exception;
+
+import fr.emmuliette.rune.mod.AbstractModObject;
 
 public class NotABlockException extends Exception {
 	/**

@@ -29,4 +29,8 @@ public class ModBlock extends AbstractModObject {
 	public RegistryObject<? extends Block> getModBlock() {
 		return modBlock;
 	}
+	
+	public Supplier<? extends Block> getProperties(){
+		return properties;
+	}
 }

@@ -1,8 +1,8 @@
 package fr.emmuliette.rune.data.client;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.NotABlockException;
 import fr.emmuliette.rune.setup.ModTags;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;

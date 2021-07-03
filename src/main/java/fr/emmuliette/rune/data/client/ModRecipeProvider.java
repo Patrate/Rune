@@ -2,9 +2,9 @@ package fr.emmuliette.rune.data.client;
 
 import java.util.function.Consumer;
 
+import fr.emmuliette.rune.exception.NotABlockException;
+import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.NotABlockException;
-import fr.emmuliette.rune.mod.NotAnItemException;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
