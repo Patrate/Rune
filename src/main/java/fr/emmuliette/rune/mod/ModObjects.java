@@ -13,6 +13,9 @@ public enum ModObjects {
 	BLANK_RUNE(new ModItem("blank_rune", RuneMain.RUNE_GROUP)),
 	PROJECTILE_RUNE(new ModItem("projectile_rune", RuneMain.RUNE_GROUP)),
 	FIRE_RUNE(new ModItem("fire_rune", RuneMain.RUNE_GROUP)),
+	
+	SPELL(new ModItem("spell", RuneMain.RUNE_GROUP)),
+	
 	CASTER_BLOCK(new ModBlock("caster_block", RuneMain.RUNE_GROUP,
 			() -> new Block(net.minecraft.block.AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f)
 					.harvestLevel(1).harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK))));
