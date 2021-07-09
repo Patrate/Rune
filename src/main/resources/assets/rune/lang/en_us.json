@@ -2,6 +2,7 @@
 	"item.rune.blank_rune": "Blank Rune",
 	"item.rune.projectile_rune": "Projectile Rune",
 	"item.rune.fire_rune": "Fire Rune",
+	"item.rune.spell": "Spell",
 	"block.rune.caster_block": "Caster Block",
 	"itemGroup.Rune": "Rune Mod"
 }

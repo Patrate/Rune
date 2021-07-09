@@ -1,8 +1,12 @@
 package fr.emmuliette.rune.mod;
 
+import java.util.function.Supplier;
+
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.blocks.ModBlock;
 import fr.emmuliette.rune.mod.items.ModItem;
+import fr.emmuliette.rune.mod.items.AdvancedModItem;
+import fr.emmuliette.rune.mod.items.SpellItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -14,7 +18,13 @@ public enum ModObjects {
 	PROJECTILE_RUNE(new ModItem("projectile_rune", RuneMain.RUNE_GROUP)),
 	FIRE_RUNE(new ModItem("fire_rune", RuneMain.RUNE_GROUP)),
 	
-	SPELL(new ModItem("spell", RuneMain.RUNE_GROUP)),
+	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()));
+		}
+		
+	}),
 	
 	CASTER_BLOCK(new ModBlock("caster_block", RuneMain.RUNE_GROUP,
 			() -> new Block(net.minecraft.block.AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f)
