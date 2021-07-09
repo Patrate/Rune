@@ -27,7 +27,7 @@ public class RuneMain {
 	
 	public static final String MOD_ID = "rune";
 	
-	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("Rune");
+	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("rune");
 	
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();

@@ -16,12 +16,12 @@ import net.minecraft.world.World;
 public class SpellItem extends Item {
 	private Spell spell;
 
-	public static SpellItem buildSpellItem(Spell spell) {
+	public static ItemStack buildSpellItem(Spell spell) {
 		SpellItem spellitem;
 		try {
 			spellitem = (SpellItem) ModObjects.SPELL.getModItem();
 			spellitem.spell = spell;
-			return spellitem;
+			return new ItemStack(spellitem);
 		} catch (NotAnItemException e) {
 			e.printStackTrace();
 		}

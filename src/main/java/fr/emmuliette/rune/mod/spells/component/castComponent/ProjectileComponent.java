@@ -1,7 +1,8 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent;
 
+import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.mod.spells.RuneProperties;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
@@ -14,8 +15,8 @@ import net.minecraft.util.math.vector.Vector3d;
 
 public class ProjectileComponent extends AbstractCastComponent implements TargetAir {
 
-	public ProjectileComponent(AbstractEffectComponent nextComponent) {
-		super(nextComponent);
+	public ProjectileComponent(RuneProperties properties) throws RunePropertiesException {
+		super(properties);
 	}
 
 	@Override

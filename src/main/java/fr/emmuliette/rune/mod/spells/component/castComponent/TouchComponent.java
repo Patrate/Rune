@@ -1,12 +1,13 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent;
 
+import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.mod.spells.RuneProperties;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 
 public class TouchComponent extends AbstractCastComponent implements TargetBlock, TargetLivingEntity {
 
-	public TouchComponent(AbstractEffectComponent nextComponent) {
-		super(nextComponent);
+	public TouchComponent(RuneProperties properties) throws RunePropertiesException {
+		super(properties);
 	}
 
 	@Override

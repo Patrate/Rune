@@ -1,5 +1,15 @@
 package fr.emmuliette.rune.mod.spells.component;
 
-public abstract class AbstractSpellComponent {
+import fr.emmuliette.rune.mod.spells.RuneProperties;
 
+public abstract class AbstractSpellComponent {
+	private RuneProperties properties;
+	
+	public AbstractSpellComponent(RuneProperties properties) {
+		this.properties = properties;
+	}
+	
+	protected RuneProperties getProperties() {
+		return properties;
+	}
 }

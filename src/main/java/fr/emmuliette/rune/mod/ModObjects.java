@@ -5,18 +5,24 @@ import java.util.function.Supplier;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.blocks.ModBlock;
 import fr.emmuliette.rune.mod.items.ModItem;
+import fr.emmuliette.rune.mod.items.RuneItem;
+import fr.emmuliette.rune.mod.items.RuneModItem;
 import fr.emmuliette.rune.mod.items.AdvancedModItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
+import fr.emmuliette.rune.mod.spells.component.castComponent.*;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraftforge.common.ToolType;
 
 public enum ModObjects {
 	BLANK_RUNE(new ModItem("blank_rune", RuneMain.RUNE_GROUP)),
-	PROJECTILE_RUNE(new ModItem("projectile_rune", RuneMain.RUNE_GROUP)),
-	FIRE_RUNE(new ModItem("fire_rune", RuneMain.RUNE_GROUP)),
+	//PROJECTILE_RUNE(new ModItem("projectile_rune", RuneMain.RUNE_GROUP)),
+	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_GROUP, ProjectileComponent.class)),
+	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_GROUP, FireComponent.class)),
 	
 	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
 		@Override
@@ -33,6 +39,7 @@ public enum ModObjects {
 	private AbstractModObject entity;
 
 	private ModObjects(AbstractModObject entity) {
+		new RuneItem(ProjectileComponent.class, (new Item.Properties()).tab(ItemGroup.TAB_MATERIALS));
 
 		this.entity = entity;
 	}
