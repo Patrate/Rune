@@ -19,14 +19,31 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.NonNullConsumer;
 
 public class SpellItem extends Item {
+	public static enum ItemType {
+		PARCHMENT, GRIMOIRE, SOCKET, SPELL;
+	}
 	// private static final Map<Long, Spell> spellCache = new HashMap<Long,
-	// Spell>();
 
-	public static ItemStack buildSpellItem(final Spell spell) {
+	public static ItemStack buildSpellItem(final Spell spell, ItemType type) {
 		SpellItem spellitem;
 		try {
-			spellitem = (SpellItem) ModObjects.SPELL.getModItem();
+			switch (type) {
+			case PARCHMENT:
+				spellitem = (SpellItem) ModObjects.PARCHMENT.getModItem();
+				break;
+			case GRIMOIRE:
+				spellitem = (SpellItem) ModObjects.GRIMOIRE.getModItem();
+				break;
+			case SOCKET:
+				spellitem = (SpellItem) ModObjects.SOCKET.getModItem();
+				break;
+			case SPELL:
+			default:
+				spellitem = (SpellItem) ModObjects.SPELL.getModItem();
+				break;
+			}
 			ItemStack itemStack = new ItemStack(spellitem);
+			//itemStack.setHoverName(new StringTextComponent(itemStack.getHoverName().getContents() + " " + spell.getName()));
 			itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(new NonNullConsumer<ISpell>() {
 				@Override
 				public void accept(@Nonnull ISpell iSpell) {
@@ -59,10 +76,12 @@ public class SpellItem extends Item {
 	private static class Result {
 		ActionResult<ItemStack> result;
 		ActionResultType resultType;
+		boolean consume;
 
 		public Result(ItemStack item) {
 			result = ActionResult.pass(item);
 			resultType = ActionResultType.PASS;
+			consume = false;
 		}
 	}
 
@@ -72,46 +91,16 @@ public class SpellItem extends Item {
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity player, LivingEntity target,
 			Hand hand) {
-		final Result retour = new Result(itemStack);
-		if (!player.level.isClientSide) {
-			itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(new NonNullConsumer<ISpell>() {
-				@Override
-				public void accept(@Nonnull ISpell iSpell) {
-					// Spell spell = spellCache.get()
-					Spell spell = iSpell.getSpell();
-					if (spell != null) {
-						retour.resultType = ((spell.cast(itemStack, target, null, player, null))
-								? ActionResultType.SUCCESS
-								: ActionResultType.PASS);
-					} else {
-						System.out.println("spell is null");
-					}
-				}
-			});
-		}
+		Result retour = castSpell(itemStack, target, null, player, null);
 		return retour.resultType;
 	}
+	
 
 	// On clic droit air
 	@Override
 	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack itemStack = player.getItemInHand(hand);
-		final Result retour = new Result(itemStack);
-		if (!world.isClientSide) {
-			itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(new NonNullConsumer<ISpell>() {
-				@Override
-				public void accept(@Nonnull ISpell iSpell) {
-					// Spell spell = spellCache.get()
-					Spell spell = iSpell.getSpell();
-					if (spell != null) {
-						retour.result = ((spell.cast(null, null, world, player, null)) ? ActionResult.success(itemStack)
-								: ActionResult.pass(itemStack));
-					} else {
-						System.out.println("spell is null");
-					}
-				}
-			});
-		}
+		Result retour = castSpell(itemStack, null, world, player, null);
 		return retour.result;
 	}
 
@@ -119,23 +108,70 @@ public class SpellItem extends Item {
 	@Override
 	public ActionResultType useOn(ItemUseContext itemUseContext) {
 		ItemStack itemStack = itemUseContext.getItemInHand();
+		Result retour = castSpell(itemStack, null, null, itemUseContext.getPlayer(), itemUseContext);
+		return retour.resultType;
+	}
+	
+
+	private Result castSpell(@Nonnull ItemStack itemStack, LivingEntity target, World world, @Nonnull PlayerEntity player,
+			ItemUseContext itemUseContext) {
 		final Result retour = new Result(itemStack);
-		if (!itemUseContext.getLevel().isClientSide) {
+		if (!player.level.isClientSide) {
 			itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(new NonNullConsumer<ISpell>() {
 				@Override
 				public void accept(@Nonnull ISpell iSpell) {
-					// Spell spell = spellCache.get()
 					Spell spell = iSpell.getSpell();
 					if (spell != null) {
-						retour.resultType = ((spell.cast(null, null, null, null, itemUseContext))
-								? ActionResultType.SUCCESS
-								: ActionResultType.PASS);
-					} else {
-						System.out.println("spell is null");
+						if (spell.cast(itemStack, target, world, player, itemUseContext)) {
+							try {
+								retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
+							} catch (NotAnItemException e) {
+								e.printStackTrace();
+							}
+							if(retour.consume) {
+								retour.resultType = ActionResultType.CONSUME;
+								retour.result = ActionResult.consume(itemStack);
+							} else {
+								retour.resultType = ActionResultType.SUCCESS;
+								retour.result = ActionResult.success(itemStack);
+							}
+						} else {
+							retour.resultType = ActionResultType.PASS;
+						}
 					}
 				}
 			});
 		}
-		return retour.resultType;
+		if (player.level.isClientSide) {
+			itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(new NonNullConsumer<ISpell>() {
+				@Override
+				public void accept(@Nonnull ISpell iSpell) {
+					Spell spell = iSpell.getSpell();
+					if (spell != null) {
+						if (spell.castable(itemStack, target, world, player, itemUseContext)) {
+							try {
+								retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
+							} catch (NotAnItemException e) {
+								e.printStackTrace();
+							}
+							if(retour.consume) {
+								retour.resultType = ActionResultType.CONSUME;
+								retour.result = ActionResult.consume(itemStack);
+							} else {
+								retour.resultType = ActionResultType.SUCCESS;
+								retour.result = ActionResult.success(itemStack);
+							}
+						} else {
+							retour.resultType = ActionResultType.PASS;
+						}
+					}
+				}
+			});
+		}
+		if (retour.consume) {
+			// TODO ca marche pas pk :(
+			itemStack.shrink(1);
+		}
+		return retour;
 	}
 }

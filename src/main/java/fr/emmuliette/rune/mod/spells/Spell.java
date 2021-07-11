@@ -18,29 +18,25 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 public class Spell {
-	private static long NEXT_ID = 0;
 	private String name;
-	private long id;
 	private AbstractCastComponent startingComponent;
 	
-	public Spell(String name, AbstractCastComponent startingComponent, Long id) {
-		this.name = name;
-		this.startingComponent = startingComponent;
-		this.id = id;
-	}
 	
 	public Spell(String name, AbstractCastComponent startingComponent) {
-		this(name, startingComponent, NEXT_ID++);
+		this.name = name;
+		this.startingComponent = startingComponent;
 	}
 
 	public String getName() {
 		return name;
 	}
-	
-	public long getId() {
-		return id;
-	}
 
+	public boolean castable(ItemStack itemStack, LivingEntity target, World world, PlayerEntity player,
+			ItemUseContext itemUseContext) {
+		SpellContext context = new SpellContext(itemStack, target, world, player, itemUseContext);
+		return startingComponent.canCast(context);
+	}
+	
 	public boolean cast(ItemStack itemStack, LivingEntity target, World world, PlayerEntity player,
 			ItemUseContext itemUseContext) {
 		SpellContext context = new SpellContext(itemStack, target, world, player, itemUseContext);
@@ -89,22 +85,19 @@ public class Spell {
 	public static final String NBT_CLASS = "CLASS";
 	public static final String NBT_PROPERTIES = "PROPERTIES";
 	public static final String NBT_CHILDREN = "CHILDREN";
-	public static final String NBT_SPELLID = "SPELLID";
 	
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = new CompoundNBT();
 		retour.putString(NBT_NAME, this.name);
-		retour.putLong(NBT_SPELLID, this.id);
 		retour.put(NBT_START, startingComponent.toNBT());
 		return retour;
 	}
 	
 	public static Spell fromNBT(CompoundNBT data) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String name = data.getString(NBT_START);
-		Long id = data.getLong(NBT_SPELLID);
 		CompoundNBT startNBT = data.getCompound(NBT_START);
 		AbstractCastComponent startingComponent = (AbstractCastComponent) AbstractSpellComponent.fromNBT(startNBT);
-		Spell retour = new Spell(name, startingComponent, id);
+		Spell retour = new Spell(name, startingComponent);
 		return retour;
 	}
 }

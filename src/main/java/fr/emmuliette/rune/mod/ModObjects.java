@@ -27,9 +27,26 @@ public enum ModObjects {
 	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new SpellItem(new Item.Properties().tab(getGroup()));
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
 		}
-		
+	}),
+	PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));
+		}
+	}),
+	GRIMOIRE(new AdvancedModItem("grimoire", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	}),
+	SOCKET(new AdvancedModItem("socket", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));
+		}
 	}),
 	
 	CASTER_BLOCK(new ModBlock("caster_block", RuneMain.RUNE_GROUP,

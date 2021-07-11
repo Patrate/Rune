@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.item.Items;
 import net.minecraft.world.World;
 
 public class SpellRecipe extends SpecialRecipe {
@@ -37,14 +38,14 @@ public class SpellRecipe extends SpecialRecipe {
 						return false;
 					}
 					hasBook = true;
-				/*
-				 * Comparer à un papier et un socket
-				 * } else if(itemstack.getItem() instanceof PaperItem) {
+				
+				 //Comparer à un papier et un socket
+				 } else if(itemstack.getItem().getItem() == Items.PAPER) {
 					if(hasPaper || hasBook || hasSocket) {
 						return false;
 					}
 					hasPaper= true;
-				} else if(itemstack.getItem() instanceof SocketItem) {
+				/*} else if(itemstack.getItem() instanceof SocketItem) {
 					if(hasPaper || hasBook || hasSocket) {
 						return false;
 					}
@@ -74,14 +75,13 @@ public class SpellRecipe extends SpecialRecipe {
 					}
 					hasBook = true;
 					continue;
-				/*
-				 * Comparer à un papier et un socket
-				 * } else if(itemstack.getItem() instanceof PaperItem) {
+				 //Comparer à un papier et un socket
+				 } else if(itemstack.getItem().getItem() == Items.PAPER) {
 					if(hasPaper || hasBook || hasSocket) {
 						return ItemStack.EMPTY;
 					}
 					hasPaper= true;
-				} else if(itemstack.getItem() instanceof SocketItem) {
+				/*} else if(itemstack.getItem() instanceof SocketItem) {
 					if(hasPaper || hasBook || hasSocket) {
 						return ItemStack.EMPTY;
 					}
@@ -97,8 +97,12 @@ public class SpellRecipe extends SpecialRecipe {
 		try {
 			if((hasPaper ^ hasBook ^ hasSocket) && validateComponents(list)) {
 				Spell spell = Spell.buildSpell("test", list);
-				ItemStack spellItem = SpellItem.buildSpellItem(spell); 
-				return spellItem;
+				if(hasPaper)
+					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
+				if(hasBook)
+					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.GRIMOIRE);
+				if(hasSocket)
+					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.SOCKET);
 			}
 			return ItemStack.EMPTY;
 		} catch (RunePropertiesException e) {
