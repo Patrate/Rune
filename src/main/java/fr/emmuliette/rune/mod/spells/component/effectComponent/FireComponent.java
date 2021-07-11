@@ -22,7 +22,6 @@ public class FireComponent extends AbstractEffectComponent {
 	public boolean applyEffect(World world, BlockPos position) {
 		// Should probably that at random to the X block around
 		if (world.getBlockState(position.above()) == Blocks.AIR.defaultBlockState()  && world.getBlockState(position).isSolidRender(world, position)) {
-			System.out.println("FIRST IS OK");
             world.setBlockAndUpdate(position.above(), AbstractFireBlock.getState(world, position.above()));
 		}
         

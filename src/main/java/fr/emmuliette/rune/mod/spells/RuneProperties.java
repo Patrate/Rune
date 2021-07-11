@@ -5,6 +5,7 @@ import java.util.Map;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import net.minecraft.nbt.CompoundNBT;
 
 public class RuneProperties {
 	public enum Property {
@@ -37,5 +38,23 @@ public class RuneProperties {
 		} else {
 			throw new RunePropertiesException("Property " + property.name() + " is undefined");
 		}
+	}
+	
+	public CompoundNBT toNBT() {
+		CompoundNBT retour = new CompoundNBT();
+		// TODO 
+		/*for(Property property:properties.keySet()) {
+			retour.put(property.name(), )
+		}*/
+		return retour;
+	}
+	
+	public static RuneProperties fromNBT(CompoundNBT data) {
+		RuneProperties retour = new RuneProperties();
+		for(String key:data.getAllKeys()) {
+			// TODO
+			// for key put the property tmtc
+		}
+		return retour;
 	}
 }

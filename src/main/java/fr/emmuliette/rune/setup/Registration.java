@@ -23,7 +23,7 @@ public class Registration {
 
 	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> SPELL_RECIPE = Registration.RECIPE
 			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<>(SpellRecipe::new));
-	
+
 	public static void register() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 		BLOCKS.register(modEventBus);

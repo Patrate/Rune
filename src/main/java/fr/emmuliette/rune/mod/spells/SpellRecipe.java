@@ -11,6 +11,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastCompone
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.BookItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -25,11 +26,30 @@ public class SpellRecipe extends SpecialRecipe {
 
 	public boolean matches(CraftingInventory craftingInventory, World world) {
 		List<ItemStack> list = Lists.newArrayList();
-
+		boolean hasPaper = false, hasBook = false, hasSocket = false;
+		
+		
 		for (int i = 0; i < craftingInventory.getContainerSize(); ++i) {
 			ItemStack itemstack = craftingInventory.getItem(i);
 			if (!itemstack.isEmpty()) {
-				if (!(itemstack.getItem() instanceof RuneItem)) {
+				if(itemstack.getItem() instanceof BookItem) {
+					if(hasPaper || hasBook || hasSocket) {
+						return false;
+					}
+					hasBook = true;
+				/*
+				 * Comparer à un papier et un socket
+				 * } else if(itemstack.getItem() instanceof PaperItem) {
+					if(hasPaper || hasBook || hasSocket) {
+						return false;
+					}
+					hasPaper= true;
+				} else if(itemstack.getItem() instanceof SocketItem) {
+					if(hasPaper || hasBook || hasSocket) {
+						return false;
+					}
+					hasSocket = true;*/
+				} else if (!(itemstack.getItem() instanceof RuneItem)) {
 					return false;
 				}
 
@@ -37,27 +57,50 @@ public class SpellRecipe extends SpecialRecipe {
 			}
 		}
 
-		return list.size() >= 2;
+		return list.size() >= 2 && (hasPaper ^ hasBook ^ hasSocket);
 	}
 
 	public ItemStack assemble(CraftingInventory craftingInventory) {
-		System.out.println("Assembling a spell");
 		List<RuneItem> list = Lists.newArrayList();
+		boolean hasPaper = false, hasBook = false, hasSocket = false;
 
 		for (int i = 0; i < craftingInventory.getContainerSize(); ++i) {
-			ItemStack itemstack1 = craftingInventory.getItem(i);
-			if (!itemstack1.isEmpty()) {
-				Item item = itemstack1.getItem();
-				if (!(item instanceof RuneItem)) {
+			ItemStack itemstack = craftingInventory.getItem(i);
+			if (!itemstack.isEmpty()) {
+				Item item = itemstack.getItem();
+				if(itemstack.getItem() instanceof BookItem) {
+					if(hasPaper || hasBook || hasSocket) {
+						return ItemStack.EMPTY;
+					}
+					hasBook = true;
+					continue;
+				/*
+				 * Comparer à un papier et un socket
+				 * } else if(itemstack.getItem() instanceof PaperItem) {
+					if(hasPaper || hasBook || hasSocket) {
+						return ItemStack.EMPTY;
+					}
+					hasPaper= true;
+				} else if(itemstack.getItem() instanceof SocketItem) {
+					if(hasPaper || hasBook || hasSocket) {
+						return ItemStack.EMPTY;
+					}
+					hasSocket = true;*/
+				} else if (!(item instanceof RuneItem)) {
 					return ItemStack.EMPTY;
+				} else {
+					list.add((RuneItem) item);
 				}
-
-				list.add((RuneItem) item);
 			}
 		}
 
 		try {
-			return validateComponents(list) ? SpellItem.buildSpellItem(Spell.buildSpell("test", list)) : ItemStack.EMPTY;
+			if((hasPaper ^ hasBook ^ hasSocket) && validateComponents(list)) {
+				Spell spell = Spell.buildSpell("test", list);
+				ItemStack spellItem = SpellItem.buildSpellItem(spell); 
+				return spellItem;
+			}
+			return ItemStack.EMPTY;
 		} catch (RunePropertiesException e) {
 			e.printStackTrace();
 			return ItemStack.EMPTY;
@@ -65,23 +108,17 @@ public class SpellRecipe extends SpecialRecipe {
 	}
 
 	private boolean validateComponents(List<RuneItem> list) {
-		System.out.println("\nValidating components");
 		if (list.size() < 2) {
 			return false;
 		}
-		System.out.println(list.get(0) + " " + list.get(0).getComponentClass().isAssignableFrom(AbstractCastComponent.class));
 		if (!AbstractCastComponent.class.isAssignableFrom(list.get(0).getComponentClass())) {
-			System.out.println(list.get(0) + " is not valid for AbstractCastComponent");
 			return false;
 		}
-		for (int i = 1; i < list.size(); i++) { 
-			System.out.println(list.get(i));
+		for (int i = 1; i < list.size(); i++) {
 			if (!AbstractEffectComponent.class.isAssignableFrom(list.get(i).getComponentClass())) {
-				System.out.println(list.get(i) + " is not valid for AbstractEffectComponent");
 				return false;
 			}
 		}
-		System.out.println("Valid");
 		return true;
 	}
 

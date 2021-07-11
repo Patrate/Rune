@@ -1,8 +1,10 @@
 package fr.emmuliette.rune;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
@@ -17,6 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import fr.emmuliette.rune.mod.RuneItemGroup;
+import fr.emmuliette.rune.mod.items.SpellItem;
+import fr.emmuliette.rune.mod.spells.capability.spell.SpellCapability;
 import fr.emmuliette.rune.setup.Registration;
 
 import java.util.stream.Collectors;
@@ -33,7 +37,8 @@ public class RuneMain {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public RuneMain() {
-    	
+        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+
     	Registration.register();
     	
         // Register the setup method for modloading
@@ -53,7 +58,15 @@ public class RuneMain {
     {
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
-        LOGGER.info("DIRT BLOCK >> {}", Blocks.DIRT.getRegistryName());
+        SpellCapability.register();
+    }
+    
+    @SubscribeEvent
+    public void attachCapabilitiesEntity(final AttachCapabilitiesEvent<ItemStack> event)
+    {
+    	if(event.getObject().getItem() instanceof SpellItem) {
+        	event.addCapability(new ResourceLocation(MOD_ID, SpellCapability.SPELL_CAPABILITY_NAME), new SpellCapability());
+    	}
     }
 
     @SuppressWarnings("resource")

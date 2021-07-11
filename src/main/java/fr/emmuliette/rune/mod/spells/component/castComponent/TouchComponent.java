@@ -13,9 +13,9 @@ public class TouchComponent extends AbstractCastComponent implements TargetBlock
 	@Override
 	public boolean cast(SpellContext context) {
 		if(context.getTargetType() == SpellContext.TargetType.BLOCK) {
-			return getNextComponent().applyEffect(context.getWorld(), context.getItemUseContext().getClickedPos());
+			return applyChildOnBlock(context.getWorld(), context.getItemUseContext().getClickedPos());
 		} else if(context.getTargetType() == SpellContext.TargetType.ENTITY) {
-			return getNextComponent().applyEffect(context.getTarget());
+			return applyChildOnEntity(context.getTarget());
 		} else {
 			return false;
 		}
