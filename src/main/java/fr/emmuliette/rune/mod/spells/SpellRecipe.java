@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import fr.emmuliette.rune.RandomNameUtils;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
@@ -96,7 +97,7 @@ public class SpellRecipe extends SpecialRecipe {
 
 		try {
 			if((hasPaper ^ hasBook ^ hasSocket) && validateComponents(list)) {
-				Spell spell = Spell.buildSpell("test", list);
+				Spell spell = Spell.buildSpell(RandomNameUtils.getName(), list);
 				if(hasPaper)
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
 				if(hasBook)

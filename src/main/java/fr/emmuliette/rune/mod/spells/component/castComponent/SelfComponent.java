@@ -11,8 +11,7 @@ public class SelfComponent extends AbstractCastComponent implements TargetAir {
 	}
 
 	@Override
-	public boolean cast(SpellContext context) {
-		return applyChildOnSelf(context.getPlayer());
+	public boolean internalCast(SpellContext context) {
+		return applyChildOnSelf(context.getPlayer(), context);
 	}
-
 }

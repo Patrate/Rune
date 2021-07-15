@@ -1,7 +1,11 @@
 {
 	"item.rune.blank_rune": "Blank Rune",
+	"item.rune.self_rune": "Self Rune",
+	"item.rune.touch_rune": "TOuch Rune",
 	"item.rune.projectile_rune": "Projectile Rune",
 	"item.rune.fire_rune": "Fire Rune",
+	"item.rune.damage_rune": "Damage Rune",
+	"item.rune.teleport_rune": "Teleportation Rune",
 	"item.rune.parchment": "Parchment",
 	"item.rune.grimoire": "Grimoire",
 	"item.rune.socket": "Socket",

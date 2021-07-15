@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.capability.currency;
+package fr.emmuliette.rune.mod.currency.capability;
 
 public class Currency implements ICurrency {
     private int amount = 0;

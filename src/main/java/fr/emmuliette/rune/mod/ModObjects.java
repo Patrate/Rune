@@ -3,6 +3,8 @@ package fr.emmuliette.rune.mod;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.exception.NotABlockException;
+import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.mod.blocks.ModBlock;
 import fr.emmuliette.rune.mod.items.ModItem;
 import fr.emmuliette.rune.mod.items.RuneItem;
@@ -20,9 +22,13 @@ import net.minecraftforge.common.ToolType;
 
 public enum ModObjects {
 	BLANK_RUNE(new ModItem("blank_rune", RuneMain.RUNE_GROUP)),
-	//PROJECTILE_RUNE(new ModItem("projectile_rune", RuneMain.RUNE_GROUP)),
 	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_GROUP, ProjectileComponent.class)),
+	TOUCH_RUNE(new RuneModItem("touch_rune", RuneMain.RUNE_GROUP, TouchComponent.class)),
+	SELF_RUNE(new RuneModItem("self_rune", RuneMain.RUNE_GROUP, SelfComponent.class)),
+	
 	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_GROUP, FireComponent.class)),
+	DAMAGE_RUNE(new RuneModItem("damage_rune", RuneMain.RUNE_GROUP, DamageComponent.class)),
+	TELEPORT_RUNE(new RuneModItem("teleport_rune", RuneMain.RUNE_GROUP, TeleportComponent.class)),
 	
 	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
 		@Override

@@ -30,6 +30,10 @@ public class Spell {
 	public String getName() {
 		return name;
 	}
+	
+	public float getManaCost() {
+		return startingComponent.getManaCost();
+	}
 
 	public boolean castable(ItemStack itemStack, LivingEntity target, World world, PlayerEntity player,
 			ItemUseContext itemUseContext) {

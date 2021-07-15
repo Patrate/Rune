@@ -21,7 +21,7 @@ public class ProjectileComponent extends AbstractCastComponent implements Target
 	}
 
 	@Override
-	public boolean cast(SpellContext context) {
+	public boolean internalCast(SpellContext context) {
 		ProjectileItemEntity projectile = new ProjectileItemEntity(EntityType.EGG, context.getPlayer(), context.getWorld()) {
 			@Override
 			protected Item getDefaultItem() {
@@ -30,7 +30,7 @@ public class ProjectileComponent extends AbstractCastComponent implements Target
 			@Override
 			protected void onHitEntity(EntityRayTraceResult entity) {
 				if(entity.getEntity() instanceof LivingEntity) {
-					applyChildOnEntity((LivingEntity)entity.getEntity());
+					applyChildOnEntity((LivingEntity)entity.getEntity(), context);
 					this.remove();
 				}
 			}
@@ -42,7 +42,7 @@ public class ProjectileComponent extends AbstractCastComponent implements Target
 				if(block == null) {
 					return;
 				}
-				applyChildOnBlock(this.level, block.getBlockPos());
+				applyChildOnBlock(this.level, block.getBlockPos(), context);
 				this.remove();
 			}
 		};

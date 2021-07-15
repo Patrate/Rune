@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod;
 
+import fr.emmuliette.rune.exception.NotAnItemException;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 

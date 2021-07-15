@@ -24,9 +24,7 @@ public abstract class AbstractSpellComponent {
 		retour.put(Spell.NBT_PROPERTIES, properties.toNBT());
 		return retour;
 	}
-	
 
-	
 	public static AbstractSpellComponent fromNBT(CompoundNBT data) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Class<?> clazz = Class.forName(data.getString(Spell.NBT_CLASS));
 		RuneProperties properties = RuneProperties.fromNBT((CompoundNBT) data.get(Spell.NBT_PROPERTIES));
@@ -36,4 +34,6 @@ public abstract class AbstractSpellComponent {
 		}
 		return retour;
 	}
+	
+	public abstract float getManaCost();
 }

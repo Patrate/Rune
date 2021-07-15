@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 
+import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.NotABlockException;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;

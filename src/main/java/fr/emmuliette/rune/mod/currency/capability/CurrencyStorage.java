@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.capability.currency;
+package fr.emmuliette.rune.mod.currency.capability;
 
 import javax.annotation.Nullable;
 

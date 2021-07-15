@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.capability.spell;
+package fr.emmuliette.rune.mod.spells.capability;
 
 import fr.emmuliette.rune.mod.spells.Spell;
 
