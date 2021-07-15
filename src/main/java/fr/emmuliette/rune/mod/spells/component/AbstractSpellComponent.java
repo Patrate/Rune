@@ -4,11 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModifierComponent;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
 import net.minecraft.nbt.CompoundNBT;
 
-public abstract class AbstractSpellComponent {
+public abstract class AbstractSpellComponent implements ISpellComponent, INBTableComponent {
+	public static final int DEFAULT_COOLDOWN = 20;
 	private SpellProperties properties;
 	
 	public AbstractSpellComponent() {
@@ -44,13 +46,15 @@ public abstract class AbstractSpellComponent {
 		AbstractSpellComponent retour = (AbstractSpellComponent) clazz.getConstructor().newInstance();
 		retour.properties.fromNBT((CompoundNBT) data.get(Spell.NBT_PROPERTIES));
 		
+		if(AbstractCastModifierComponent.class.isAssignableFrom(clazz)) {
+			retour = AbstractCastModifierComponent.fromNBT(retour, data);
+		}
 		if(AbstractCastComponent.class.isAssignableFrom(clazz)) {
 			retour = AbstractCastComponent.fromNBT(retour, data);
 		}
 		return retour;
 	}
 	
-	public abstract float getManaCost();
 	public int getCooldown() {
 		return 0;
 	}

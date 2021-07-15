@@ -3,7 +3,7 @@ package fr.emmuliette.rune.mod.spells.component.castComponent;
 import com.google.common.base.Function;
 
 import fr.emmuliette.rune.exception.DuplicatePropertyException;
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;

@@ -5,7 +5,8 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import fr.emmuliette.rune.RandomNameUtils;
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
+import fr.emmuliette.rune.exception.SpellBuildingException;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
@@ -106,7 +107,7 @@ public class SpellRecipe extends SpecialRecipe {
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.SOCKET);
 			}
 			return ItemStack.EMPTY;
-		} catch (RunePropertiesException e) {
+		} catch (RunePropertiesException | SpellBuildingException e) {
 			e.printStackTrace();
 			return ItemStack.EMPTY;
 		}

@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod;
+package fr.emmuliette.rune.exception;
 
 public class RunePropertiesException extends Exception {
 	/**

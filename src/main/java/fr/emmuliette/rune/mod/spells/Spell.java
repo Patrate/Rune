@@ -4,12 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
+import fr.emmuliette.rune.exception.SpellBuildingException;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.ICastableComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -18,10 +19,10 @@ import net.minecraft.world.World;
 
 public class Spell {
 	private String name;
-	private AbstractCastComponent startingComponent;
+	private ICastableComponent startingComponent;
 	
 	
-	public Spell(String name, AbstractCastComponent startingComponent) {
+	public Spell(String name, ICastableComponent startingComponent) {
 		this.name = name;
 		this.startingComponent = startingComponent;
 	}
@@ -55,7 +56,7 @@ public class Spell {
 		return false;
 	}
 
-	public static Spell buildSpell(String name, List<RuneItem> runeList) throws RunePropertiesException {
+	public static Spell buildSpell(String name, List<RuneItem> runeList) throws RunePropertiesException, SpellBuildingException {
 		AbstractSpellComponent current = null;
 		List<AbstractSpellComponent> previous = new ArrayList<AbstractSpellComponent>();
 		for (int i = runeList.size() - 1; i > 0; i--) {
@@ -81,9 +82,16 @@ public class Spell {
 			}
 		}
 
-		AbstractCastComponent castComponent = (AbstractCastComponent) runeList.get(0).getSpellComponent();
-		for(AbstractSpellComponent component:previous) {
-			castComponent.addChildren((AbstractEffectComponent) component);
+		ICastableComponent castComponent = (ICastableComponent) runeList.get(0).getSpellComponent();
+		if(castComponent instanceof ComponentContainer) {
+			ComponentContainer<?> container = (ComponentContainer<?>) castComponent;
+			for(AbstractSpellComponent component:previous) {
+				if(container.canAddChildren(component)) {
+					container.addChildren(component);
+				} else {
+					throw new SpellBuildingException("Can't add the component " + component + " to the container " + container);
+				}
+			}
 		}
 		return new Spell(name, castComponent);
 	}

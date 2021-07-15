@@ -1,8 +1,6 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
@@ -14,7 +12,6 @@ import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -22,31 +19,29 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class AbstractCastComponent extends AbstractSpellComponent implements ComponentContainer<AbstractEffectComponent>, ICastableComponent {
-	private List<AbstractEffectComponent> children;
+// TODO: besoin de réfactorer
+public abstract class AbstractCastModifierComponent extends AbstractSpellComponent implements ComponentContainer<AbstractCastComponent>{
+	private AbstractCastComponent children;
 	
-	public AbstractCastComponent() throws RunePropertiesException {
+	public AbstractCastModifierComponent() throws RunePropertiesException {
 		super();
-		children = new ArrayList<AbstractEffectComponent>();
+		children = null;
 	}
 
-	protected List<AbstractEffectComponent> getNextComponents() {
+	protected AbstractCastComponent getNextComponents() {
 		return children;
 	}
 	
-	@Override
 	public boolean specialCast(SpellContext context) {
-		return false;
+		return children.specialCast(context);
 	}
 	
 	protected abstract boolean internalCast(SpellContext context);
-	
-	@Override
 	public boolean cast(SpellContext context) {
 		try {
 			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY).orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 			cap.delMana(this.getManaCost());
-			cap.setCooldown(Math.max(DEFAULT_COOLDOWN, this.getCooldown()));
+			cap.setCooldown(Math.max(AbstractSpellComponent.DEFAULT_COOLDOWN, this.getCooldown()));
 			internalCast(context);
 		} catch(NotEnoughManaException | CasterCapabilityException e) {
 			e.printStackTrace();
@@ -54,7 +49,6 @@ public abstract class AbstractCastComponent extends AbstractSpellComponent imple
 		return false;
 	}
 	
-	@Override
 	public boolean canCast(SpellContext context) {
 		try {
 			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY).orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
@@ -85,93 +79,49 @@ public abstract class AbstractCastComponent extends AbstractSpellComponent imple
 	}
 	
 	protected boolean applyChildOnSelf(LivingEntity caster, SpellContext context) {
-		boolean result = false;
-		for(AbstractEffectComponent child:children) {
-			result |= child.applyOnSelf(caster, context);
-		}
-		return result;
+		return children.applyChildOnSelf(caster, context);
 	}
 	
 	protected boolean applyChildOnEntity(LivingEntity target, SpellContext context) {
-		boolean result = false;
-		for(AbstractEffectComponent child:children) {
-			result |= child.applyOnTarget(target, context);
-		}
-		return result;
+		return children.applyChildOnEntity(target, context);
 	}
 	
 	protected boolean applyChildOnBlock(World world, BlockPos blockPos, SpellContext context) {
-		boolean result = false;
-		for(AbstractEffectComponent child:children) {
-			result |= child.applyOnPosition(world, blockPos, context);
-		}
-		return result;
+		return children.applyChildOnBlock(world, blockPos, context);
 	}
 	
 	@Override
-	public void _addChildren(AbstractEffectComponent newEffect) {
-		children.add(newEffect);
+	public void _addChildren(AbstractCastComponent newCast) {
+		children = newCast;
 	}
 
 	@Override
 	public int getMaxSize() {
-		return 999;
+		return 1;
 	}
 
 	@Override
 	public int getSize() {
-		return children.size();
+		return 1;
 	}
 
 	@Override
 	public boolean canAddChildren(AbstractSpellComponent children) {
-		return (children instanceof AbstractEffectComponent);
-	}
-	
-	@Override
-	public CompoundNBT toNBT() {
-		CompoundNBT retour = super.toNBT();
-		ListNBT childrenNBT = new ListNBT();
-		for(AbstractSpellComponent child:children) {
-			childrenNBT.add(child.toNBT());
-		}
-		retour.put(Spell.NBT_CHILDREN, childrenNBT);
-		return retour;
+		return ((children instanceof AbstractCastComponent) && children == null);
 	}
 		
-	public static AbstractCastComponent fromNBT(AbstractSpellComponent component, CompoundNBT data) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		AbstractCastComponent retour = (AbstractCastComponent) component;
+	public static AbstractCastModifierComponent fromNBT(AbstractSpellComponent component, CompoundNBT data) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		AbstractCastModifierComponent retour = (AbstractCastModifierComponent) component;
 		if(data.contains(Spell.NBT_CHILDREN)) {
 			ListNBT childrenNBT = (ListNBT) data.get(Spell.NBT_CHILDREN);
 			for(INBT childNBT:childrenNBT) {
 				AbstractSpellComponent child = AbstractSpellComponent.fromNBT((CompoundNBT) childNBT);
 				if(retour.canAddChildren(child)) {
-					retour.addChildren((AbstractEffectComponent) child);
+					retour.addChildren((AbstractCastComponent) child);
 				}
 			}
 		}
 		return retour;
 	}
-	
-	@Override
-	public float getManaCost() {
-		float totalCost = 0f;
-		for(AbstractSpellComponent sc: children) {
-			totalCost += sc.getManaCost();
-		}
-		return totalCost;
-	}
-	
-	protected float applyMultiplier(SpellContext context, float baseCost) {
-		return baseCost * 1f; 
-	}
-	
-	@Override
-	public int getCooldown() {
-		int totalCD = 0;
-		for(AbstractSpellComponent sc: children) {
-			totalCD += sc.getCooldown();
-		}
-		return totalCD;
-	}
+
 }
