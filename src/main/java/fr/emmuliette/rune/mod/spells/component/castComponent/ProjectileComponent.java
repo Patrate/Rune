@@ -26,7 +26,7 @@ public class ProjectileComponent extends AbstractCastComponent implements Target
 
 	@Override
 	public boolean internalCast(SpellContext context) {
-		ProjectileItemEntity projectile = new ProjectileItemEntity(EntityType.EGG, context.getPlayer(),
+		ProjectileItemEntity projectile = new ProjectileItemEntity(EntityType.EGG, context.getCaster(),
 				context.getWorld()) {
 			@Override
 			protected Item getDefaultItem() {
@@ -53,30 +53,35 @@ public class ProjectileComponent extends AbstractCastComponent implements Target
 		};
 		projectile.setNoGravity(true);
 
-		Vector3d lookAngle = context.getPlayer().getLookAngle();
+		Vector3d lookAngle = context.getCaster().getLookAngle();
 		projectile.shoot(lookAngle.x, lookAngle.y, lookAngle.z, ((float)this.getProperty(KEY_SPEED, new Integer(0)).getValue()) * 0.1f, 0F);// 12.0F);
 		context.getWorld().addFreshEntity(projectile);
-		context.getWorld().playSound(null, context.getPlayer().getX(), context.getPlayer().getY(),
-				context.getPlayer().getZ(), SoundEvents.SNOW_GOLEM_SHOOT, SoundCategory.AMBIENT, 1.0f, 0.4f);
+		context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
+				context.getCaster().getZ(), SoundEvents.SNOW_GOLEM_SHOOT, SoundCategory.AMBIENT, 1.0f, 0.4f);
 		return true;
 	}
 
 	private static final String KEY_SPEED = "speed";
+	private static SpellProperties DEFAULT_PROPERTIES;
+	{
+		if(DEFAULT_PROPERTIES == null) {
+			try {
+				DEFAULT_PROPERTIES = new SpellProperties();
+				DEFAULT_PROPERTIES.addNewProperty(Grade.WOOD, new Property<Integer>(KEY_SPEED, new PossibleInt(16, 8, 24, 1), new Function<Integer, Float>() {
+					@Override
+					public Float apply(Integer val) {
+						return 0f;
+					}
+				}));
+			} catch (DuplicatePropertyException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	@Override
 	public SpellProperties getDefaultProperties() {
-		SpellProperties retour = new SpellProperties();
-		try {
-			retour.addNewProperty(Grade.WOOD, new Property<Integer>(KEY_SPEED, new PossibleInt(16, 8, 24, 1), new Function<Integer, Float>() {
-				@Override
-				public Float apply(Integer val) {
-					return 0f;
-				}
-			}));
-		} catch (DuplicatePropertyException e) {
-			e.printStackTrace();
-		}
-		return retour;
+		return DEFAULT_PROPERTIES;
 	}
 
 }

@@ -2,7 +2,7 @@ package fr.emmuliette.rune.setup;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.player.capability.sync.PlayerHandler;
+import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.spells.SpellRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -31,6 +31,6 @@ public class Registration {
 		ITEMS.register(modEventBus);
 		RECIPE.register(modEventBus);
 		ModObjects.register();
-		PlayerHandler.register();
+		SyncHandler.register();
 	}
 }

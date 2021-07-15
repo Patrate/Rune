@@ -4,19 +4,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.emmuliette.rune.exception.CasterCapabilityException;
+import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
-import fr.emmuliette.rune.exception.PlayerCapabilityException;
-import fr.emmuliette.rune.exception.PlayerCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.player.capability.IPlayer;
-import fr.emmuliette.rune.mod.player.capability.PlayerCapability;
+import fr.emmuliette.rune.mod.player.capability.CasterCapability;
+import fr.emmuliette.rune.mod.player.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -25,6 +24,7 @@ import net.minecraft.world.World;
 
 public abstract class AbstractCastComponent extends AbstractSpellComponent implements ComponentContainer<AbstractEffectComponent> {
 	private List<AbstractEffectComponent> children;
+	private int DEFAULT_COOLDOWN = 20;
 	
 	public AbstractCastComponent() throws RunePropertiesException {
 		super();
@@ -35,20 +35,29 @@ public abstract class AbstractCastComponent extends AbstractSpellComponent imple
 		return children;
 	}
 	
+	public boolean specialCast(SpellContext context) {
+		return false;
+	}
+	
 	protected abstract boolean internalCast(SpellContext context);
 	public boolean cast(SpellContext context) {
 		try {
-			IPlayer cap = context.getPlayer().getCapability(PlayerCapability.PLAYER_CAPABILITY).orElseThrow(new PlayerCapabilityExceptionSupplier(context.getPlayer()));
+			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY).orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 			cap.delMana(this.getManaCost());
+			cap.setCooldown(Math.max(DEFAULT_COOLDOWN, this.getCooldown()));
 			internalCast(context);
-		} catch(NotEnoughManaException | PlayerCapabilityException e) {
+		} catch(NotEnoughManaException | CasterCapabilityException e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 	public boolean canCast(SpellContext context) {
 		try {
-			IPlayer cap = context.getPlayer().getCapability(PlayerCapability.PLAYER_CAPABILITY).orElseThrow(new PlayerCapabilityExceptionSupplier(context.getPlayer()));
+			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY).orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
+			
+			if(cap.isCooldown()) {
+				return false;
+			}
 			
 			if(this.getManaCost() > cap.getMana()) {
 				return false;
@@ -65,16 +74,16 @@ public abstract class AbstractCastComponent extends AbstractSpellComponent imple
 			if(context.getTargetType() == SpellContext.TargetType.AIR && this instanceof TargetAir) {
 				return true;
 			}
-		} catch(PlayerCapabilityException e) {
+		} catch(CasterCapabilityException e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 	
-	protected boolean applyChildOnSelf(PlayerEntity player, SpellContext context) {
+	protected boolean applyChildOnSelf(LivingEntity caster, SpellContext context) {
 		boolean result = false;
 		for(AbstractEffectComponent child:children) {
-			result |= child.applyOnSelf(player, context);
+			result |= child.applyOnSelf(caster, context);
 		}
 		return result;
 	}
@@ -151,5 +160,14 @@ public abstract class AbstractCastComponent extends AbstractSpellComponent imple
 	
 	protected float applyMultiplier(SpellContext context, float baseCost) {
 		return baseCost * 1f; 
+	}
+	
+	@Override
+	public int getCooldown() {
+		int totalCD = 0;
+		for(AbstractSpellComponent sc: children) {
+			totalCD += sc.getCooldown();
+		}
+		return totalCD;
 	}
 }

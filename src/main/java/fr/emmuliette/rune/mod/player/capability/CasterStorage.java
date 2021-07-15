@@ -7,16 +7,16 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class PlayerStorage implements Capability.IStorage<IPlayer> {
+public class CasterStorage implements Capability.IStorage<ICaster> {
 	@Nullable
 	@Override
-	public INBT writeNBT(Capability<IPlayer> capability, IPlayer instance, Direction side) {
+	public INBT writeNBT(Capability<ICaster> capability, ICaster instance, Direction side) {
 		return instance.toNBT();
 	}
 
 	@Override
-	public void readNBT(Capability<IPlayer> capability, IPlayer instance, Direction side, INBT nbt) {
-		if (!(instance instanceof PlayerImpl))
+	public void readNBT(Capability<ICaster> capability, ICaster instance, Direction side, INBT nbt) {
+		if (!(instance instanceof CasterImpl))
 			throw new IllegalArgumentException(
 					"Can not deserialize to an instance that isn't the default implementation");
 		

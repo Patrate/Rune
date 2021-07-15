@@ -7,7 +7,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 
-public interface IPlayer {
+public interface ICaster {
 
 	public Entity getOwner();
 	public void setOwner(Entity owner);
@@ -22,6 +22,15 @@ public interface IPlayer {
 	public int getManaRegen();
 	public void setMana(float mana);
 	public void setMaxMana(float maxMana);
+	public boolean isCooldown();
+	public void setCooldown(int cd);
+	public int getCooldown();
+	public default void tickCooldown() {
+		if(isCooldown()) {
+			setCooldown(getCooldown() - 1);
+		}
+	}
+	
 	public default void addMana(float mana) {
 		setMana(Math.max(0, Math.min(getMana() + mana, getMaxMana())));
 	}
@@ -31,9 +40,10 @@ public interface IPlayer {
 		}
 		addMana(-mana);
 	}
+	
 	public CompoundNBT toNBT();
 	public void fromNBT(INBT nbt);
 	public void sync(ServerPlayerEntity player);
-	public void sync(IPlayer player);
+	public void sync(ICaster player);
 	public void sync();
 }

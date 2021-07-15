@@ -11,7 +11,6 @@ import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
@@ -35,15 +34,21 @@ public class Spell {
 		return startingComponent.getManaCost();
 	}
 
-	public boolean castable(ItemStack itemStack, LivingEntity target, World world, PlayerEntity player,
+	public boolean castSpecial(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(itemStack, target, world, player, itemUseContext);
+		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
+		return startingComponent.specialCast(context);
+	}
+	
+	public boolean castable(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+			ItemUseContext itemUseContext) {
+		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
 		return startingComponent.canCast(context);
 	}
 	
-	public boolean cast(ItemStack itemStack, LivingEntity target, World world, PlayerEntity player,
+	public boolean cast(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(itemStack, target, world, player, itemUseContext);
+		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
 		if (startingComponent.canCast(context)) {
 			return startingComponent.cast(context);
 		}
@@ -54,7 +59,7 @@ public class Spell {
 		AbstractSpellComponent current = null;
 		List<AbstractSpellComponent> previous = new ArrayList<AbstractSpellComponent>();
 		for (int i = runeList.size() - 1; i > 0; i--) {
-			current = runeList.get(i).getSpellComponent(runeList.get(i).getProperties());
+			current = runeList.get(i).getSpellComponent();
 			if (!(current instanceof ComponentContainer)) {
 				previous.add(current);
 			} else {
@@ -76,7 +81,7 @@ public class Spell {
 			}
 		}
 
-		AbstractCastComponent castComponent = (AbstractCastComponent) runeList.get(0).getSpellComponent(runeList.get(0).getProperties());
+		AbstractCastComponent castComponent = (AbstractCastComponent) runeList.get(0).getSpellComponent();
 		for(AbstractSpellComponent component:previous) {
 			castComponent.addChildren((AbstractEffectComponent) component);
 		}

@@ -30,4 +30,5 @@ public abstract class PossibleValues<T> {
 	}
 	public abstract boolean _isValid(T val);
 	public abstract INBT asINBT(T val);
+	public abstract T copyValue(T value);
 }

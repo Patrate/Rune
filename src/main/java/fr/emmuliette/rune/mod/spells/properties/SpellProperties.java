@@ -19,6 +19,22 @@ public class SpellProperties {
 			properties.put(grade, new HashMap<String, Property<?>>());
 		}
 	}
+	
+	public SpellProperties(SpellProperties other) {
+		this();
+		if(other != null) {
+			for(Grade grade:Grade.values()) {
+				if(!other.properties.containsKey(grade)) {
+					continue;
+				}
+				Map<String, Property<?>> currentGrade = properties.get(grade);
+				Map<String, Property<?>> otherGrade = other.properties.get(grade);
+				for(String key:otherGrade.keySet()) {
+					currentGrade.put(key, otherGrade.get(key));
+				}
+			}
+		}
+	}
 
 	public void addNewProperty(Grade key, Property<?> property) throws DuplicatePropertyException {
 		Map<String, Property<?>> gradeMap = properties.get(key);

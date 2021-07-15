@@ -33,4 +33,9 @@ public class PossibleInt extends PossibleValues<Integer>{
 		return IntNBT.valueOf(val);
 	}
 
+	@Override
+	public Integer copyValue(Integer value) {
+		return new Integer(value);
+	}
+
 }

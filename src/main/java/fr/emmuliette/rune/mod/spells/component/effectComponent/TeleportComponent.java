@@ -12,12 +12,12 @@ public class TeleportComponent extends AbstractEffectComponent {
 	}
 	@Override
 	public boolean applyOnTarget(LivingEntity target, SpellContext context) {
-		context.getPlayer().teleportTo(target.blockPosition().getX(), target.blockPosition().getY(), target.blockPosition().getZ());
+		context.getCaster().teleportTo(target.blockPosition().getX(), target.blockPosition().getY(), target.blockPosition().getZ());
 		return true;
 	}
 	@Override
 	public boolean applyOnPosition(World world, BlockPos position, SpellContext context) {
-		context.getPlayer().teleportTo(position.getX(), position.getY()+1, position.getZ());
+		context.getCaster().teleportTo(position.getX(), position.getY()+1, position.getZ());
 		return true;
 	}
 	

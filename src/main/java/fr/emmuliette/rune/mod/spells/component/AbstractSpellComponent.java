@@ -12,11 +12,11 @@ public abstract class AbstractSpellComponent {
 	private SpellProperties properties;
 	
 	public AbstractSpellComponent() {
-		this.properties = getDefaultProperties();
+		this.properties = new SpellProperties(getDefaultProperties());
 	}
 	
-	public void setProperties(SpellProperties prop) {
-		this.properties = prop;
+	public void initProperties(SpellProperties prop) {
+		this.properties = new SpellProperties(prop);
 	}
 	
 	protected SpellProperties getProperties() {
@@ -25,7 +25,11 @@ public abstract class AbstractSpellComponent {
 	
 	@SuppressWarnings("unchecked")
 	protected <T> Property<T> getProperty(String key, T object) {
-		return (Property<T>) properties.getProperty(key);
+		if(properties.getProperty(key) != null) {
+			return (Property<T>) properties.getProperty(key);
+		} else {
+			return (Property<T>) this.getDefaultProperties().getProperty(key);
+		}
 	}
 	
 	public CompoundNBT toNBT() {
@@ -47,6 +51,9 @@ public abstract class AbstractSpellComponent {
 	}
 	
 	public abstract float getManaCost();
+	public int getCooldown() {
+		return 0;
+	}
 	
 	public abstract SpellProperties getDefaultProperties();
 }

@@ -6,10 +6,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.exception.PlayerCapabilityException;
-import fr.emmuliette.rune.exception.PlayerCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.player.capability.IPlayer;
-import fr.emmuliette.rune.mod.player.capability.PlayerCapability;
+import fr.emmuliette.rune.exception.CasterCapabilityException;
+import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
+import fr.emmuliette.rune.mod.player.capability.ICaster;
+import fr.emmuliette.rune.mod.player.capability.CasterCapability;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import net.minecraft.client.Minecraft;
@@ -45,17 +45,17 @@ public class GuiManaBar {
 		PlayerEntity player = (PlayerEntity) minecraft.getCameraEntity();
 
 		try {
-			IPlayer cap = player.getCapability(PlayerCapability.PLAYER_CAPABILITY)
-					.orElseThrow(new PlayerCapabilityExceptionSupplier(player));
+			ICaster cap = player.getCapability(CasterCapability.CASTER_CAPABILITY)
+					.orElseThrow(new CasterCapabilityExceptionSupplier(player));
 			render(event, minecraft, player, cap);
-		} catch (PlayerCapabilityException e) {
+		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
 		}
 
 	}
 
 	private static void render(RenderGameOverlayEvent.Post event, Minecraft minecraft, PlayerEntity player,
-			IPlayer iplayer) {
+			ICaster iplayer) {
 		MatrixStack mStack = event.getMatrixStack();
 		int screenWidth = minecraft.getWindow().getGuiScaledWidth();
 		int screenHeight = minecraft.getWindow().getGuiScaledHeight();

@@ -22,7 +22,7 @@ import net.minecraft.entity.Entity;
 
 import fr.emmuliette.rune.mod.RuneItemGroup;
 import fr.emmuliette.rune.mod.items.SpellItem;
-import fr.emmuliette.rune.mod.player.capability.PlayerCapability;
+import fr.emmuliette.rune.mod.player.capability.CasterCapability;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import fr.emmuliette.rune.setup.Registration;
 
@@ -62,7 +62,7 @@ public class RuneMain {
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
         SpellCapability.register();
-        PlayerCapability.register();
+        CasterCapability.register();
     }
     
     // ====================================================================================
@@ -81,7 +81,7 @@ public class RuneMain {
     public void attachCapabilitiesPlayer(final AttachCapabilitiesEvent<Entity> event)
     {
     	if(event.getObject() instanceof PlayerEntity) {
-    		event.addCapability(new ResourceLocation(MOD_ID, PlayerCapability.PLAYER_CAPABILITY_NAME), new PlayerCapability((Entity) event.getObject()));
+    		event.addCapability(new ResourceLocation(MOD_ID, CasterCapability.CASTER_CAPABILITY_NAME), new CasterCapability((Entity) event.getObject()));
     	}
     }
 

@@ -1,7 +1,6 @@
 package fr.emmuliette.rune.mod.spells;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.world.World;
@@ -11,9 +10,9 @@ public class SpellContext {
 		BLOCK, ENTITY, AIR;
 	}
 	
-	public SpellContext(ItemStack itemStack, LivingEntity target, World world, PlayerEntity player, ItemUseContext itemUseContext) {
+	public SpellContext(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster, ItemUseContext itemUseContext) {
 		if(target!= null) {
-			setLivingEntityContext(itemStack, player, target);
+			setLivingEntityContext(itemStack, caster, target);
 		}
 		// target block
 		if(itemUseContext != null) {
@@ -21,7 +20,7 @@ public class SpellContext {
 		}
 		// target air
 		if(world != null) {
-			setAirContext(world, player);
+			setAirContext(world, caster);
 		}
 	}
 	
@@ -31,23 +30,23 @@ public class SpellContext {
 		this.itemStack = itemUseContext.getItemInHand();
 		this.target = null;
 		this.world = itemUseContext.getLevel();;
-		this.player = itemUseContext.getPlayer();
+		this.caster = itemUseContext.getPlayer();
 		this.itemUseContext = itemUseContext;
 	}
-	private void setAirContext(World world, PlayerEntity player) {
+	private void setAirContext(World world, LivingEntity caster) {
 		this.targetType = TargetType.AIR;
 		this.itemStack = null;
 		this.target = null;
 		this.world = world;
-		this.player = player;
+		this.caster = caster;
 		this.itemUseContext = null;
 	}
-	private void setLivingEntityContext(ItemStack itemStack, PlayerEntity player, LivingEntity target) {
+	private void setLivingEntityContext(ItemStack itemStack, LivingEntity caster, LivingEntity target) {
 		this.targetType = TargetType.ENTITY;
 		this.itemStack = itemStack;
 		this.target = target;
-		this.world = player.level;
-		this.player = player;
+		this.world = caster.level;
+		this.caster = caster;
 		this.itemUseContext = null;
 	}
 
@@ -55,7 +54,7 @@ public class SpellContext {
 	private ItemStack itemStack;
 	private LivingEntity target;
 	private World world;
-	private PlayerEntity player;
+	private LivingEntity caster;
 	private ItemUseContext itemUseContext;
 
 	public TargetType getTargetType() {
@@ -74,8 +73,8 @@ public class SpellContext {
 		return world;
 	}
 
-	public PlayerEntity getPlayer() {
-		return player;
+	public LivingEntity getCaster() {
+		return caster;
 	}
 
 	public ItemUseContext getItemUseContext() {

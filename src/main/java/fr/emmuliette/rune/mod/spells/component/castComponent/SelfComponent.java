@@ -12,7 +12,7 @@ public class SelfComponent extends AbstractCastComponent implements TargetAir {
 
 	@Override
 	public boolean internalCast(SpellContext context) {
-		return applyChildOnSelf(context.getPlayer(), context);
+		return applyChildOnSelf(context.getCaster(), context);
 	}
 	@Override
 	public SpellProperties getDefaultProperties() {

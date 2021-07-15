@@ -12,36 +12,36 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
-public class PlayerCapability implements ICapabilitySerializable<CompoundNBT> {
-	public static final String PLAYER_CAPABILITY_NAME = "player_capability";
+public class CasterCapability implements ICapabilitySerializable<CompoundNBT> {
+	public static final String CASTER_CAPABILITY_NAME = "caster_capability";
 
-	@CapabilityInject(IPlayer.class)
-	public static final Capability<IPlayer> PLAYER_CAPABILITY = null;
-	private LazyOptional<IPlayer> instance = LazyOptional.of(PLAYER_CAPABILITY::getDefaultInstance);
+	@CapabilityInject(ICaster.class)
+	public static final Capability<ICaster> CASTER_CAPABILITY = null;
+	private LazyOptional<ICaster> instance = LazyOptional.of(CASTER_CAPABILITY::getDefaultInstance);
 
-	public PlayerCapability(Entity owner) {
+	public CasterCapability(Entity owner) {
 		this.instance.ifPresent(c -> c.setOwner(owner));
 	}
 
 	public static void register() {
-		CapabilityManager.INSTANCE.register(IPlayer.class, new PlayerStorage(), PlayerImpl::new);
+		CapabilityManager.INSTANCE.register(ICaster.class, new CasterStorage(), CasterImpl::new);
 	}
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-		return PLAYER_CAPABILITY.orEmpty(cap, instance);
+		return CASTER_CAPABILITY.orEmpty(cap, instance);
 	}
 
 	@Override
 	public CompoundNBT serializeNBT() {
-		return (CompoundNBT) PLAYER_CAPABILITY.getStorage().writeNBT(PLAYER_CAPABILITY,
+		return (CompoundNBT) CASTER_CAPABILITY.getStorage().writeNBT(CASTER_CAPABILITY,
 				instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null);
 	}
 
 	@Override
 	public void deserializeNBT(CompoundNBT nbt) {
-		PLAYER_CAPABILITY.getStorage().readNBT(PLAYER_CAPABILITY,
+		CASTER_CAPABILITY.getStorage().readNBT(CASTER_CAPABILITY,
 				instance.orElseThrow(() -> new IllegalArgumentException("LazyOptional cannot be empty!")), null, nbt);
 	}
 }

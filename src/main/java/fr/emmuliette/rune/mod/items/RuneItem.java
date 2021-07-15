@@ -20,13 +20,18 @@ public class RuneItem extends Item {
 		return component;
 	}
 	
+	public AbstractSpellComponent getSpellComponent() {
+		return getSpellComponent(properties);
+	}
+	
 	public AbstractSpellComponent getSpellComponent(SpellProperties properties) {
 		try {
 			AbstractSpellComponent comp = component.getConstructor().newInstance();
-			comp.setProperties(properties);
+			comp.initProperties(properties);
 			return comp;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
+			System.out.println("SPELL COMP CLASS IS " + component.getCanonicalName());
 			e.printStackTrace();
 			return null;
 		}

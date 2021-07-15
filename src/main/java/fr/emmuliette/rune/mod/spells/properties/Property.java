@@ -20,6 +20,13 @@ public final class Property<T> {
 		this.manaCost = manaCost;
 		this.currentValue = values.getDefault();
 	}
+	
+	public Property(Property<T> other) {
+		this.name = other.name;
+		this.values = other.values;
+		this.manaCost = other.manaCost;
+		this.currentValue = other.values.copyValue(other.getValue());
+	}
 
 	public String getName() {
 		return name;
