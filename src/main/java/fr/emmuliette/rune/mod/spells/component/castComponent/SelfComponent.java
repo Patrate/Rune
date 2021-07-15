@@ -1,17 +1,22 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.spells.RuneProperties;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
 
 public class SelfComponent extends AbstractCastComponent implements TargetAir {
 
-	public SelfComponent(RuneProperties properties) throws RunePropertiesException {
-		super(properties);
+	public SelfComponent() throws RunePropertiesException {
+		super();
 	}
 
 	@Override
 	public boolean internalCast(SpellContext context) {
 		return applyChildOnSelf(context.getPlayer(), context);
+	}
+	@Override
+	public SpellProperties getDefaultProperties() {
+		SpellProperties retour = new SpellProperties();
+		return retour;
 	}
 }

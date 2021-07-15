@@ -10,7 +10,6 @@ import fr.emmuliette.rune.exception.PlayerCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.player.capability.IPlayer;
 import fr.emmuliette.rune.mod.player.capability.PlayerCapability;
-import fr.emmuliette.rune.mod.spells.RuneProperties;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
@@ -19,14 +18,16 @@ import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectCom
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class AbstractCastComponent extends AbstractSpellComponent implements ComponentContainer<AbstractEffectComponent> {
 	private List<AbstractEffectComponent> children;
 	
-	public AbstractCastComponent(RuneProperties properties) throws RunePropertiesException {
-		super(properties);
+	public AbstractCastComponent() throws RunePropertiesException {
+		super();
 		children = new ArrayList<AbstractEffectComponent>();
 	}
 
@@ -117,29 +118,28 @@ public abstract class AbstractCastComponent extends AbstractSpellComponent imple
 	@Override
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = super.toNBT();
-		for(int i = 0; i < children.size(); i++) {
-			retour.put(Spell.NBT_CHILDREN + i, children.get(i).toNBT());
+		ListNBT childrenNBT = new ListNBT();
+		for(AbstractSpellComponent child:children) {
+			childrenNBT.add(child.toNBT());
 		}
+		retour.put(Spell.NBT_CHILDREN, childrenNBT);
 		return retour;
 	}
-	
-
-	
+		
 	public static AbstractCastComponent fromNBT(AbstractSpellComponent component, CompoundNBT data) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		AbstractCastComponent retour = (AbstractCastComponent) component;
-		int i = 0;
-		while(data.contains(Spell.NBT_CHILDREN + i)) {
-			AbstractSpellComponent child = AbstractSpellComponent.fromNBT(data.getCompound(Spell.NBT_CHILDREN + i));
-			if(retour.canAddChildren(child)) {
-				retour.addChildren((AbstractEffectComponent) child);
+		if(data.contains(Spell.NBT_CHILDREN)) {
+			ListNBT childrenNBT = (ListNBT) data.get(Spell.NBT_CHILDREN);
+			for(INBT childNBT:childrenNBT) {
+				AbstractSpellComponent child = AbstractSpellComponent.fromNBT((CompoundNBT) childNBT);
+				if(retour.canAddChildren(child)) {
+					retour.addChildren((AbstractEffectComponent) child);
+				}
 			}
-			i++;
 		}
 		return retour;
 	}
 	
-
-
 	@Override
 	public float getManaCost() {
 		float totalCost = 0f;
