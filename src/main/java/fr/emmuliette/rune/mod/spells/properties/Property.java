@@ -55,7 +55,7 @@ public final class Property<T> {
 	}
 
 	public float getCurrentManaCost() {
-		return manaCost.apply(getDefault());
+		return manaCost.apply(currentValue);
 	}
 
 	public float getManaCostFor(T val) {

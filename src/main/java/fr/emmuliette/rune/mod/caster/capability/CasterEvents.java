@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE)
 public class CasterEvents {
-	private static final int NATURAL_MANA_REGEN = 80;//, BOOSTED_MANA_REGEN = 10;
+	private static final int NATURAL_MANA_REGEN = 10; // 80
 	@SubscribeEvent
 	public static void regenMana(PlayerTickEvent event) {
 		if(event.phase != Phase.START) {

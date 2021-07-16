@@ -2,23 +2,27 @@ package fr.emmuliette.rune.mod.spells.component;
 
 import java.lang.reflect.InvocationTargetException;
 
-import fr.emmuliette.rune.exception.DuplicatePropertyException;
+import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.exception.UnknownPropertyException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
+import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Property;
-import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class AbstractSpellComponent {
-	private SpellProperties properties;
+	private ComponentProperties properties;
 	private boolean startingComponent;
+	private PropertyFactory propFactory;
 
-	public AbstractSpellComponent() {
-		this.properties = new SpellProperties(getDefaultProperties());
+	public AbstractSpellComponent(PropertyFactory propFact) {
+		this.propFactory = propFact;
+		this.properties = getDefaultProperties();
 		this.startingComponent = false;
 	}
 
@@ -38,48 +42,30 @@ public abstract class AbstractSpellComponent {
 		this.startingComponent = starting;
 	}
 
-	public void initProperties(SpellProperties prop) {
-		this.properties = new SpellProperties(prop);
+	public void initProperties() {
+		this.properties = propFactory.build();
 	}
 
-	protected SpellProperties getProperties() {
+	protected ComponentProperties getProperties() {
 		return properties;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected <T> Property<T> getProperty(String key, T object) {
+	protected Property<?> getProperty(String key) throws UnknownPropertyException {
 		if (properties.getProperty(key) != null) {
-			return (Property<T>) properties.getProperty(key);
+			return properties.getProperty(key);
 		} else {
-			try {
-				Property<T> prop = new Property<T>((Property<T>) this.getDefaultProperties().getProperty(key));
-				properties.addNewProperty(this.getDefaultProperties().getPropertyGrade(key), prop);
-				return prop;
-			} catch (DuplicatePropertyException e) {
-				e.printStackTrace();
-				return (Property<T>) this.getDefaultProperties().getProperty(key);
-			}
+			throw new UnknownPropertyException(this, key);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> Property<T> getProperty(String key) {
+	protected <T> T getPropertyValue(String key, T defVal) {
 		if (properties.getProperty(key) != null) {
-			return (Property<T>) properties.getProperty(key);
+			return (T) properties.getProperty(key).getValue();
 		} else {
-			try {
-				Property<T> prop = new Property<T>((Property<T>) this.getDefaultProperties().getProperty(key));
-				properties.addNewProperty(this.getDefaultProperties().getPropertyGrade(key), prop);
-				return prop;
-			} catch (DuplicatePropertyException e) {
-				e.printStackTrace();
-				return (Property<T>) this.getDefaultProperties().getProperty(key);
-			}
+			RuneMain.LOGGER.error("unknown property " + key + " in component " + this.getClass().getSimpleName());
+			return defVal;
 		}
-	}
-
-	protected <T> void setProperty(String key, T object) {
-		getProperty(key).setValue(object);
 	}
 
 	public CompoundNBT toNBT() {
@@ -94,7 +80,7 @@ public abstract class AbstractSpellComponent {
 			InvocationTargetException, NoSuchMethodException, SecurityException {
 		Class<?> clazz = Class.forName(data.getString(Spell.NBT_CLASS));
 		AbstractSpellComponent retour = (AbstractSpellComponent) clazz.getConstructor().newInstance();
-		retour.properties.fromNBT((CompoundNBT) data.get(Spell.NBT_PROPERTIES));
+		retour.properties = retour.propFactory.fromNBT((CompoundNBT) data.get(Spell.NBT_PROPERTIES));
 
 		if (AbstractCastComponent.class.isAssignableFrom(clazz)) {
 			retour = AbstractCastComponent.fromNBT(retour, data);
@@ -108,5 +94,7 @@ public abstract class AbstractSpellComponent {
 		return 0;
 	}
 
-	public abstract SpellProperties getDefaultProperties();
+	public final ComponentProperties getDefaultProperties() {
+		return propFactory.build();
+	}
 }

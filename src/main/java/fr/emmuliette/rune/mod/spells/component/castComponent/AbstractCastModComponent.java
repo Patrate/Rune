@@ -15,6 +15,7 @@ import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,8 +27,8 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 	private static int currentTick = 0;
 	private List<AbstractCastEffectComponent> children;
 
-	public AbstractCastModComponent() throws RunePropertiesException {
-		super();
+	public AbstractCastModComponent(PropertyFactory propFactory) throws RunePropertiesException {
+		super(propFactory);
 		children = new ArrayList<AbstractCastEffectComponent>();
 	}
 

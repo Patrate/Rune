@@ -5,12 +5,12 @@ import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
-import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 
 public class TouchComponent extends AbstractCastEffectComponent implements TargetBlock, TargetLivingEntity {
 
 	public TouchComponent() throws RunePropertiesException {
-		super();
+		super(PropertyFactory.EMPTY_FACTORY);
 	}
 
 	@Override
@@ -23,10 +23,4 @@ public class TouchComponent extends AbstractCastEffectComponent implements Targe
 			return false;
 		}
 	}
-	@Override
-	public SpellProperties getDefaultProperties() {
-		SpellProperties retour = new SpellProperties();
-		return retour;
-	}
-
 }

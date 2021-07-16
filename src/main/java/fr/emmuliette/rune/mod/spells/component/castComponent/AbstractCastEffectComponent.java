@@ -11,12 +11,13 @@ import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 
 public abstract class AbstractCastEffectComponent extends AbstractCastComponent<AbstractEffectComponent> {
 	private List<AbstractEffectComponent> children;
 
-	public AbstractCastEffectComponent() throws RunePropertiesException {
-		super();
+	public AbstractCastEffectComponent(PropertyFactory propFactory) throws RunePropertiesException {
+		super(propFactory);
 		children = new ArrayList<AbstractEffectComponent>();
 	}
 

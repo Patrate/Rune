@@ -14,7 +14,7 @@ import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent.Callback;
-import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -23,7 +23,7 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 	private List<AbstractCastEffectComponent> childrenCast;
 
 	public CastModContainerComponent() throws RunePropertiesException {
-		super();
+		super(PropertyFactory.EMPTY_FACTORY);
 		childrenCastMod = new ArrayList<AbstractCastModComponent>();
 		childrenCast = new ArrayList<AbstractCastEffectComponent>();
 	}
@@ -127,12 +127,6 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 			retour |= child.internalCast(context);
 		}
 		return retour;
-	}
-
-	@Override
-	public SpellProperties getDefaultProperties() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override

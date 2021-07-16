@@ -15,6 +15,7 @@ import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -26,8 +27,8 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		implements ComponentContainer<T> {
 	public static final int DEFAULT_COOLDOWN = 20;
 
-	public AbstractCastComponent() throws RunePropertiesException {
-		super();
+	public AbstractCastComponent(PropertyFactory propFactory) throws RunePropertiesException {
+		super(propFactory);
 	}
 
 	public boolean specialCast(SpellContext context) {

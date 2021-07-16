@@ -2,14 +2,15 @@ package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
 import com.google.common.base.Function;
 
-import fr.emmuliette.rune.exception.DuplicatePropertyException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
+import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
-import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleBoolean;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -21,9 +22,10 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+
 public class ProjectileComponent extends AbstractCastEffectComponent implements TargetAir {
 	public ProjectileComponent() throws RunePropertiesException {
-		super();
+		super(PROPFACT);
 	}
 
 	@Override
@@ -53,10 +55,10 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 				this.remove();
 			}
 		};
-		projectile.setNoGravity(true);
+		projectile.setNoGravity(!this.getPropertyValue(KEY_GRAVITY, false));
 
 		Vector3d lookAngle = context.getCaster().getLookAngle();
-		projectile.shoot(lookAngle.x, lookAngle.y, lookAngle.z, ((float)this.getProperty(KEY_SPEED, new Integer(0)).getValue()) * 0.1f, 0F);// 12.0F);
+		projectile.shoot(lookAngle.x, lookAngle.y, lookAngle.z, this.getPropertyValue(KEY_SPEED, 8) / 10f, 0F);// 12.0F);
 		context.getWorld().addFreshEntity(projectile);
 		context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
 				context.getCaster().getZ(), SoundEvents.SNOW_GOLEM_SHOOT, SoundCategory.AMBIENT, 1.0f, 0.4f);
@@ -64,26 +66,30 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 	}
 
 	private static final String KEY_SPEED = "speed";
-	private static SpellProperties DEFAULT_PROPERTIES;
-	{
-		if(DEFAULT_PROPERTIES == null) {
-			try {
-				DEFAULT_PROPERTIES = new SpellProperties();
-				DEFAULT_PROPERTIES.addNewProperty(Grade.WOOD, new Property<Integer>(KEY_SPEED, new PossibleInt(16, 8, 24, 1), new Function<Integer, Float>() {
-					@Override
-					public Float apply(Integer val) {
-						return 0f;
-					}
-				}));
-			} catch (DuplicatePropertyException e) {
-				e.printStackTrace();
-			}
+	private static final String KEY_GRAVITY = "gravity";
+	private static final PropertyFactory PROPFACT = new PropertyFactory() {
+		@Override
+		public ComponentProperties build() {
+			ComponentProperties retour = new ComponentProperties() {
+				@Override
+				protected void init() {
+					this.addNewProperty(Grade.WOOD, new Property<Integer>(KEY_SPEED, new PossibleInt(16, 8, 24, 1),
+							new Function<Integer, Float>() {
+								@Override
+								public Float apply(Integer val) {
+									return 0f;
+								}
+							})).addNewProperty(Grade.IRON, new Property<Boolean>(KEY_GRAVITY, new PossibleBoolean(true),
+									new Function<Boolean, Float>() {
+										@Override
+										public Float apply(Boolean input) {
+											return (input) ? 1f : 0f;
+										}
+									}));
+				}
+			};
+			return retour;
 		}
-	}
-	
-	@Override
-	public SpellProperties getDefaultProperties() {
-		return DEFAULT_PROPERTIES;
-	}
+	};
 
 }
