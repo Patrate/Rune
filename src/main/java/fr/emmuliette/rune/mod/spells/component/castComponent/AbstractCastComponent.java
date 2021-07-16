@@ -129,11 +129,15 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void addChildren(AbstractSpellComponent newEffect) {
 		if (canAddChildren(newEffect)) {
-			getChildrens().add((T) newEffect);
+			addChildrenInternal(newEffect);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void addChildrenInternal(AbstractSpellComponent newEffect) {
+		getChildrens().add((T) newEffect);
 	}
 
 	@Override

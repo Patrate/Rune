@@ -24,28 +24,30 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 
 	public CastModContainerComponent() throws RunePropertiesException {
 		super();
+		childrenCastMod = new ArrayList<AbstractCastModComponent>();
+		childrenCast = new ArrayList<AbstractCastEffectComponent>();
 	}
-	
+
 	@Override
 	public Boolean canCast(SpellContext context) {
 		try {
 			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-			Boolean checkCd = checkCooldown(cap, context); 
+			Boolean checkCd = checkCooldown(cap, context);
 			if (checkCd == null || !checkCd)
 				return checkCd;
-			
-			Boolean checkManaCost = checkManaCost(cap, context); 
+
+			Boolean checkManaCost = checkManaCost(cap, context);
 			if (checkManaCost == null || !checkManaCost)
 				return checkCd;
-			
+
 			if (!checkManaCost(cap, context))
 				return false;
-			
-			Boolean checkChildrens = checkChildrenCastType(context); 
+
+			Boolean checkChildrens = checkChildrenCastType(context);
 			if (checkChildrens == null || !checkChildrens)
 				return checkChildrens;
-			
+
 			return true;
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
@@ -75,44 +77,53 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 		retour.addAll(childrenCastMod);
 		return retour;
 	}
-	
+
+	@Override
+	protected void addChildrenInternal(AbstractSpellComponent newEffect) {
+		if  (newEffect instanceof AbstractCastEffectComponent) {
+		childrenCast.add((AbstractCastEffectComponent) newEffect);
+		} else if (newEffect instanceof AbstractCastModComponent){
+			childrenCastMod.add((AbstractCastModComponent) newEffect);
+		}
+	}
+
 	public List<AbstractCastEffectComponent> getCastEffect() {
 		return childrenCast;
 	}
-	
+
 	public List<AbstractCastModComponent> getCastMod() {
 		return childrenCastMod;
 	}
-	
+
 	@Override
 	protected boolean internalCast(SpellContext context) {
 		Set<Callback> setCB = new HashSet<Callback>();
-		for(AbstractCastModComponent mod:childrenCastMod) {
+		for (AbstractCastModComponent mod : childrenCastMod) {
 			mod.internalCastGetCallback(context, this, setCB);
 		}
 		return true;
 	}
-	
+
 	public boolean update(Callback cb, SpellContext context, boolean failed) {
 		Set<Callback> setCB = cb.getSetCB();
-		if(failed) {
-			for(Callback callback:setCB) {
+		if (failed) {
+			for (Callback callback : setCB) {
 				callback.cancel(false);
 			}
 			return false;
 		}
 		// PAS ECHEC, CAST ?
-		for(Callback callback:setCB) {
-			if(!callback.isTriggered()) {
+		for (Callback callback : setCB) {
+			if (!callback.isTriggered()) {
 				return false;
 			}
 		}
 		return castChildren(context);
 	}
-	
+
 	private boolean castChildren(SpellContext context) {
 		boolean retour = false;
-		for(AbstractCastEffectComponent child:childrenCast) {
+		for (AbstractCastEffectComponent child : childrenCast) {
 			retour |= child.internalCast(context);
 		}
 		return retour;
@@ -123,19 +134,20 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
 	public float getManaCost() {
 		float retour = super.getManaCost();
-		for(AbstractCastModComponent mod:childrenCastMod) {
+		for (AbstractCastModComponent mod : childrenCastMod) {
 			retour = mod.applyManaMod(retour);
 		}
 		return Math.max(0f, retour);
 	}
+
 	@Override
 	public int getCooldown() {
 		int retour = super.getCooldown();
-		for(AbstractCastModComponent mod:childrenCastMod) {
+		for (AbstractCastModComponent mod : childrenCastMod) {
 			retour = mod.applyCDMod(retour);
 		}
 		return Math.max(0, retour);

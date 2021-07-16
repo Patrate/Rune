@@ -12,7 +12,6 @@ public class ModItem extends AbstractModObject {
 	public ModItem(String name, ItemGroup group) {
 		super(name, group);
 		modItem = register();
-		
 	}
 	
 	public RegistryObject<Item> register() {
@@ -23,4 +22,5 @@ public class ModItem extends AbstractModObject {
 	public RegistryObject<Item> getModItem() {
 		return modItem;
 	}
+	
 }

@@ -1,6 +1,20 @@
 package fr.emmuliette.rune;
 
+import java.io.IOException;
+import java.util.stream.Collectors;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import fr.emmuliette.rune.mod.RuneItemGroup;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
+import fr.emmuliette.rune.mod.items.SpellItem;
+import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
+import fr.emmuliette.rune.setup.AutoUpdater;
+import fr.emmuliette.rune.setup.Configuration;
+import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -9,6 +23,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -16,18 +31,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import net.minecraft.entity.Entity;
 
-import fr.emmuliette.rune.mod.RuneItemGroup;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.items.SpellItem;
-import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
-import fr.emmuliette.rune.setup.Registration;
-
-import java.util.stream.Collectors;
-	
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(RuneMain.MOD_ID)
 public class RuneMain {
@@ -36,13 +40,15 @@ public class RuneMain {
 	
 	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("rune");
 	
+	public static final String VERSION = "0.0.1";
+	
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
 
     public RuneMain() {
-        //FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-
+    	// Maybe preloadModifiedClasses(); ?
     	Registration.register();
+    	Configuration.register(ModLoadingContext.get());
     	
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
@@ -61,6 +67,16 @@ public class RuneMain {
     {
         // some preinit code
         LOGGER.info("HELLO FROM PREINIT");
+        if(Configuration.Client.autoUpdate) {
+	    	try {
+				AutoUpdater.update();
+			} catch (IOException e) {
+				LOGGER.warn("AUTO UPDATE FAILED: " + e.getMessage());
+				e.printStackTrace();
+			}
+    	} else {
+    		LOGGER.info("AUTO UPDATE DEACTIVATED");
+    	}
         SpellCapability.register();
         CasterCapability.register();
     }

@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod;
 
+import fr.emmuliette.rune.setup.Configuration;
 import net.minecraft.item.ItemGroup;
 
 public abstract class AbstractModObject {
@@ -9,7 +10,13 @@ public abstract class AbstractModObject {
 	public AbstractModObject(String name, ItemGroup group) {
 		this.name = name;
 		this.group = group;
+		
 		ModObjectsManager.registerEntity(this);
+	}
+
+	public boolean isActive() {
+		// TODO maybe check the side ?
+		return Configuration.Client.inactiveItem.contains(name);
 	}
 	
 	public String getName() {
