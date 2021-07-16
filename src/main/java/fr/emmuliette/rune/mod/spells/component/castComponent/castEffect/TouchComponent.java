@@ -1,10 +1,13 @@
-package fr.emmuliette.rune.mod.spells.component.castComponent;
+package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
+import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
 
-public class TouchComponent extends AbstractCastComponent implements TargetBlock, TargetLivingEntity {
+public class TouchComponent extends AbstractCastEffectComponent implements TargetBlock, TargetLivingEntity {
 
 	public TouchComponent() throws RunePropertiesException {
 		super();
@@ -13,9 +16,9 @@ public class TouchComponent extends AbstractCastComponent implements TargetBlock
 	@Override
 	public boolean internalCast(SpellContext context) {
 		if(context.getTargetType() == SpellContext.TargetType.BLOCK) {
-			return applyChildOnBlock(context.getWorld(), context.getItemUseContext().getClickedPos(), context);
+			return applyOnPosition(context.getWorld(), context.getItemUseContext().getClickedPos(), context);
 		} else if(context.getTargetType() == SpellContext.TargetType.ENTITY) {
-			return applyChildOnEntity(context.getTarget(), context);
+			return applyOnTarget(context.getTarget(), context);
 		} else {
 			return false;
 		}

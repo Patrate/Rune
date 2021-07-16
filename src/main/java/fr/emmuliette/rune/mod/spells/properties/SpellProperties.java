@@ -63,6 +63,15 @@ public class SpellProperties {
 		}
 		return null;
 	}
+	
+	public Grade getPropertyGrade(String key) {
+		for(Grade g:Grade.values()) {
+			if(properties.get(g).containsKey(key)) {
+				return g;
+			}
+		}
+		return null;
+	}
 
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = new CompoundNBT();

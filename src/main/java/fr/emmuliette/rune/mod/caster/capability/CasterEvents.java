@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.player.capability;
+package fr.emmuliette.rune.mod.caster.capability;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.CasterCapabilityException;

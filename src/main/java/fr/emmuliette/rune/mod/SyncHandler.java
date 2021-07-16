@@ -3,9 +3,9 @@ package fr.emmuliette.rune.mod;
 import java.util.List;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.player.capability.CasterCapability;
-import fr.emmuliette.rune.mod.player.capability.ICaster;
-import fr.emmuliette.rune.mod.player.capability.sync.CasterPacket;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.caster.capability.sync.CasterPacket;
 import fr.emmuliette.rune.mod.spells.capability.sync.SpellPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;

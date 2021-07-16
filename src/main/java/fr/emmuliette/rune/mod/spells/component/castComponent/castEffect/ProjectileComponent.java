@@ -1,10 +1,12 @@
-package fr.emmuliette.rune.mod.spells.component.castComponent;
+package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
 import com.google.common.base.Function;
 
 import fr.emmuliette.rune.exception.DuplicatePropertyException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
@@ -19,7 +21,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
-public class ProjectileComponent extends AbstractCastComponent implements TargetAir {
+public class ProjectileComponent extends AbstractCastEffectComponent implements TargetAir {
 	public ProjectileComponent() throws RunePropertiesException {
 		super();
 	}
@@ -36,7 +38,7 @@ public class ProjectileComponent extends AbstractCastComponent implements Target
 			@Override
 			protected void onHitEntity(EntityRayTraceResult entity) {
 				if (entity.getEntity() instanceof LivingEntity) {
-					applyChildOnEntity((LivingEntity) entity.getEntity(), context);
+					applyOnTarget((LivingEntity) entity.getEntity(), context);
 					this.remove();
 				}
 			}
@@ -47,7 +49,7 @@ public class ProjectileComponent extends AbstractCastComponent implements Target
 				if (block == null) {
 					return;
 				}
-				applyChildOnBlock(this.level, block.getBlockPos(), context);
+				applyOnPosition(this.level, block.getBlockPos(), context);
 				this.remove();
 			}
 		};

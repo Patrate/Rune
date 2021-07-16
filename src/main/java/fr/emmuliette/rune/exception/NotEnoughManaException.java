@@ -1,6 +1,6 @@
 package fr.emmuliette.rune.exception;
 
-import fr.emmuliette.rune.mod.player.capability.ICaster;
+import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

@@ -21,8 +21,8 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.entity.Entity;
 
 import fr.emmuliette.rune.mod.RuneItemGroup;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.items.SpellItem;
-import fr.emmuliette.rune.mod.player.capability.CasterCapability;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import fr.emmuliette.rune.setup.Registration;
 

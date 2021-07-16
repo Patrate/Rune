@@ -7,8 +7,10 @@ import java.util.List;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.CastModContainerComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -18,10 +20,10 @@ import net.minecraft.world.World;
 
 public class Spell {
 	private String name;
-	private AbstractCastComponent startingComponent;
+	private AbstractCastComponent<?> startingComponent;
 	
 	
-	public Spell(String name, AbstractCastComponent startingComponent) {
+	public Spell(String name, AbstractCastComponent<?> startingComponent) {
 		this.name = name;
 		this.startingComponent = startingComponent;
 	}
@@ -56,6 +58,65 @@ public class Spell {
 	}
 
 	public static Spell buildSpell(String name, List<RuneItem> runeList) throws RunePropertiesException {
+		// TODO allow multiple castMod
+		List<AbstractCastModComponent> castMods = new ArrayList<AbstractCastModComponent>();
+		AbstractCastEffectComponent castComponent = null;
+		AbstractCastComponent<?> start = null;
+		List<AbstractEffectComponent> effects = new ArrayList<AbstractEffectComponent>();
+		
+		AbstractSpellComponent current;
+		int step = 0;
+		for(int i = 0; i < runeList.size(); i++) {
+			current = runeList.get(i).getSpellComponent();
+			switch(step) {
+			case 0:
+				if (current instanceof AbstractCastModComponent) {
+					castMods.add((AbstractCastModComponent) current);
+					break;
+				} else
+					step ++;
+			case 1:
+				if (!(current instanceof AbstractCastEffectComponent)) {
+					return null;
+				}
+				castComponent = (AbstractCastEffectComponent) current;
+				step++;
+				break;
+			case 2:
+				if (!(current instanceof AbstractEffectComponent)) {
+					return null;
+				}
+				effects.add((AbstractEffectComponent) current);
+				break;
+			default:
+				System.out.println("UNRECOGNIZED STEP");
+				return null;
+			}
+		}
+		if(castMods.isEmpty()) {
+			start = castComponent;
+		} else {
+			if(castMods.size() == 1) {
+				start = castMods.get(0); 
+				start.addChildren(castComponent);
+			} else {
+				start = new CastModContainerComponent();
+				start.addChildren(castComponent);
+				for(AbstractCastModComponent mod:castMods) {
+					start.addChildren(mod);
+				}
+			}
+		}
+		for(AbstractEffectComponent effect:effects) {
+			castComponent.addChildren(effect);
+		}
+		return new Spell(name, start);
+		
+		
+		
+		
+		
+		/*
 		AbstractSpellComponent current = null;
 		List<AbstractSpellComponent> previous = new ArrayList<AbstractSpellComponent>();
 		for (int i = runeList.size() - 1; i > 0; i--) {
@@ -81,11 +142,45 @@ public class Spell {
 			}
 		}
 
-		AbstractCastComponent castComponent = (AbstractCastComponent) runeList.get(0).getSpellComponent();
+		AbstractCastComponent<?> castComponent = (AbstractCastComponent<?>) runeList.get(0).getSpellComponent();
 		for(AbstractSpellComponent component:previous) {
 			castComponent.addChildren((AbstractEffectComponent) component);
 		}
 		return new Spell(name, castComponent);
+		*/
+	}
+	
+	public static boolean parseSpell(List<RuneItem> runeList) {
+		if(runeList.size() < 2) {
+			return false;
+		}
+		Class<? extends AbstractSpellComponent> current;
+		int step = 0;
+		for(int i = 0; i < runeList.size(); i++) {
+			current = runeList.get(i).getComponentClass();
+			switch(step) {
+			case 0:
+				if (AbstractCastModComponent.class.isAssignableFrom(current)) {
+					break;
+				} else
+					step ++;
+			case 1:
+				if (!AbstractCastEffectComponent.class.isAssignableFrom(current)) {
+					return false;
+				}
+				step++;
+				break;
+			case 2:
+				if (!AbstractEffectComponent.class.isAssignableFrom(current)) {
+					return false;
+				}
+				break;
+			default:
+				System.out.println("UNRECOGNIZED STEP");
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	
@@ -105,7 +200,7 @@ public class Spell {
 	public static Spell fromNBT(CompoundNBT data) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		String name = data.getString(NBT_START);
 		CompoundNBT startNBT = data.getCompound(NBT_START);
-		AbstractCastComponent startingComponent = (AbstractCastComponent) AbstractSpellComponent.fromNBT(startNBT);
+		AbstractCastComponent<?> startingComponent = (AbstractCastComponent<?>) AbstractSpellComponent.fromNBT(startNBT);
 		Spell retour = new Spell(name, startingComponent);
 		return retour;
 	}

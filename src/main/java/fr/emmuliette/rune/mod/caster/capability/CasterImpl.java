@@ -1,8 +1,8 @@
-package fr.emmuliette.rune.mod.player.capability;
+package fr.emmuliette.rune.mod.caster.capability;
 
 import fr.emmuliette.rune.mod.SyncHandler;
-import fr.emmuliette.rune.mod.player.capability.sync.CasterPacket;
-import fr.emmuliette.rune.mod.player.grimoire.Grimoire;
+import fr.emmuliette.rune.mod.caster.capability.sync.CasterPacket;
+import fr.emmuliette.rune.mod.caster.grimoire.Grimoire;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

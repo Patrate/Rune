@@ -5,6 +5,11 @@ import net.minecraft.nbt.IntNBT;
 
 public class PossibleInt extends PossibleValues<Integer>{
 	private int min, max, step;
+	
+	public PossibleInt() {
+		this(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+	}
+	
 	public PossibleInt(Integer defaultValue, int min, int max, int step) {
 		super(defaultValue);
 		this.min = min;

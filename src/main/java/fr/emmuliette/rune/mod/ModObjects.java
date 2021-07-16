@@ -11,7 +11,8 @@ import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.RuneModItem;
 import fr.emmuliette.rune.mod.items.AdvancedModItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
-import fr.emmuliette.rune.mod.spells.component.castComponent.*;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.*;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.*;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -25,6 +26,9 @@ public enum ModObjects {
 	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_GROUP, ProjectileComponent.class)),
 	TOUCH_RUNE(new RuneModItem("touch_rune", RuneMain.RUNE_GROUP, TouchComponent.class)),
 	SELF_RUNE(new RuneModItem("self_rune", RuneMain.RUNE_GROUP, SelfComponent.class)),
+
+	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_GROUP, ChargingModComponent.class)),
+	MANA_TANK_RUNE(new RuneModItem("mana_tank_rune", RuneMain.RUNE_GROUP, ManaTankModComponent.class)),
 	
 	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_GROUP, FireComponent.class)),
 	DAMAGE_RUNE(new RuneModItem("damage_rune", RuneMain.RUNE_GROUP, DamageComponent.class)),

@@ -8,17 +8,15 @@ import fr.emmuliette.rune.RandomNameUtils;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
-import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BookItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.item.Items;
 import net.minecraft.world.World;
 
 public class SpellRecipe extends SpecialRecipe {
@@ -96,7 +94,7 @@ public class SpellRecipe extends SpecialRecipe {
 		}
 
 		try {
-			if((hasPaper ^ hasBook ^ hasSocket) && validateComponents(list)) {
+			if((hasPaper ^ hasBook ^ hasSocket) && Spell.parseSpell(list)) {
 				Spell spell = Spell.buildSpell(RandomNameUtils.getName(), list);
 				if(hasPaper)
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
@@ -110,21 +108,6 @@ public class SpellRecipe extends SpecialRecipe {
 			e.printStackTrace();
 			return ItemStack.EMPTY;
 		}
-	}
-
-	private boolean validateComponents(List<RuneItem> list) {
-		if (list.size() < 2) {
-			return false;
-		}
-		if (!AbstractCastComponent.class.isAssignableFrom(list.get(0).getComponentClass())) {
-			return false;
-		}
-		for (int i = 1; i < list.size(); i++) {
-			if (!AbstractEffectComponent.class.isAssignableFrom(list.get(i).getComponentClass())) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	public boolean canCraftInDimensions(int gridWidth, int gridHeight) {

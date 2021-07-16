@@ -1,8 +1,10 @@
 {
 	"item.rune.blank_rune": "Blank Rune",
 	"item.rune.self_rune": "Self Rune",
-	"item.rune.touch_rune": "TOuch Rune",
+	"item.rune.touch_rune": "Touch Rune",
 	"item.rune.projectile_rune": "Projectile Rune",
+	"item.rune.charge_rune": "Charge Rune",
+	"item.rune.mana_tank_rune": "Mana Tank Rune",
 	"item.rune.fire_rune": "Fire Rune",
 	"item.rune.damage_rune": "Damage Rune",
 	"item.rune.teleport_rune": "Teleportation Rune",

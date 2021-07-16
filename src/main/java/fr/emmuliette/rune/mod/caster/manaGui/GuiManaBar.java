@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.player.manaGui;
+package fr.emmuliette.rune.mod.caster.manaGui;
 
 import java.util.Random;
 
@@ -8,8 +8,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.player.capability.ICaster;
-import fr.emmuliette.rune.mod.player.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import net.minecraft.client.Minecraft;
@@ -91,7 +91,7 @@ public class GuiManaBar {
 		ISpell cap = player.getItemInHand(Hand.MAIN_HAND).getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
 		if (cap == null)
 			cap = player.getItemInHand(Hand.OFF_HAND).getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if (cap != null)
+		if (cap != null && cap.getSpell() != null)
 			manaCost = MathHelper.ceil(cap.getSpell().getManaCost());
 
 		int manaRows = MathHelper.ceil((manaMax + bonusMana) / 2.0F / 10.0F);

@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.player.grimoire;
+package fr.emmuliette.rune.mod.caster.grimoire;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;

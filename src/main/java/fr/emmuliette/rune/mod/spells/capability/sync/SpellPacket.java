@@ -4,8 +4,8 @@ import java.util.function.Supplier;
 
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.player.capability.ICaster;
-import fr.emmuliette.rune.mod.player.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
