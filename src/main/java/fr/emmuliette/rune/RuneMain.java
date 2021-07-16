@@ -37,7 +37,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class RuneMain {
 	
 	public static final String MOD_ID = "rune";
-	
+	public static final String BASE_URL = "http://runemod.fr/";
 	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("rune");
 	
 	public static final String VERSION = "0.0.1";

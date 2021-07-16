@@ -43,7 +43,7 @@ public final class Configuration {
 		public static final ForgeConfigSpec SPEC;
 
 		public static boolean autoUpdate;
-		public static boolean renderShortGrass;
+		public static boolean collectSpellData;
 		public static Set<String> inactiveItem;
 
 		static {
@@ -54,17 +54,22 @@ public final class Configuration {
 
 		public static void bake() {
 			autoUpdate = INSTANCE.autoUpdate.get();
+			collectSpellData = INSTANCE.collectSpellData.get();
 			inactiveItem = new HashSet<String>(INSTANCE.inactiveItemConfig.get());
 		}
 
 		static class ConfigImpl {
 			final BooleanValue autoUpdate;
+			final BooleanValue collectSpellData;
 			final ConfigValue<List<String>> inactiveItemConfig;
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			private ConfigImpl(final ForgeConfigSpec.Builder builder) {
 				autoUpdate = builder.comment("Check for mod update on launch [false/true | default true]")
 						.translation(RuneMain.MOD_ID + ".config.autoUpdate").define("autoUpdate", true);
+				
+				collectSpellData = builder.comment("Check for mod update on launch [false/true | default true]")
+						.translation(RuneMain.MOD_ID + ".config.collectSpellData").define("collectSpellData", false);
 
 				inactiveItemConfig = ((ConfigValue) builder.comment("List of inactive items")
 						.translation(RuneMain.MOD_ID + ".config.inactiveItemConfig").defineList("inactiveItemConfig",

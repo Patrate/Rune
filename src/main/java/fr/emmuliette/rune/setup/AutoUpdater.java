@@ -14,8 +14,8 @@ import java.nio.channels.ReadableByteChannel;
 import fr.emmuliette.rune.RuneMain;
 
 public class AutoUpdater {
-	private static final String VERSION_URL = "http://runemod.emmathie.fr/version";
-	private static final String UPDATE_URL = "http://runemod.emmathie.fr/update";
+	private static final String VERSION_URL = RuneMain.BASE_URL + "version";
+	private static final String UPDATE_URL = RuneMain.BASE_URL + "update";
 
 	public static void update() throws IOException {
 		if (!checkVersion()) {

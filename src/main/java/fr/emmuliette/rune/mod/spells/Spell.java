@@ -60,7 +60,6 @@ public class Spell {
 	}
 
 	public static Spell buildSpell(String name, List<RuneItem> runeList) throws RunePropertiesException {
-		// TODO allow multiple castMod
 		List<AbstractCastModComponent> castMods = new ArrayList<AbstractCastModComponent>();
 		AbstractCastEffectComponent castComponent = null;
 		AbstractCastComponent<?> start = null;
@@ -205,5 +204,19 @@ public class Spell {
 		AbstractCastComponent<?> startingComponent = (AbstractCastComponent<?>) AbstractSpellComponent.fromNBT(startNBT);
 		Spell retour = new Spell(name, startingComponent);
 		return retour;
+	}
+
+	private Integer hashCode = null;
+	
+	@Override
+	public int hashCode() {
+		if(hashCode != null) {
+			return hashCode;
+		}
+		final int prime = 31;
+		int result = 1;
+		String nbtString = toNBT().getAsString();
+		hashCode = prime * result + ((nbtString == null) ? 0 : nbtString.hashCode());
+		return hashCode;
 	}
 }
