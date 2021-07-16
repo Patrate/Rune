@@ -30,7 +30,7 @@ public class ChargingModComponent extends AbstractCastModComponent {
 	
 	@Override
 	protected Callback modInternalCast(SpellContext context) {
-		return new Callback(this, context, this.getProperty(KEY_CHARGE_TIME, new Integer(0)).getValue()) {
+		return new Callback(this, context, 100 * this.getProperty(KEY_CHARGE_TIME, new Integer(0)).getValue()) {
 			private float oldSpeed = 0;
 
 			@Override
@@ -99,7 +99,7 @@ public class ChargingModComponent extends AbstractCastModComponent {
 			try {
 				DEFAULT_PROPERTIES = new SpellProperties();
 				DEFAULT_PROPERTIES.addNewProperty(Grade.WOOD, new Property<Integer>(KEY_CHARGE_TIME,
-						new PossibleInt(100, 100, 600, 10), new Function<Integer, Float>() {
+						new PossibleInt(1, 1, 6, 1), new Function<Integer, Float>() {
 							@Override
 							public Float apply(Integer val) {
 								return 0f;
@@ -116,10 +116,12 @@ public class ChargingModComponent extends AbstractCastModComponent {
 		return DEFAULT_PROPERTIES;
 	}
 	
+	@Override
 	public float applyManaMod(float in) {
 		int chargeTime = this.getProperty(KEY_CHARGE_TIME, new Integer(0)).getValue();
-		return in - (chargeTime/100);
+		return in - chargeTime;
 	}
+	@Override
 	public int applyCDMod(int in) {
 		return in;
 	}

@@ -15,9 +15,6 @@ import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -205,49 +202,25 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 	}
 
 	@Override
-	public boolean canCast(SpellContext context) {
+	public Boolean canCast(SpellContext context) {
 		try {
 			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-			if (!checkCooldown(cap, context))
-				return false;
+			Boolean checkCd = checkCooldown(cap, context); 
+			if (checkCd == null || !checkCd)
+				return checkCd;
 			
-			if (!checkManaCost(cap, context))
-				return false;
+			Boolean checkManaCost = checkManaCost(cap, context); 
+			if (checkManaCost == null || !checkManaCost)
+				return checkManaCost;
 			
-			if (!checkChildrenCastType(context))
-				return false;
+			Boolean checkChildrens = checkChildrenCastType(context); 
+			if (checkChildrens == null || !checkChildrens)
+				return checkChildrens;
 			
 			return true;
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
-		}
-		return false;
-	}
-
-	protected boolean checkCooldown(ICaster cap, SpellContext context) {
-		return (!cap.isCooldown());
-	}
-
-	protected boolean checkManaCost(ICaster cap, SpellContext context) {
-		return (this.getManaCost() <= cap.getMana());
-	}
-
-	protected boolean checkChildrenCastType(SpellContext context) {
-		// at least one valid target necessary
-		for (AbstractCastEffectComponent child : getChildrens()) {
-			// target entity
-			if (context.getTargetType() == SpellContext.TargetType.ENTITY && child instanceof TargetLivingEntity) {
-				return true;
-			}
-			// target block
-			if (context.getTargetType() == SpellContext.TargetType.BLOCK && child instanceof TargetBlock) {
-				return true;
-			}
-			// target air
-			if (context.getTargetType() == SpellContext.TargetType.AIR && child instanceof TargetAir) {
-				return true;
-			}
 		}
 		return false;
 	}
@@ -272,11 +245,25 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 		return (children instanceof AbstractCastEffectComponent);
 	}
 
-	public float applyManaMod(float in) {
-		return in;
+	
+	@Override
+	public float getManaCost() {
+		float retour = super.getManaCost();
+		if(this.isStartingComponent()) {
+			retour = applyManaMod(retour);
+		}
+		return Math.max(0f, retour);
 	}
+	
+	@Override
+	public int getCooldown() {
+		int retour = super.getCooldown();
+		if(this.isStartingComponent())
+			retour = this.applyCDMod(retour);
+		return Math.max(0, retour);
+	}
+	
+	public abstract float applyManaMod(float in);
 
-	public int applyCDMod(int in) {
-		return in;
-	}
+	public abstract int applyCDMod(int in);
 }

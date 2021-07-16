@@ -15,6 +15,8 @@ import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 
 public class ManaTankModComponent extends AbstractCastModComponent {
 
@@ -29,7 +31,7 @@ public class ManaTankModComponent extends AbstractCastModComponent {
 			@Override
 			public boolean _callBack() {
 				int currentMana = (int) Math.floor(((ManaTankModComponent)this.getParent()).getCurrentMana());
-				int cost = (int) Math.ceil(getManaCost());
+				int cost = (int) Math.ceil(getBaseCost());
 				if(currentMana >= cost) {
 					setCurrentMana(currentMana - cost);
 					return true;
@@ -37,9 +39,14 @@ public class ManaTankModComponent extends AbstractCastModComponent {
 				try {
 					ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 							.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-					int m = (int)Math.min(cap.getMana(), cost - currentMana);
-					cap.delMana((float) m);
-					setCurrentMana(currentMana + m);
+					int remaining = (int) Math.ceil(getManaCost());
+					int manaSaved = (int)Math.min(cap.getMana(), remaining);
+					if(manaSaved > 0) {
+						context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
+								context.getCaster().getZ(), SoundEvents.BOTTLE_FILL, SoundCategory.AMBIENT, 1.0f, 0.4f);
+						cap.delMana((float) manaSaved);
+						setCurrentMana(currentMana + manaSaved);
+					}
 				} catch (CasterCapabilityException | NotEnoughManaException e) {
 					System.err.println("CAN'T COLLECT MANA");
 					e.printStackTrace();
@@ -101,8 +108,26 @@ public class ManaTankModComponent extends AbstractCastModComponent {
 	}
 	
 	@Override
-	protected boolean checkManaCost(ICaster cap, SpellContext context) {
-		return true;//(this.getManaCost() <= cap.getMana());
+	protected Boolean checkManaCost(ICaster cap, SpellContext context) {
+		if(this.getManaCost() <= cap.getMana()) {
+			if(cap.getMana() >= 1) {
+				return null;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public float getManaCost() {
+		float baseCost = super.getManaCost();
+		int currentMana = (int) Math.floor(getCurrentMana());
+		return Math.max(0, baseCost - currentMana);
+	}
+	
+	private float getBaseCost() {
+		return super.getManaCost();
 	}
 	
 	@Override
@@ -114,5 +139,10 @@ public class ManaTankModComponent extends AbstractCastModComponent {
 	public float applyManaMod(float in) {
 		int currentMana = (int) Math.floor(getCurrentMana());
 		return Math.max(0, in - currentMana);
+	}
+
+	@Override
+	public int applyCDMod(int in) {
+		return in;
 	}
 }

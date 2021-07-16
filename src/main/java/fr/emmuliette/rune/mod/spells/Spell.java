@@ -26,6 +26,7 @@ public class Spell {
 	public Spell(String name, AbstractCastComponent<?> startingComponent) {
 		this.name = name;
 		this.startingComponent = startingComponent;
+		startingComponent.setStartingComponent(true);
 	}
 
 	public String getName() {
@@ -36,22 +37,23 @@ public class Spell {
 		return startingComponent.getManaCost();
 	}
 
-	public boolean castSpecial(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	public Boolean castSpecial(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
 		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
 		return startingComponent.specialCast(context);
 	}
 	
-	public boolean castable(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	public Boolean castable(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
 		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
 		return startingComponent.canCast(context);
 	}
 	
-	public boolean cast(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	public Boolean cast(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
 		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
-		if (startingComponent.canCast(context)) {
+		Boolean canCast = startingComponent.canCast(context);
+		if (canCast == null || canCast == true) {
 			return startingComponent.cast(context);
 		}
 		return false;

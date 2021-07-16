@@ -10,9 +10,6 @@ import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 
 public abstract class AbstractCastEffectComponent extends AbstractCastComponent<AbstractEffectComponent> {
@@ -24,30 +21,23 @@ public abstract class AbstractCastEffectComponent extends AbstractCastComponent<
 	}
 
 	@Override
-	public boolean canCast(SpellContext context) {
+	public Boolean canCast(SpellContext context) {
 		try {
 			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-
-			if (cap.isCooldown()) {
-				return false;
-			}
-
-			if (this.getManaCost() > cap.getMana()) {
-				return false;
-			}
-			// target entity
-			if (context.getTargetType() == SpellContext.TargetType.ENTITY && this instanceof TargetLivingEntity) {
-				return true;
-			}
-			// target block
-			if (context.getTargetType() == SpellContext.TargetType.BLOCK && this instanceof TargetBlock) {
-				return true;
-			}
-			// target air
-			if (context.getTargetType() == SpellContext.TargetType.AIR && this instanceof TargetAir) {
-				return true;
-			}
+			Boolean checkCd = checkCooldown(cap, context); 
+			if (checkCd == null || !checkCd)
+				return checkCd;
+			
+			Boolean checkManaCost = checkManaCost(cap, context); 
+			if (checkManaCost == null || !checkManaCost)
+				return checkManaCost;
+			
+			Boolean checkCastType = chechCastType(context); 
+			if (checkCastType == null || !checkCastType)
+				return checkCastType;
+			
+			return true;
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
 		}

@@ -14,9 +14,6 @@ import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent.Callback;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
-import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.properties.SpellProperties;
 import net.minecraftforge.fml.common.Mod;
 
@@ -28,35 +25,28 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 	public CastModContainerComponent() throws RunePropertiesException {
 		super();
 	}
-
+	
 	@Override
-	public boolean canCast(SpellContext context) {
+	public Boolean canCast(SpellContext context) {
 		try {
 			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-
-			if (cap.isCooldown()) {
+			Boolean checkCd = checkCooldown(cap, context); 
+			if (checkCd == null || !checkCd)
+				return checkCd;
+			
+			Boolean checkManaCost = checkManaCost(cap, context); 
+			if (checkManaCost == null || !checkManaCost)
+				return checkCd;
+			
+			if (!checkManaCost(cap, context))
 				return false;
-			}
-
-			if (this.getManaCost() > cap.getMana()) {
-				return false;
-			}
-			// at least one valid target necessary
-			for (AbstractCastComponent<?> child : getChildrens()) {
-				// target entity
-				if (context.getTargetType() == SpellContext.TargetType.ENTITY && child instanceof TargetLivingEntity) {
-					return true;
-				}
-				// target block
-				if (context.getTargetType() == SpellContext.TargetType.BLOCK && child instanceof TargetBlock) {
-					return true;
-				}
-				// target air
-				if (context.getTargetType() == SpellContext.TargetType.AIR && child instanceof TargetAir) {
-					return true;
-				}
-			}
+			
+			Boolean checkChildrens = checkChildrenCastType(context); 
+			if (checkChildrens == null || !checkChildrens)
+				return checkChildrens;
+			
+			return true;
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
 		}

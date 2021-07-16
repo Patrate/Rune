@@ -46,7 +46,7 @@ public class SpellItem extends Item {
 				break;
 			}
 			ItemStack itemStack = new ItemStack(spellitem);
-			//itemStack.setHoverName(new StringTextComponent(spell.getName()));
+			// itemStack.setHoverName(new StringTextComponent(spell.getName()));
 			ISpell ispell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
 					.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
 			ispell.setSpell(spell);
@@ -141,84 +141,87 @@ public class SpellItem extends Item {
 	private Result castSpell(@Nonnull ItemStack itemStack, LivingEntity target, World world,
 			@Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
 		final Result retour = new Result(itemStack);
-		if (!caster.level.isClientSide) {
-			try {
-				ISpell cap = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
-						.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
-				Spell spell = cap.getSpell();
-				if (spell != null) {
-					if (spell.cast(itemStack, target, world, caster, itemUseContext)) {
-						try {
-							retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
-						} catch (NotAnItemException e) {
-							e.printStackTrace();
-						}
-						if (retour.consume) {
-							retour.resultType = ActionResultType.CONSUME;
-							retour.result = ActionResult.consume(itemStack);
-						} else {
-							retour.resultType = ActionResultType.SUCCESS;
-							retour.result = ActionResult.success(itemStack);
-						}
-					} else {
-						retour.resultType = ActionResultType.PASS;
-					}
-				}
-			} catch (SpellCapabilityException e) {
-				e.printStackTrace();
+		try {
+			ISpell cap = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
+					.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
+			Spell spell = cap.getSpell();
+			if (spell == null) {
+				return retour;
 			}
-
-		}
-		if (caster.level.isClientSide) {
-			try {
-				ISpell cap = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
-						.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
-				Spell spell = cap.getSpell();
-				if (spell != null) {
-					if (spell.castable(itemStack, target, world, caster, itemUseContext)) {
-						try {
-							retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
-						} catch (NotAnItemException e) {
-							e.printStackTrace();
-						}
-						if (retour.consume) {
-							retour.resultType = ActionResultType.CONSUME;
-							retour.result = ActionResult.consume(itemStack);
-						} else {
-							retour.resultType = ActionResultType.SUCCESS;
-							retour.result = ActionResult.success(itemStack);
-						}
-					} else {
-						retour.resultType = ActionResultType.PASS;
+			if (!caster.level.isClientSide) {
+				Boolean cont = spell.cast(itemStack, target, world, caster, itemUseContext); 
+				if (cont == null) {
+					retour.resultType = ActionResultType.SUCCESS;
+					retour.result = ActionResult.success(itemStack);
+				} else if (cont) {
+					try {
+						retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
+					} catch (NotAnItemException e) {
+						e.printStackTrace();
 					}
+					if (retour.consume) {
+						retour.resultType = ActionResultType.CONSUME;
+						retour.result = ActionResult.consume(itemStack);
+					} else {
+						retour.resultType = ActionResultType.SUCCESS;
+						retour.result = ActionResult.success(itemStack);
+					}
+				} else {
+					retour.resultType = ActionResultType.PASS;
 				}
-			} catch (SpellCapabilityException e) {
-				e.printStackTrace();
 			}
+			if (caster.level.isClientSide) {
+				Boolean cont = spell.castable(itemStack, target, world, caster, itemUseContext);
+				if (cont == null) {
+					retour.resultType = ActionResultType.SUCCESS;
+					retour.result = ActionResult.success(itemStack);
+				} else if (cont) {
+					try {
+						retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
+					} catch (NotAnItemException e) {
+						e.printStackTrace();
+					}
+					if (retour.consume) {
+						retour.resultType = ActionResultType.CONSUME;
+						retour.result = ActionResult.consume(itemStack);
+					} else {
+						retour.resultType = ActionResultType.SUCCESS;
+						retour.result = ActionResult.success(itemStack);
+					}
+				} else {
+					retour.resultType = ActionResultType.PASS;
+				}
+			}
+		} catch (SpellCapabilityException e) {
+			e.printStackTrace();
 		}
 		if (retour.consume) {
 			itemStack.shrink(1);
-			/*if (itemStack.isEmpty()) {
-				caster.setItemInHand(hand, ItemStack.EMPTY);
-			}*/
+			/*
+			 * if (itemStack.isEmpty()) { caster.setItemInHand(hand, ItemStack.EMPTY); }
+			 */
 		}
 		return retour;
 	}
-	
+
 	@Override
-    public CompoundNBT getShareTag(ItemStack stack) {
+	public CompoundNBT getShareTag(ItemStack stack) {
 		super.getShareTag(stack);
-        CompoundNBT nbt = stack.getOrCreateTag();
-        //ISpell cap = stack.getCapability(SpellCapability.SPELL_CAPABILITY).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
-        return nbt;
-    }
+		CompoundNBT nbt = stack.getOrCreateTag();
+		// ISpell cap =
+		// stack.getCapability(SpellCapability.SPELL_CAPABILITY).orElseThrow(() -> new
+		// IllegalArgumentException("LazyOptional must not be empty!"));
+		return nbt;
+	}
 
-    @Override
-    public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
-        super.readShareTag(stack, nbt);
+	@Override
+	public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
+		super.readShareTag(stack, nbt);
 
-        /*if (nbt != null) {
-            ISpell cap = stack.getCapability(SpellCapability.SPELL_CAPABILITY, null).orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
-        }*/
-    }
+		/*
+		 * if (nbt != null) { ISpell cap =
+		 * stack.getCapability(SpellCapability.SPELL_CAPABILITY, null).orElseThrow(() ->
+		 * new IllegalArgumentException("LazyOptional must not be empty!")); }
+		 */
+	}
 }
