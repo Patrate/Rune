@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.caster.manaGui;
+package fr.emmuliette.rune.mod.gui.manaBar;
 
 import java.util.Random;
 
