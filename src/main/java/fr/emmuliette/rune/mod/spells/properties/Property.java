@@ -66,13 +66,14 @@ public final class Property<T> {
 		return currentValue == getDefault();
 	}
 	
+	public INBT getValueAsNBT() {
+		return values.asINBT(this.getValue());
+	}
+	
 	public INBT toNBT() {
-		if(isDefaultValue()) {
-			return null;
-		}
 		CompoundNBT retour = new CompoundNBT();
 		retour.putString(NAME, this.getName());
-		retour.put(VALUE, values.asINBT(this.getValue()));
+		retour.put(VALUE, getValueAsNBT());
 		return retour;
 	}
 }

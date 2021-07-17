@@ -6,7 +6,6 @@ import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
-import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
@@ -15,8 +14,6 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -159,7 +156,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return totalCD;
 	}
 
-	@Override
+	/*@Override
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = super.toNBT();
 		ListNBT childrenNBT = new ListNBT();
@@ -168,7 +165,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		}
 		retour.put(Spell.NBT_CHILDREN, childrenNBT);
 		return retour;
-	}
+	}*/
 
 	/*public static AbstractCastComponent<?> fromNBT(AbstractSpellComponent component, CompoundNBT data)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,

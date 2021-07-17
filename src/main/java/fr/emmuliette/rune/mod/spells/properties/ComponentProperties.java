@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import fr.emmuliette.rune.RuneMain;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -81,6 +82,8 @@ public abstract class ComponentProperties {
 				INBT propNBT = property.toNBT();
 				if (propNBT != null) {
 					prop.add(propNBT);
+				} else {
+					RuneMain.LOGGER.debug("Property is null and shouldn't be");
 				}
 			}
 			retour.put(grade.getKey(), prop);
