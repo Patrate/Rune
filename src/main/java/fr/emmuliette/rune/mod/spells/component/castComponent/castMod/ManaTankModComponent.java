@@ -32,7 +32,7 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 
 			@Override
 			public boolean _callBack() {
-				int currentMana = (int) Math.floor(((ManaTankModComponent) this.getParent()).getCurrentMana());
+				int currentMana = ((ManaTankModComponent) this.getParent()).getCurrentMana();
 				int cost = (int) Math.ceil(getBaseCost());
 				if (currentMana >= cost) {
 					setCurrentMana(currentMana - cost);
@@ -96,12 +96,12 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 		}
 	};
 
-	private float getCurrentMana() {
-		return (float) this.getPropertyValue(KEY_CURRENT_MANA, 0);
+	private int getCurrentMana() {
+		return this.getPropertyValue(KEY_CURRENT_MANA, 8);
 	}
 
 	private void setCurrentMana(int currentMana) {
-		getProperties().getProperty(KEY_CURRENT_MANA).setValue(currentMana);
+		setPropertyValue(KEY_CURRENT_MANA, currentMana);
 	}
 
 	@Override
@@ -118,13 +118,17 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 
 	@Override
 	public float getManaCost() {
-		float baseCost = super.getManaCost();
-		int currentMana = (int) Math.floor(getCurrentMana());
+		float baseCost = getBaseCost();
+		int currentMana = getCurrentMana();
 		return Math.max(0, baseCost - currentMana);
 	}
 
 	private float getBaseCost() {
-		return super.getManaCost();
+		float totalCost = 0f;
+		for (AbstractSpellComponent sc : getChildrens()) {
+			totalCost += sc.getManaCost();
+		}
+		return totalCost;
 	}
 
 	@Override
@@ -134,8 +138,7 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 
 	@Override
 	public float applyManaMod(float in) {
-		int currentMana = (int) Math.floor(getCurrentMana());
-		return Math.max(0, in - currentMana);
+		return in;
 	}
 
 	@Override

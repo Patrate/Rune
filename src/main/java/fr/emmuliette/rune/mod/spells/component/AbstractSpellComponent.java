@@ -45,6 +45,10 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 	protected ComponentProperties getProperties() {
 		return properties;
 	}
+	
+	public void syncProperties(AbstractSpellComponent other) {
+		this.properties.sync(other.properties);
+	}
 
 	protected Property<?> getProperty(String key) throws UnknownPropertyException {
 		if (properties.getProperty(key) != null) {
@@ -61,6 +65,14 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 		} else {
 			RuneMain.LOGGER.error("unknown property " + key + " in component " + this.getClass().getSimpleName());
 			return defVal;
+		}
+	}
+
+	protected <T> void setPropertyValue(String key, T newVal) {
+		if (properties.getProperty(key) != null) {
+			properties.getProperty(key).setValue(newVal);
+		} else {
+			RuneMain.LOGGER.error("unknown property " + key + " in component " + this.getClass().getSimpleName());
 		}
 	}
 

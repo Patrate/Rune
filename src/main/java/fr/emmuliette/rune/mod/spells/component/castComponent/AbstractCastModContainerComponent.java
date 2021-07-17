@@ -130,7 +130,6 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 	@Override
 	public boolean addNextPart(AbstractSpellComponent other) {
 		boolean result = super.addNextPart(other);
-		RuneMain.LOGGER.debug("Adding next part " + other.getClass().getSimpleName() + " to container: " + result);
 		return result;
 	}
 }

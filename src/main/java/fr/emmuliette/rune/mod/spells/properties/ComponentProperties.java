@@ -3,7 +3,9 @@ package fr.emmuliette.rune.mod.spells.properties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -11,7 +13,7 @@ import net.minecraft.nbt.ListNBT;
 
 public abstract class ComponentProperties {
 	private HashMap<Grade, Map<String, Property<?>>> properties;
-	
+
 	public ComponentProperties() {
 		properties = new HashMap<Grade, Map<String, Property<?>>>();
 		for (Grade grade : Grade.values()) {
@@ -21,6 +23,12 @@ public abstract class ComponentProperties {
 	}
 
 	protected abstract void init();
+
+	public void sync(ComponentProperties other) {
+		for (String key : getKeys()) {
+			this.getProperty(key).setValue(other.getProperty(key).getValue());
+		}
+	}
 
 	public ComponentProperties addNewProperty(Grade key, Property<?> property) {
 		Map<String, Property<?>> gradeMap = properties.get(key);
@@ -56,7 +64,15 @@ public abstract class ComponentProperties {
 		}
 		return null;
 	}
-	
+
+	public Set<String> getKeys() {
+		Set<String> retour = new HashSet<String>();
+		for (Grade g : Grade.values()) {
+			retour.addAll(properties.get(g).keySet());
+		}
+		return retour;
+	}
+
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = new CompoundNBT();
 		for (Grade grade : Grade.values()) {

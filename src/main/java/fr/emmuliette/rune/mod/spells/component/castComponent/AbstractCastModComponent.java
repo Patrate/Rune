@@ -245,7 +245,6 @@ public abstract class AbstractCastModComponent extends AbstractCastModContainerC
 
 	@Override
 	public boolean addNextPart(AbstractSpellComponent other) {
-		RuneMain.LOGGER.debug("Adding " + other.getClass().getSimpleName() + " to " + this.getClass().getSimpleName());
 		if (other instanceof ICastMod || other instanceof ICast) {
 			this.addChildren(other);
 			return true;

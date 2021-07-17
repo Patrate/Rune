@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.build.SpellBuilder;
@@ -83,5 +84,18 @@ public class Spell {
 			components.add(AbstractSpellComponent.fromNBT(componentsNBT.getCompound(i)));
 		}
 		return SpellBuilder.buildSpell(name, components);
+	}
+	
+	public void sync(Spell other) {
+		if(this.components.size() != other.components.size()) {
+			// TODO throw BAD SYNC error
+			RuneMain.LOGGER.debug("SYNC ERROR HERE, DIFFERENT SIZES !");
+			return;
+		}
+		for(int i = 0; i < this.components.size(); i++) {
+			AbstractSpellComponent myComp = this.components.get(i);
+			AbstractSpellComponent otherComp = other.components.get(i);
+			myComp.syncProperties(otherComp);
+		}
 	}
 }

@@ -12,7 +12,7 @@ import net.minecraft.nbt.IntNBT;
 public class SpellImpl implements ISpell {
 	private Spell spell;
 	private int cooldown;
-	
+
 	@Override
 	public Spell getSpell() {
 		return this.spell;
@@ -60,7 +60,11 @@ public class SpellImpl implements ISpell {
 			// SPELL
 			if (cnbt.contains(SPELL_KEY)) {
 				try {
-					this.spell = Spell.fromNBT(cnbt.getCompound(SPELL_KEY));
+					if (this.spell == null) {
+						this.spell = Spell.fromNBT(cnbt.getCompound(SPELL_KEY));
+					} else {
+						updateFromNBT(cnbt);
+					}
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 						| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 						| SecurityException | RunePropertiesException e) {
@@ -73,6 +77,14 @@ public class SpellImpl implements ISpell {
 				this.cooldown = cnbt.getInt(COOLDOWN_KEY);
 			}
 		}
+	}
+
+	private void updateFromNBT(CompoundNBT nbt)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException, RunePropertiesException {
+		Spell spell = this.spell;
+		Spell other = Spell.fromNBT(nbt.getCompound(SPELL_KEY));
+		spell.sync(other);
 	}
 
 	@Override
@@ -89,8 +101,9 @@ public class SpellImpl implements ISpell {
 	@Override
 	public void sync() {
 		// TODO
-		/*if (owner instanceof ServerPlayerEntity) {
-			PlayerHandler.sendTo(new PlayerPacket(this.toNBT()), (ServerPlayerEntity) owner);
-		}*/
+		/*
+		 * if (owner instanceof ServerPlayerEntity) { PlayerHandler.sendTo(new
+		 * PlayerPacket(this.toNBT()), (ServerPlayerEntity) owner); }
+		 */
 	}
 }

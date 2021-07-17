@@ -3,6 +3,7 @@ package fr.emmuliette.rune.mod.items;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
@@ -149,7 +150,7 @@ public class SpellItem extends Item {
 				return retour;
 			}
 			if (!caster.level.isClientSide) {
-				Boolean cont = spell.cast(itemStack, target, world, caster, itemUseContext); 
+				Boolean cont = spell.cast(itemStack, target, world, caster, itemUseContext);
 				if (cont == null) {
 					retour.resultType = ActionResultType.SUCCESS;
 					retour.result = ActionResult.success(itemStack);
@@ -206,22 +207,22 @@ public class SpellItem extends Item {
 
 	@Override
 	public CompoundNBT getShareTag(ItemStack stack) {
-		super.getShareTag(stack);
-		CompoundNBT nbt = stack.getOrCreateTag();
-		// ISpell cap =
-		// stack.getCapability(SpellCapability.SPELL_CAPABILITY).orElseThrow(() -> new
-		// IllegalArgumentException("LazyOptional must not be empty!"));
-		return nbt;
+		ISpell cap = stack.getCapability(SpellCapability.SPELL_CAPABILITY, null)
+				.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+
+		return cap.toNBT();
 	}
 
 	@Override
 	public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
-		super.readShareTag(stack, nbt);
-
-		/*
-		 * if (nbt != null) { ISpell cap =
-		 * stack.getCapability(SpellCapability.SPELL_CAPABILITY, null).orElseThrow(() ->
-		 * new IllegalArgumentException("LazyOptional must not be empty!")); }
-		 */
+		RuneMain.LOGGER.debug("readShareTag !!! " + nbt.getAsString());
+		//super.readShareTag(stack, nbt);
+		
+		if (nbt != null) {
+			ISpell cap = stack.getCapability(SpellCapability.SPELL_CAPABILITY, null)
+					.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+			// cap.setLinkedUUID(nbt.getString("linkedUUID"));
+			cap.fromNBT(nbt);
+		}
 	}
 }
