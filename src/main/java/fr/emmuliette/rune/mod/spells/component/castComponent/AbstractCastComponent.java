@@ -1,7 +1,5 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent;
 
-import java.lang.reflect.InvocationTargetException;
-
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
@@ -18,7 +16,6 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivin
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,8 +24,9 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		implements ComponentContainer<T> {
 	public static final int DEFAULT_COOLDOWN = 20;
 
-	public AbstractCastComponent(PropertyFactory propFactory) throws RunePropertiesException {
-		super(propFactory);
+	public AbstractCastComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
+			throws RunePropertiesException {
+		super(propFactory, parent);
 	}
 
 	public boolean specialCast(SpellContext context) {
@@ -130,12 +128,14 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return result;
 	}
 
-	public void addChildren(AbstractSpellComponent newEffect) {
+	public boolean addChildren(AbstractSpellComponent newEffect) {
 		if (canAddChildren(newEffect)) {
 			addChildrenInternal(newEffect);
+			return true;
 		}
+		return false;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected void addChildrenInternal(AbstractSpellComponent newEffect) {
 		getChildrens().add((T) newEffect);
@@ -170,7 +170,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return retour;
 	}
 
-	public static AbstractCastComponent<?> fromNBT(AbstractSpellComponent component, CompoundNBT data)
+	/*public static AbstractCastComponent<?> fromNBT(AbstractSpellComponent component, CompoundNBT data)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
 		AbstractCastComponent<?> retour = (AbstractCastComponent<?>) component;
@@ -182,5 +182,10 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 			}
 		}
 		return retour;
+	}*/
+
+	@Override
+	public boolean addNextPart(AbstractSpellComponent other) {
+		return addChildren(other);
 	}
 }

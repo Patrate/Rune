@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,19 +14,27 @@ import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.component.build.ICastMod;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent.Callback;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class CastModContainerComponent extends AbstractCastComponent<AbstractCastComponent<?>> {
-	private List<AbstractCastModComponent> childrenCastMod;
-	private List<AbstractCastEffectComponent> childrenCast;
+public abstract class AbstractCastModContainerComponent extends AbstractCastComponent<AbstractCastComponent<?>>
+		implements ICastMod {
+	AbstractCastComponent<?> children;
+	/*
+	 * private List<AbstractCastModComponent> childrenCastMod; private
+	 * List<AbstractCastEffectComponent> childrenCast;
+	 */
 
-	public CastModContainerComponent() throws RunePropertiesException {
-		super(PropertyFactory.EMPTY_FACTORY);
-		childrenCastMod = new ArrayList<AbstractCastModComponent>();
-		childrenCast = new ArrayList<AbstractCastEffectComponent>();
+	public AbstractCastModContainerComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
+			throws RunePropertiesException {
+		super(propFactory, parent);
+		/*
+		 * childrenCastMod = new ArrayList<AbstractCastModComponent>(); childrenCast =
+		 * new ArrayList<AbstractCastEffectComponent>();
+		 */
 	}
 
 	@Override
@@ -57,49 +66,39 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 
 	@Override
 	public int getMaxSize() {
-		return 999;
+		return 1;
 	}
 
 	@Override
 	public int getSize() {
-		return childrenCastMod.size() + childrenCast.size();
+		return (children == null) ? 0 : 1;// childrenCastMod.size() + childrenCast.size();
 	}
 
 	@Override
 	public boolean canAddChildren(AbstractSpellComponent children) {
-		return ((children instanceof AbstractCastModComponent) || (children instanceof AbstractCastEffectComponent));
+		return (getSize() < getMaxSize()) && ((children instanceof AbstractCastModComponent)
+				|| (children instanceof AbstractCastEffectComponent));
 	}
 
 	@Override
 	public List<AbstractCastComponent<?>> getChildrens() {
-		List<AbstractCastComponent<?>> retour = new ArrayList<AbstractCastComponent<?>>();
-		retour.addAll(childrenCast);
-		retour.addAll(childrenCastMod);
-		return retour;
+		if (children != null) {
+			return Arrays.asList(children);
+		} else {
+			return new ArrayList<AbstractCastComponent<?>>();
+		}
 	}
 
 	@Override
 	protected void addChildrenInternal(AbstractSpellComponent newEffect) {
-		if  (newEffect instanceof AbstractCastEffectComponent) {
-		childrenCast.add((AbstractCastEffectComponent) newEffect);
-		} else if (newEffect instanceof AbstractCastModComponent){
-			childrenCastMod.add((AbstractCastModComponent) newEffect);
-		}
-	}
-
-	public List<AbstractCastEffectComponent> getCastEffect() {
-		return childrenCast;
-	}
-
-	public List<AbstractCastModComponent> getCastMod() {
-		return childrenCastMod;
+		children = (AbstractCastComponent<?>) newEffect;
 	}
 
 	@Override
 	protected boolean internalCast(SpellContext context) {
 		Set<Callback> setCB = new HashSet<Callback>();
-		for (AbstractCastModComponent mod : childrenCastMod) {
-			mod.internalCastGetCallback(context, this, setCB);
+		if (children instanceof AbstractCastModComponent) {
+			((AbstractCastModComponent) children).internalCastGetCallback(context, this, setCB);
 		}
 		return true;
 	}
@@ -122,28 +121,16 @@ public class CastModContainerComponent extends AbstractCastComponent<AbstractCas
 	}
 
 	private boolean castChildren(SpellContext context) {
-		boolean retour = false;
-		for (AbstractCastEffectComponent child : childrenCast) {
-			retour |= child.internalCast(context);
+		if (children instanceof AbstractCastEffectComponent) {
+			return ((AbstractCastEffectComponent) children).internalCast(context);
 		}
-		return retour;
+		return false;
 	}
 
 	@Override
-	public float getManaCost() {
-		float retour = super.getManaCost();
-		for (AbstractCastModComponent mod : childrenCastMod) {
-			retour = mod.applyManaMod(retour);
-		}
-		return Math.max(0f, retour);
-	}
-
-	@Override
-	public int getCooldown() {
-		int retour = super.getCooldown();
-		for (AbstractCastModComponent mod : childrenCastMod) {
-			retour = mod.applyCDMod(retour);
-		}
-		return Math.max(0, retour);
+	public boolean addNextPart(AbstractSpellComponent other) {
+		boolean result = super.addNextPart(other);
+		RuneMain.LOGGER.debug("Adding next part " + other.getClass().getSimpleName() + " to container: " + result);
+		return result;
 	}
 }

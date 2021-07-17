@@ -9,6 +9,8 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.component.build.IManaMod;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
@@ -18,10 +20,10 @@ import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 
-public class ManaTankModComponent extends AbstractCastModComponent {
+public class ManaTankModComponent extends AbstractCastModComponent implements IManaMod {
 
-	public ManaTankModComponent() throws RunePropertiesException {
-		super(PROPFACT);
+	public ManaTankModComponent(AbstractSpellComponent parent) throws RunePropertiesException {
+		super(PROPFACT, parent);
 	}
 
 	@Override
@@ -139,5 +141,10 @@ public class ManaTankModComponent extends AbstractCastModComponent {
 	@Override
 	public int applyCDMod(int in) {
 		return in;
+	}
+
+	@Override
+	public int getLevel() {
+		return IManaMod.super.getLevel();
 	}
 }

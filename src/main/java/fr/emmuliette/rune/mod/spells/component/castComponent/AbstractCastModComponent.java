@@ -15,26 +15,27 @@ import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.component.build.ICast;
+import fr.emmuliette.rune.mod.spells.component.build.ICastMod;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public abstract class AbstractCastModComponent extends AbstractCastComponent<AbstractCastEffectComponent> {
+public abstract class AbstractCastModComponent extends AbstractCastModContainerComponent {
 	private static final Map<Integer, List<Callback>> callBackList = new HashMap<Integer, List<Callback>>();
 	private static final Set<Callback> listeningCB = new HashSet<Callback>();
 	private static int currentTick = 0;
-	private List<AbstractCastEffectComponent> children;
 
-	public AbstractCastModComponent(PropertyFactory propFactory) throws RunePropertiesException {
-		super(propFactory);
-		children = new ArrayList<AbstractCastEffectComponent>();
+	public AbstractCastModComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
+			throws RunePropertiesException {
+		super(propFactory, parent);
 	}
 
 	public abstract class Callback {
 		private Set<Callback> setCB;
-		private CastModContainerComponent container;
+		private AbstractCastModContainerComponent container;
 		private AbstractCastModComponent parent;
 		private SpellContext context;
 		private int triggerTick;
@@ -70,7 +71,7 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 			return parent;
 		}
 
-		public CastModContainerComponent getContainer() {
+		public AbstractCastModContainerComponent getContainer() {
 			return container;
 		}
 
@@ -99,8 +100,8 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 			}
 			if (triggerTick <= currentTick) {
 				// TODO throw badTickException
-				System.out.println(
-						"WARNING registering on bad tick ! trigger " + triggerTick + " vs current " + currentTick + " class " + this.getClass().getCanonicalName());
+				System.out.println("WARNING registering on bad tick ! trigger " + triggerTick + " vs current "
+						+ currentTick + " class " + this.getClass().getCanonicalName());
 				return;
 			}
 			if (listening && listeningCB.contains(this)) {
@@ -130,7 +131,7 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 
 		public boolean castChildren() {
 			boolean result = false;
-			for (AbstractCastEffectComponent child : getChildrens()) {
+			for (AbstractCastComponent<?> child : getChildrens()) {
 				result |= child.internalCast(context);
 			}
 			return result;
@@ -189,7 +190,7 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 		return false;
 	}
 
-	protected final Callback internalCastGetCallback(SpellContext context, CastModContainerComponent container,
+	protected final Callback internalCastGetCallback(SpellContext context, AbstractCastModContainerComponent container,
 			Set<Callback> setCB) {
 		Callback cb = modInternalCast(context);
 		if (cb != null) {
@@ -207,18 +208,18 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 		try {
 			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-			Boolean checkCd = checkCooldown(cap, context); 
+			Boolean checkCd = checkCooldown(cap, context);
 			if (checkCd == null || !checkCd)
 				return checkCd;
-			
-			Boolean checkManaCost = checkManaCost(cap, context); 
+
+			Boolean checkManaCost = checkManaCost(cap, context);
 			if (checkManaCost == null || !checkManaCost)
 				return checkManaCost;
-			
-			Boolean checkChildrens = checkChildrenCastType(context); 
+
+			Boolean checkChildrens = checkChildrenCastType(context);
 			if (checkChildrens == null || !checkChildrens)
 				return checkChildrens;
-			
+
 			return true;
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
@@ -227,44 +228,28 @@ public abstract class AbstractCastModComponent extends AbstractCastComponent<Abs
 	}
 
 	@Override
-	public List<AbstractCastEffectComponent> getChildrens() {
-		return children;
-	}
-
-	@Override
-	public int getMaxSize() {
-		return 999;
-	}
-
-	@Override
-	public int getSize() {
-		return children.size();
-	}
-
-	@Override
-	public boolean canAddChildren(AbstractSpellComponent children) {
-		return (children instanceof AbstractCastEffectComponent);
-	}
-
-	
-	@Override
 	public float getManaCost() {
-		float retour = super.getManaCost();
-		if(this.isStartingComponent()) {
-			retour = applyManaMod(retour);
-		}
+		float retour = applyManaMod(super.getManaCost());
 		return Math.max(0f, retour);
 	}
-	
+
 	@Override
 	public int getCooldown() {
-		int retour = super.getCooldown();
-		if(this.isStartingComponent())
-			retour = this.applyCDMod(retour);
+		int retour = this.applyCDMod(super.getCooldown());
 		return Math.max(0, retour);
 	}
-	
+
 	public abstract float applyManaMod(float in);
 
 	public abstract int applyCDMod(int in);
+
+	@Override
+	public boolean addNextPart(AbstractSpellComponent other) {
+		RuneMain.LOGGER.debug("Adding " + other.getClass().getSimpleName() + " to " + this.getClass().getSimpleName());
+		if (other instanceof ICastMod || other instanceof ICast) {
+			this.addChildren(other);
+			return true;
+		}
+		return false;
+	}
 }

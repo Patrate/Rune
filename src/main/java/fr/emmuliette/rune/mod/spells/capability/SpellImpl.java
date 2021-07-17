@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.spells.capability;
 
 import java.lang.reflect.InvocationTargetException;
 
+import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -62,7 +63,7 @@ public class SpellImpl implements ISpell {
 					this.spell = Spell.fromNBT(cnbt.getCompound(SPELL_KEY));
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 						| IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-						| SecurityException e) {
+						| SecurityException | RunePropertiesException e) {
 					e.printStackTrace();
 				}
 			}

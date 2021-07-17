@@ -17,9 +17,10 @@ public class RuneItem extends Item {
 		return component;
 	}
 	
+	//public AbstractSpellComponent getSpellComponent(AbstractSpellComponent parent) {
 	public AbstractSpellComponent getSpellComponent() {
 		try {
-			AbstractSpellComponent comp = component.getConstructor().newInstance();
+			AbstractSpellComponent comp = component.getConstructor(AbstractSpellComponent.class).newInstance((AbstractSpellComponent)null);
 			comp.initProperties();
 			return comp;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException

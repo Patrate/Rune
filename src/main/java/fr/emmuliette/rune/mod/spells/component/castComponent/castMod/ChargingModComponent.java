@@ -8,6 +8,7 @@ import com.google.common.base.Function;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
@@ -24,8 +25,8 @@ import net.minecraftforge.fml.common.Mod;
 public class ChargingModComponent extends AbstractCastModComponent {
 	private static final Set<ChargingModComponent.Callback> listeningCB = new HashSet<ChargingModComponent.Callback>();
 
-	public ChargingModComponent() throws RunePropertiesException {
-		super(PROPFACT);
+	public ChargingModComponent(AbstractSpellComponent parent) throws RunePropertiesException {
+		super(PROPFACT, parent);
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class ChargingModComponent extends AbstractCastModComponent {
 
 			@Override
 			public boolean finalize(boolean result) {
-				context.getCaster().setSpeed(oldSpeed);
+				context.getCaster().setSpeed(oldSpeed); // TODO FIX
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
 						context.getCaster().getZ(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				return true;

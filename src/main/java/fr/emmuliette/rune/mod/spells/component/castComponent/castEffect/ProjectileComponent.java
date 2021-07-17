@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
@@ -24,8 +25,8 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class ProjectileComponent extends AbstractCastEffectComponent implements TargetAir {
-	public ProjectileComponent() throws RunePropertiesException {
-		super(PROPFACT);
+	public ProjectileComponent(AbstractSpellComponent parent) throws RunePropertiesException {
+		super(PROPFACT, parent);
 	}
 
 	@Override
@@ -91,5 +92,4 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 			return retour;
 		}
 	};
-
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.annotation.Nullable;
 
+import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -31,7 +32,7 @@ public class SpellStorage implements Capability.IStorage<ISpell> {
         		instance.setSpell(Spell.fromNBT((CompoundNBT) nbt));
         	}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				| InvocationTargetException | NoSuchMethodException | SecurityException | RunePropertiesException e) {
 			e.printStackTrace();
 		}
     }

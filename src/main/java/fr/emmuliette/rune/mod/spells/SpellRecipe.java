@@ -8,6 +8,7 @@ import fr.emmuliette.rune.RandomNameUtils;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
+import fr.emmuliette.rune.mod.spells.component.build.SpellBuilder;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BookItem;
@@ -94,8 +95,8 @@ public class SpellRecipe extends SpecialRecipe {
 		}
 
 		try {
-			if((hasPaper ^ hasBook ^ hasSocket) && Spell.parseSpell(list)) {
-				Spell spell = Spell.buildSpell(RandomNameUtils.getName(), list);
+			if((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpell(list)) {
+				Spell spell = SpellBuilder.runeToSpell(RandomNameUtils.getName(), list);
 				if(hasPaper)
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
 				if(hasBook)

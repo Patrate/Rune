@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Blocks;
@@ -9,8 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class FireComponent extends AbstractEffectComponent {
-	public FireComponent() {
-		super(PropertyFactory.EMPTY_FACTORY);
+	public FireComponent(AbstractSpellComponent parent) {
+		super(PropertyFactory.EMPTY_FACTORY, parent);
 	}
 
 	@Override

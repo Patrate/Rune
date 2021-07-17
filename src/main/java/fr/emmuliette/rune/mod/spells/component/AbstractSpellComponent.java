@@ -6,7 +6,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.UnknownPropertyException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
+import fr.emmuliette.rune.mod.spells.component.build.IBuildPart;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -15,15 +15,15 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class AbstractSpellComponent {
+public abstract class AbstractSpellComponent implements IBuildPart {
 	private ComponentProperties properties;
-	private boolean startingComponent;
+	private AbstractSpellComponent parent;
 	private PropertyFactory propFactory;
 
-	public AbstractSpellComponent(PropertyFactory propFact) {
+	public AbstractSpellComponent(PropertyFactory propFact, AbstractSpellComponent parent) {
 		this.propFactory = propFact;
 		this.properties = getDefaultProperties();
-		this.startingComponent = false;
+		this.parent = parent;
 	}
 
 	public abstract boolean applyOnTarget(LivingEntity target, SpellContext context);
@@ -35,11 +35,7 @@ public abstract class AbstractSpellComponent {
 	}
 
 	public boolean isStartingComponent() {
-		return startingComponent;
-	}
-
-	public void setStartingComponent(boolean starting) {
-		this.startingComponent = starting;
+		return getParent() == null;
 	}
 
 	public void initProperties() {
@@ -70,7 +66,7 @@ public abstract class AbstractSpellComponent {
 
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = new CompoundNBT();
-		retour.putString(Spell.NBT_CLASS, this.getClass().getName());// ComponentRegistry.getComponentName(this));
+		retour.putString(Spell.NBT_CLASS, this.getClass().getName());
 		retour.put(Spell.NBT_PROPERTIES, properties.toNBT());
 		return retour;
 	}
@@ -79,12 +75,14 @@ public abstract class AbstractSpellComponent {
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
 		Class<?> clazz = Class.forName(data.getString(Spell.NBT_CLASS));
-		AbstractSpellComponent retour = (AbstractSpellComponent) clazz.getConstructor().newInstance();
+		AbstractSpellComponent retour = (AbstractSpellComponent) clazz.getConstructor(AbstractSpellComponent.class)
+				.newInstance((AbstractSpellComponent) null);
 		retour.properties = retour.propFactory.fromNBT((CompoundNBT) data.get(Spell.NBT_PROPERTIES));
 
-		if (AbstractCastComponent.class.isAssignableFrom(clazz)) {
-			retour = AbstractCastComponent.fromNBT(retour, data);
-		}
+		/*
+		 * if (AbstractCastComponent.class.isAssignableFrom(clazz)) { retour =
+		 * AbstractCastComponent.fromNBT(retour, data); }
+		 */
 		return retour;
 	}
 
@@ -96,5 +94,15 @@ public abstract class AbstractSpellComponent {
 
 	public final ComponentProperties getDefaultProperties() {
 		return propFactory.build();
+	}
+
+	public abstract boolean addNextPart(AbstractSpellComponent other);
+
+	public AbstractSpellComponent getParent() {
+		return parent;
+	}
+
+	public void setParent(AbstractSpellComponent parent) {
+		this.parent = parent;
 	}
 }
