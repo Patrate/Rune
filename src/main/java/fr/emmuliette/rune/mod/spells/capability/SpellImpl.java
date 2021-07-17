@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.spells.capability;
 
 import java.lang.reflect.InvocationTargetException;
 
+import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;
@@ -101,9 +102,38 @@ public class SpellImpl implements ISpell {
 	@Override
 	public void sync() {
 		// TODO
+		RuneMain.LOGGER.debug("SYNC (but atm we do kutz)");
+		
 		/*
 		 * if (owner instanceof ServerPlayerEntity) { PlayerHandler.sendTo(new
 		 * PlayerPacket(this.toNBT()), (ServerPlayerEntity) owner); }
 		 */
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((spell == null) ? 0 : spell.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SpellImpl other = (SpellImpl) obj;
+		if (spell == null) {
+			if (other.spell != null)
+				return false;
+		} else if (!spell.equals(other.spell))
+			return false;
+		return true;
+	}
+	
+	
 }

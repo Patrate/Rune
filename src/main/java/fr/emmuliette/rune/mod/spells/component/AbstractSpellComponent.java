@@ -8,6 +8,7 @@ import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.build.IBuildPart;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.entity.LivingEntity;
@@ -117,4 +118,37 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 	public void setParent(AbstractSpellComponent parent) {
 		this.parent = parent;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if(properties != null) {
+			for(Grade grade:Grade.values()) {
+				for(Property<?> prop:properties.getProperties(grade)) {
+					result = prime * result + ((prop == null) ? 0 : prop.hashCode());
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractSpellComponent other = (AbstractSpellComponent) obj;
+		if (properties == null) {
+			if (other.properties != null)
+				return false;
+		} else if (!properties.equals(other.properties))
+			return false;
+		return true;
+	}
+	
+	
 }

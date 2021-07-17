@@ -92,10 +92,48 @@ public class Spell {
 			RuneMain.LOGGER.debug("SYNC ERROR HERE, DIFFERENT SIZES !");
 			return;
 		}
+		this.name = other.name;
 		for(int i = 0; i < this.components.size(); i++) {
 			AbstractSpellComponent myComp = this.components.get(i);
 			AbstractSpellComponent otherComp = other.components.get(i);
 			myComp.syncProperties(otherComp);
 		}
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		if(components != null) {
+			for(AbstractSpellComponent comp:components) {
+				result = prime * result + ((comp == null) ? 0 : comp.hashCode());
+			}
+		}
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Spell other = (Spell) obj;
+		if (components == null) {
+			if (other.components != null)
+				return false;
+		} else if (!components.equals(other.components))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+	
+	
 }

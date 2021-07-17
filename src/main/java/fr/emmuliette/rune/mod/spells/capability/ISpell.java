@@ -1,5 +1,7 @@
 package fr.emmuliette.rune.mod.spells.capability;
 
+import javax.annotation.Nullable;
+
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -25,4 +27,9 @@ public interface ISpell {
 	public void sync(ItemStack itemstack);
 	public void sync(ISpell ispell);
 	public void sync();
+	@Override
+	boolean equals(@Nullable final Object obj);
+	@Override
+	int hashCode();
+	
 }

@@ -31,6 +31,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(RuneMain.MOD_ID)
@@ -45,6 +46,8 @@ public class RuneMain {
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
 
+	public static final SimpleChannel network = ModNetwork.getNetworkChannel();
+    
     public RuneMain() {
     	// Maybe preloadModifiedClasses(); ?
     	Registration.register();
