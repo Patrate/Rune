@@ -1,7 +1,7 @@
 package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
+import fr.emmuliette.rune.mod.spells.build.parts.IEffect;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.component.build.IEffect;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 
 public abstract class AbstractEffectComponent extends AbstractSpellComponent implements IEffect {

@@ -1,7 +1,9 @@
 package fr.emmuliette.rune.mod.items;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
@@ -14,6 +16,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -111,6 +114,9 @@ public class SpellItem extends Item {
 		}
 	}
 
+	
+	//  ItemStack itemStack, LivingEntity target, World world, LivingEntity caster, ItemUseContext itemUseContext, Hand hand
+	
 	// On clic droit living entity
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity player, LivingEntity target,
@@ -198,32 +204,43 @@ public class SpellItem extends Item {
 		return retour;
 	}
 
-	/*
-	 * @Override public CompoundNBT getShareTag(ItemStack stack) { ISpell cap =
-	 * stack.getCapability(SpellCapability.SPELL_CAPABILITY, null) .orElseThrow(()
-	 * -> new IllegalArgumentException("LazyOptional must not be empty!"));
-	 * CompoundNBT retour = new CompoundNBT(); CompoundNBT superTag =
-	 * super.getShareTag(stack); CompoundNBT capTag = cap.toNBT();
-	 * 
-	 * if (capTag != null) retour.put("CAP", capTag);
-	 * 
-	 * if (superTag != null) retour.put("TAG", superTag);
-	 * 
-	 * // RuneMain.LOGGER.debug("getShareTag: " + retour.getAsString()); //
-	 * RuneMain.LOGGER.debug(Arrays.toString(Thread.currentThread().getStackTrace())
-	 * );
-	 * 
-	 * return retour; }
-	 * 
-	 * @Override public void readShareTag(ItemStack stack, @Nullable CompoundNBT
-	 * nbt) { RuneMain.LOGGER.debug("readShareTag !!! " + nbt.getAsString());
-	 * RuneMain.LOGGER.debug(Arrays.toString(Thread.currentThread().getStackTrace())
-	 * ); if (nbt.contains("TAG")) super.readShareTag(stack,
-	 * nbt.getCompound("TAG"));
-	 * 
-	 * if (nbt.contains("CAP")) { ISpell cap =
-	 * stack.getCapability(SpellCapability.SPELL_CAPABILITY, null) .orElseThrow(()
-	 * -> new IllegalArgumentException("LazyOptional must not be empty!"));
-	 * cap.fromNBT(nbt.get("CAP")); } }
-	 */
+	@Override
+	public CompoundNBT getShareTag(ItemStack stack) {
+		ISpell cap = stack.getCapability(SpellCapability.SPELL_CAPABILITY, null)
+				.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+		CompoundNBT retour = new CompoundNBT();
+		CompoundNBT superTag = super.getShareTag(stack);
+		CompoundNBT capTag = cap.toNBT();
+
+		if (capTag != null)
+			retour.put("CAP", capTag);
+
+		if (superTag != null)
+			retour.put("TAG", superTag);
+		if (retour.isEmpty()) {
+			RuneMain.LOGGER.debug("retour is null in getShareTag");
+		} else {
+			RuneMain.LOGGER.debug("retour in getShareTag: " + retour);
+		}
+		return retour;
+	}
+
+	@Override
+	public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
+		if (nbt == null) {
+			RuneMain.LOGGER.debug("nbt is null in readShareTag");
+			return;
+		} else {
+			RuneMain.LOGGER.debug("nbt in readShareTag: " + nbt.toString());
+		}
+		if (nbt.contains("TAG"))
+			super.readShareTag(stack, nbt.getCompound("TAG"));
+
+		if (nbt.contains("CAP")) {
+			ISpell cap = stack.getCapability(SpellCapability.SPELL_CAPABILITY, null)
+					.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
+			cap.fromNBT(nbt.get("CAP"));
+		}
+	}
+
 }

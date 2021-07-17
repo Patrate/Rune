@@ -1,6 +1,8 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.castMod;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.google.common.base.Function;
@@ -84,10 +86,14 @@ public class ChargingModComponent extends AbstractCastModComponent {
 		if (event.getAmount() <= 0) {
 			return;
 		}
+		List<ChargingModComponent.Callback> cancelledCB = new ArrayList<ChargingModComponent.Callback>();
 		for (ChargingModComponent.Callback cb : listeningCB) {
 			if (cb.getContext().getCaster() == event.getEntityLiving()) {
-				cb.cancel(true);
+				cancelledCB.add(cb);
 			}
+		}
+		for(ChargingModComponent.Callback cb:cancelledCB) {
+			cb.cancel(true);
 		}
 	}
 

@@ -20,7 +20,7 @@ public class SpellContext {
 		}
 		// target air
 		if(world != null) {
-			setAirContext(world, caster);
+			setAirContext(itemStack, world, caster);
 		}
 	}
 	
@@ -33,9 +33,9 @@ public class SpellContext {
 		this.caster = itemUseContext.getPlayer();
 		this.itemUseContext = itemUseContext;
 	}
-	private void setAirContext(World world, LivingEntity caster) {
+	private void setAirContext(ItemStack itemStack, World world, LivingEntity caster) {
 		this.targetType = TargetType.AIR;
-		this.itemStack = null;
+		this.itemStack = itemStack;
 		this.target = null;
 		this.world = world;
 		this.caster = caster;

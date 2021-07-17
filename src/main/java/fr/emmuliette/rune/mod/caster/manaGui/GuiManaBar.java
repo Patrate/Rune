@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE) // , value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE, value = Dist.CLIENT)
 public class GuiManaBar {
 	private static int lastMana = 0;
 	private static int displayMana;

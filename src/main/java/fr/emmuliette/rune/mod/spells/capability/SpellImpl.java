@@ -46,6 +46,9 @@ public class SpellImpl implements ISpell {
 
 	@Override
 	public CompoundNBT toNBT() {
+		if(spell == null) {
+			return null;
+		}
 		CompoundNBT retour = new CompoundNBT();
 		retour.put(SPELL_KEY, spell.toNBT());
 		retour.put(COOLDOWN_KEY, IntNBT.valueOf(cooldown));

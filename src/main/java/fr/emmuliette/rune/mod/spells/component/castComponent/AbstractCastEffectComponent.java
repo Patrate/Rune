@@ -9,8 +9,8 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.build.parts.ICast;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.component.build.ICast;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 

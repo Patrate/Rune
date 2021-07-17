@@ -6,8 +6,8 @@ import java.util.List;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.mod.spells.build.SpellBuilder;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.component.build.SpellBuilder;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -25,6 +25,10 @@ public class Spell {
 		this.name = name;
 		this.startingComponent = startingComponent;
 		this.components = components;
+		int i = 0;
+		for(AbstractSpellComponent component:components) {
+			component.setSpellInternalId(i++);
+		}
 	}
 
 	public String getName() {
@@ -55,6 +59,14 @@ public class Spell {
 			return startingComponent.cast(context);
 		}
 		return false;
+	}
+	
+	public void setPropertyValue(int componentId, String key, Object value) {
+		components.get(componentId).setPropertyValue(key, value);
+	}
+	
+	public <T> T getPropertyValue(int componentId, String key, T defaut) {
+		return (T) components.get(componentId).getPropertyValue(key, defaut);
 	}
 
 	private static final String NBT_NAME = "NAME";

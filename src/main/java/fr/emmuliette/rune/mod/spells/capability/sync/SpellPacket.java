@@ -2,10 +2,8 @@ package fr.emmuliette.rune.mod.spells.capability.sync;
 
 import java.util.function.Supplier;
 
-import fr.emmuliette.rune.exception.CasterCapabilityException;
-import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -19,17 +17,50 @@ public class SpellPacket {
 	}
 
 	public static void encode(SpellPacket msg, PacketBuffer buf) {
+		if(buf == null) {
+			RuneMain.LOGGER.debug("buf is null in decode SpellPacket");
+		}
+		if(msg == null) {
+			RuneMain.LOGGER.debug("msg is null in decode SpellPacket");
+		}
 		buf.writeNbt(msg.nbt);
 	}
 
 	public static SpellPacket decode(PacketBuffer buf) {
-		return new SpellPacket(buf.readNbt());
+		if(buf == null) {
+			RuneMain.LOGGER.debug("buf is null in decode SpellPacket");
+		}
+		try {
+			CompoundNBT nbt = buf.readNbt();
+			if(nbt == null) {
+				RuneMain.LOGGER.debug("nbt is null in decode SpellPacket");
+			} else {
+				RuneMain.LOGGER.debug("nbt in decode SpellPacket: " + nbt.toString());
+			}
+			return new SpellPacket(nbt);
+		} catch(Exception e) {
+			RuneMain.LOGGER.debug("Exception " + e.getClass().getSimpleName() + " while reading nbt from buf " + e.getMessage());
+		}
+		return new SpellPacket(new CompoundNBT());
 	}
 
 	public static class Handler {
+		@SuppressWarnings("resource")
 		public static void handle(final SpellPacket msg, Supplier<NetworkEvent.Context> ctx) {
+			
+			ctx.get().enqueueWork(() -> {
+				if(msg == null) {
+					RuneMain.LOGGER.debug("msg is null in handle SpellPacket");
+				}
+				if(msg.nbt == null) {
+					RuneMain.LOGGER.debug("nbt is null in handle SpellPacket");
+				}
+				Minecraft.getInstance().player.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(cap -> cap.fromNBT(msg.nbt));
+				
+			});
+			ctx.get().setPacketHandled(true);
 
-
+			/*
 			ctx.get().enqueueWork(() -> {
 				if (ctx.get().getDirection().getReceptionSide().isClient()
 						&& ctx.get().getDirection().getOriginationSide().isServer()) {
@@ -43,7 +74,7 @@ public class SpellPacket {
 					}
 				}
 			});
-			ctx.get().setPacketHandled(true);
+			ctx.get().setPacketHandled(true);*/
 		}
 	}
 }

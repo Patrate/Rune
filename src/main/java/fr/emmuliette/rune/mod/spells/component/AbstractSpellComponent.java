@@ -6,7 +6,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.UnknownPropertyException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.component.build.IBuildPart;
+import fr.emmuliette.rune.mod.spells.build.parts.IBuildPart;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -19,13 +19,22 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 	private ComponentProperties properties;
 	private AbstractSpellComponent parent;
 	private PropertyFactory propFactory;
+	private int spellInternalId;
 
 	public AbstractSpellComponent(PropertyFactory propFact, AbstractSpellComponent parent) {
 		this.propFactory = propFact;
 		this.properties = getDefaultProperties();
 		this.parent = parent;
 	}
+	
+	protected final int getSpellInternalId() {
+		return spellInternalId;
+	}
 
+	public final void setSpellInternalId(int id) {
+		this.spellInternalId = id;
+	}
+	
 	public abstract boolean applyOnTarget(LivingEntity target, SpellContext context);
 
 	public abstract boolean applyOnPosition(World world, BlockPos target, SpellContext context);
@@ -45,7 +54,7 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 	protected ComponentProperties getProperties() {
 		return properties;
 	}
-	
+
 	public void syncProperties(AbstractSpellComponent other) {
 		this.properties.sync(other.properties);
 	}
@@ -59,7 +68,7 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> T getPropertyValue(String key, T defVal) {
+	public <T> T getPropertyValue(String key, T defVal) {
 		if (properties.getProperty(key) != null) {
 			return (T) properties.getProperty(key).getValue();
 		} else {
@@ -68,7 +77,7 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 		}
 	}
 
-	protected <T> void setPropertyValue(String key, T newVal) {
+	public <T> void setPropertyValue(String key, T newVal) {
 		if (properties.getProperty(key) != null) {
 			properties.getProperty(key).setValue(newVal);
 		} else {
