@@ -6,16 +6,18 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.UnknownPropertyException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.build.parts.IBuildPart;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
+import fr.emmuliette.rune.mod.spells.tags.SpellTag;
+import fr.emmuliette.rune.mod.spells.tags.Tag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class AbstractSpellComponent implements IBuildPart {
+public abstract class AbstractSpellComponent {
 	private ComponentProperties properties;
 	private AbstractSpellComponent parent;
 	private PropertyFactory propFactory;
@@ -26,7 +28,7 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 		this.properties = getDefaultProperties();
 		this.parent = parent;
 	}
-	
+
 	protected final int getSpellInternalId() {
 		return spellInternalId;
 	}
@@ -34,7 +36,7 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 	public final void setSpellInternalId(int id) {
 		this.spellInternalId = id;
 	}
-	
+
 	public abstract boolean applyOnTarget(LivingEntity target, SpellContext context);
 
 	public abstract boolean applyOnPosition(World world, BlockPos target, SpellContext context);
@@ -117,6 +119,21 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 		return propFactory.build();
 	}
 
+	public boolean validate(AbstractSpellComponent other) {
+		return getTags().getBuildTag().isAllowedAsNext(other.getTags().getBuildTag());
+	}
+
+	public boolean validate() {
+		SpellTag tags = getTags();
+		for (Tag t : tags.getTagSet()) {
+			if (t instanceof RestrictionTag) {
+				if (!((RestrictionTag) t).isValid())
+					return false;
+			}
+		}
+		return true;
+	}
+
 	public abstract boolean addNextPart(AbstractSpellComponent other);
 
 	public AbstractSpellComponent getParent() {
@@ -125,5 +142,9 @@ public abstract class AbstractSpellComponent implements IBuildPart {
 
 	public void setParent(AbstractSpellComponent parent) {
 		this.parent = parent;
+	}
+
+	public SpellTag getTags() {
+		return SpellTag.getTags(this);
 	}
 }

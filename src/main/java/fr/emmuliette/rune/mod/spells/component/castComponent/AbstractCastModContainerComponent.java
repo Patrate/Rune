@@ -13,15 +13,13 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.build.parts.ICastMod;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent.Callback;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public abstract class AbstractCastModContainerComponent extends AbstractCastComponent<AbstractCastComponent<?>>
-		implements ICastMod {
+public abstract class AbstractCastModContainerComponent extends AbstractCastComponent<AbstractCastComponent<?>> {
 	AbstractCastComponent<?> children;
 	/*
 	 * private List<AbstractCastModComponent> childrenCastMod; private

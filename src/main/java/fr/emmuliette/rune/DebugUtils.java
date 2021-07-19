@@ -24,5 +24,4 @@ public class DebugUtils {
 			printed.add(s);
 		}
 	}
-	
 }

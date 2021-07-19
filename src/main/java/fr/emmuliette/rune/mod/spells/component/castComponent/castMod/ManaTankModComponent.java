@@ -12,7 +12,6 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.build.parts.IManaMod;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
@@ -26,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 
-public class ManaTankModComponent extends AbstractCastModComponent implements IManaMod {
+public class ManaTankModComponent extends AbstractCastModComponent {
 
 	public ManaTankModComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PROPFACT, parent);
@@ -101,7 +100,7 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 			return retour;
 		}
 	};
-	
+
 	private int getCurrentMana() {
 		return getPropertyValue(KEY_CURRENT_MANA, 8);
 	}
@@ -110,11 +109,12 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 		int defaut = 8;
 		try {
 			ItemStack item = context.getItemStack();
-			if(item == null) {
+			if (item == null) {
 				RuneMain.LOGGER.error("item est null (getCurrentMana)");
 				return defaut;
 			}
-			ISpell ispell = item.getCapability(SpellCapability.SPELL_CAPABILITY).orElseThrow(new SpellCapabilityExceptionSupplier(context.getItemStack()));
+			ISpell ispell = item.getCapability(SpellCapability.SPELL_CAPABILITY)
+					.orElseThrow(new SpellCapabilityExceptionSupplier(context.getItemStack()));
 			return ispell.getSpell().getPropertyValue(this.getSpellInternalId(), KEY_CURRENT_MANA, defaut);
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -125,11 +125,12 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 	private void setCurrentMana(int currentMana, SpellContext context) {
 		try {
 			ItemStack item = context.getItemStack();
-			if(item == null) {
+			if (item == null) {
 				RuneMain.LOGGER.error("item est null (setCurrentMana)");
 				return;
 			}
-			ISpell ispell = item.getCapability(SpellCapability.SPELL_CAPABILITY).orElseThrow(new SpellCapabilityExceptionSupplier(context.getItemStack()));
+			ISpell ispell = item.getCapability(SpellCapability.SPELL_CAPABILITY)
+					.orElseThrow(new SpellCapabilityExceptionSupplier(context.getItemStack()));
 			ispell.getSpell().setPropertyValue(this.getSpellInternalId(), KEY_CURRENT_MANA, currentMana);
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -176,10 +177,5 @@ public class ManaTankModComponent extends AbstractCastModComponent implements IM
 	@Override
 	public int applyCDMod(int in) {
 		return in;
-	}
-
-	@Override
-	public int getLevel() {
-		return IManaMod.super.getLevel();
 	}
 }

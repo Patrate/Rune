@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 
 public abstract class AbstractCastComponent<T extends AbstractSpellComponent> extends AbstractSpellComponent
 		implements ComponentContainer<T> {
+
 	public static final int DEFAULT_COOLDOWN = 20;
 
 	public AbstractCastComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
@@ -156,30 +157,24 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return totalCD;
 	}
 
-	/*@Override
-	public CompoundNBT toNBT() {
-		CompoundNBT retour = super.toNBT();
-		ListNBT childrenNBT = new ListNBT();
-		for (T child : this.getChildrens()) {
-			childrenNBT.add(child.toNBT());
-		}
-		retour.put(Spell.NBT_CHILDREN, childrenNBT);
-		return retour;
-	}*/
+	/*
+	 * @Override public CompoundNBT toNBT() { CompoundNBT retour = super.toNBT();
+	 * ListNBT childrenNBT = new ListNBT(); for (T child : this.getChildrens()) {
+	 * childrenNBT.add(child.toNBT()); } retour.put(Spell.NBT_CHILDREN,
+	 * childrenNBT); return retour; }
+	 */
 
-	/*public static AbstractCastComponent<?> fromNBT(AbstractSpellComponent component, CompoundNBT data)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
-		AbstractCastComponent<?> retour = (AbstractCastComponent<?>) component;
-		if (data.contains(Spell.NBT_CHILDREN)) {
-			ListNBT childrenNBT = (ListNBT) data.get(Spell.NBT_CHILDREN);
-			for (INBT childNBT : childrenNBT) {
-				AbstractSpellComponent child = AbstractSpellComponent.fromNBT((CompoundNBT) childNBT);
-				retour.addChildren(child);
-			}
-		}
-		return retour;
-	}*/
+	/*
+	 * public static AbstractCastComponent<?> fromNBT(AbstractSpellComponent
+	 * component, CompoundNBT data) throws ClassNotFoundException,
+	 * InstantiationException, IllegalAccessException, IllegalArgumentException,
+	 * InvocationTargetException, NoSuchMethodException, SecurityException {
+	 * AbstractCastComponent<?> retour = (AbstractCastComponent<?>) component; if
+	 * (data.contains(Spell.NBT_CHILDREN)) { ListNBT childrenNBT = (ListNBT)
+	 * data.get(Spell.NBT_CHILDREN); for (INBT childNBT : childrenNBT) {
+	 * AbstractSpellComponent child = AbstractSpellComponent.fromNBT((CompoundNBT)
+	 * childNBT); retour.addChildren(child); } } return retour; }
+	 */
 
 	@Override
 	public boolean addNextPart(AbstractSpellComponent other) {

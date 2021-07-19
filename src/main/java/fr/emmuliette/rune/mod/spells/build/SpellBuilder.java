@@ -33,7 +33,7 @@ public class SpellBuilder {
 				start = (AbstractCastComponent<?>) current;
 			} else {
 				current.setParent(previous);
-				if (!previous.checkNextPart(current) || !previous.addNextPart(current)) {
+				if (!previous.validate(current) || !previous.addNextPart(current)) {
 					RuneMain.LOGGER.error("INVALID NEXT PART: " + current.getClass().getSimpleName()
 							+ " can't go after " + previous.getClass().getSimpleName());
 					return null;
@@ -80,7 +80,7 @@ public class SpellBuilder {
 				}
 			} else {
 				current.setParent(previous);
-				if (!previous.checkNextPart(current) || !previous.addNextPart(current)) {
+				if (!previous.validate(current) || !previous.addNextPart(current)) {
 					// RuneMain.LOGGER.error("INVALID NEXT PART: " +
 					// current.getClass().getSimpleName() + " can't go after " +
 					// previous.getClass().getSimpleName());

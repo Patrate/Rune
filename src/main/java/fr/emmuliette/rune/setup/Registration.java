@@ -4,6 +4,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.spells.SpellRecipe;
+import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -32,5 +33,7 @@ public class Registration {
 		RECIPE.register(modEventBus);
 		ModObjects.register();
 		SyncHandler.register();
+		
+		SpellTag.register();
 	}
 }

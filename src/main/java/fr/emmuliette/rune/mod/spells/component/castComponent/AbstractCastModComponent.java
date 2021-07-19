@@ -14,8 +14,6 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
-import fr.emmuliette.rune.mod.spells.build.parts.ICast;
-import fr.emmuliette.rune.mod.spells.build.parts.ICastMod;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraftforge.event.TickEvent;
@@ -242,13 +240,4 @@ public abstract class AbstractCastModComponent extends AbstractCastModContainerC
 	public abstract float applyManaMod(float in);
 
 	public abstract int applyCDMod(int in);
-
-	@Override
-	public boolean addNextPart(AbstractSpellComponent other) {
-		if (other instanceof ICastMod || other instanceof ICast) {
-			this.addChildren(other);
-			return true;
-		}
-		return false;
-	}
 }
