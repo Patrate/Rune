@@ -40,7 +40,7 @@ public class PossibleInt extends PossibleValues<Integer>{
 
 	@Override
 	public Integer copyValue(Integer value) {
-		return new Integer(value);
+		return value;
 	}
 
 }

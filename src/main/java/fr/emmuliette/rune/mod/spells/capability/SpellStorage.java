@@ -15,6 +15,9 @@ public class SpellStorage implements Capability.IStorage<ISpell> {
     @Nullable
     @Override
     public INBT writeNBT(Capability<ISpell> capability, ISpell instance, Direction side) {
+    	if(instance instanceof GrimoireSpellImpl) {
+    		return instance.toNBT();
+    	}
     	if(instance.getSpell() != null) {
     		return instance.getSpell().toNBT();
     	} else {
@@ -28,7 +31,9 @@ public class SpellStorage implements Capability.IStorage<ISpell> {
             throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
         
         try {
-        	if(nbt instanceof CompoundNBT && !((CompoundNBT)nbt).isEmpty()) {
+        	if(instance instanceof GrimoireSpellImpl) {
+        		instance.fromNBT(nbt);
+        	} else if(nbt instanceof CompoundNBT && !((CompoundNBT)nbt).isEmpty()) {
         		instance.setSpell(Spell.fromNBT((CompoundNBT) nbt));
         	}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
