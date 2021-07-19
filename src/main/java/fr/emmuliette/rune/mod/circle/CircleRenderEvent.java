@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE, value = Dist.CLIENT)
 public class CircleRenderEvent {
 	private static final Map<LivingEntity, Circle> circleMap = new HashMap<LivingEntity, Circle>();
-	private static final float shadowradius = 0.5f;
+	private static final float circleRadius = 1f;
 
 	@SuppressWarnings("resource")
 	@SubscribeEvent
@@ -34,10 +34,11 @@ public class CircleRenderEvent {
 			return;
 		}
 		Circle circle = circleMap.get(event.getEntity());
-		//circle.renderTag(event.getRenderer(), event.getMatrixStack(), event.getBuffers());
+		// circle.renderTag(event.getRenderer(), event.getMatrixStack(),
+		// event.getBuffers());
 		// circle.renderCape(event.getRenderer(), event.getMatrixStack(),
 		// event.getBuffers());
-		circle.renderShadow(event.getMatrixStack(), event.getBuffers(), event.getEntity(), 1f, event.getPartialRenderTick(),
-				event.getEntity().level, shadowradius);
+		circle.renderShadow(event.getMatrixStack(), event.getBuffers(), event.getEntity(), 1f,
+				event.getPartialRenderTick(), event.getEntity().level, circleRadius);
 	}
 }

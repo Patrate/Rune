@@ -27,7 +27,7 @@ public class PossibleBoolean extends PossibleValues<Boolean>{
 
 	@Override
 	public Boolean copyValue(Boolean value) {
-		return new Boolean(value);
+		return value;
 	}
 
 }
