@@ -6,15 +6,20 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.mod.blocks.ModBlock;
+import fr.emmuliette.rune.mod.items.AdvancedModItem;
+import fr.emmuliette.rune.mod.items.GrimoireSpellItem;
 import fr.emmuliette.rune.mod.items.ModItem;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.RuneModItem;
-import fr.emmuliette.rune.mod.items.AdvancedModItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
-import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.*;
-import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.*;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.ProjectileComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.SelfComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.TouchComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.LoadingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.manaMod.ManaTankModComponent;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.*;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.DamageComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.FireComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.TeleportComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -38,7 +43,7 @@ public enum ModObjects {
 	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
+			return () -> new GrimoireSpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
 		}
 	}),
 	PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
