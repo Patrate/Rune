@@ -11,7 +11,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastCompone
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModContainerComponent;
-import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ManaTankModComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractManaModComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 
 public class SpellTag {
@@ -65,13 +65,13 @@ public class SpellTag {
 
 	public static void register() {
 		BuildTag.init();
-		
+
 		register(AbstractSpellComponent.class, new SpellTag(BuildTag.NULL));
 		register(AbstractEffectComponent.class, new SpellTag(BuildTag.EFFECT));
 		register(AbstractCastModContainerComponent.class, new SpellTag(BuildTag.CAST_MOD));
 		register(AbstractCastModComponent.class, new SpellTag(BuildTag.CAST_MOD));
 		register(AbstractCastEffectComponent.class, new SpellTag(BuildTag.CAST));
 		register(AbstractCastComponent.class, new SpellTag(BuildTag.CAST));
-		register(ManaTankModComponent.class, new SpellTag(BuildTag.MANA_MOD));
+		register(AbstractManaModComponent.class, new SpellTag(BuildTag.MANA_MOD));
 	}
 }

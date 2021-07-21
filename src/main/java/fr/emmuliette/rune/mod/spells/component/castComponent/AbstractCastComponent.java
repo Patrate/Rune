@@ -33,12 +33,16 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 
 	protected abstract boolean internalCast(SpellContext context);
 
+	protected final void payCost(SpellContext context) throws CasterCapabilityException, NotEnoughManaException {
+		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
+				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
+		payManaCost(cap, context);
+		setCooldown(cap, context);
+	}	
+
 	public boolean cast(SpellContext context) {
 		try {
-			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
-					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-			payManaCost(cap, context);
-			setCooldown(cap, context);
+			payCost(context);
 			return internalCast(context);
 		} catch (NotEnoughManaException | CasterCapabilityException e) {
 			e.printStackTrace();

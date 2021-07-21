@@ -13,6 +13,7 @@ import fr.emmuliette.rune.mod.items.AdvancedModItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.*;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.*;
+import fr.emmuliette.rune.mod.spells.component.castComponent.manaMod.ManaTankModComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;

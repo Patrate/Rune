@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.build;
+package fr.emmuliette.rune.mod.spells;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.items.RuneItem;
-import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;

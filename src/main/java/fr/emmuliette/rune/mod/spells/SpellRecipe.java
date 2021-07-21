@@ -8,7 +8,6 @@ import fr.emmuliette.rune.RandomNameUtils;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.SpellItem;
-import fr.emmuliette.rune.mod.spells.build.SpellBuilder;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BookItem;

@@ -6,7 +6,6 @@ import java.util.List;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.spells.build.SpellBuilder;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import net.minecraft.entity.LivingEntity;

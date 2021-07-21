@@ -12,6 +12,8 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.Callback;
+import fr.emmuliette.rune.mod.spells.component.castComponent.CallbackMod;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
@@ -24,24 +26,25 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class ChargingModComponent extends AbstractCastModComponent {
-	private static final Set<ChargingModComponent.Callback> listeningCB = new HashSet<ChargingModComponent.Callback>();
+public class ChargingModComponent extends AbstractCastModComponent implements CallbackMod {
+	private static final Set<Callback> listeningCB = new HashSet<Callback>();
 
 	public ChargingModComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PROPFACT, parent);
 	}
 
 	@Override
-	protected Callback modInternalCast(SpellContext context) {
+	public Callback castCallback(SpellContext context) {
 		return new Callback(this, context, 100 * this.getPropertyValue(KEY_CHARGE_TIME, 1)) {
 			private float oldSpeed = 0;
 
 			@Override
 			public boolean begin() {
+				listeningCB.add(this);
 				oldSpeed = context.getCaster().getSpeed();
 				context.getCaster().setSpeed(oldSpeed / 10);
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundCategory.AMBIENT, 1.0f,
+						context.getCaster().getZ(), SoundEvents.CHAIN_PLACE, SoundCategory.AMBIENT, 1.0f,
 						0.4f);
 				return true;
 			}
@@ -55,7 +58,7 @@ public class ChargingModComponent extends AbstractCastModComponent {
 			public boolean finalize(boolean result) {
 				context.getCaster().setSpeed(oldSpeed); // TODO FIX
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.FIRE_EXTINGUISH, SoundCategory.AMBIENT, 1.0f, 0.4f);
+						context.getCaster().getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				return true;
 			}
 
@@ -63,21 +66,6 @@ public class ChargingModComponent extends AbstractCastModComponent {
 			public boolean tick() {
 				return false;
 			}
-
-			@Override
-			public void register() {
-				super.register();
-				listeningCB.add(this);
-			}
-
-			@Override
-			public void unregister() {
-				super.unregister();
-				if (listeningCB.contains(this)) {
-					listeningCB.remove(this);
-				}
-			}
-
 		};
 	}
 
@@ -86,13 +74,13 @@ public class ChargingModComponent extends AbstractCastModComponent {
 		if (event.getAmount() <= 0) {
 			return;
 		}
-		List<ChargingModComponent.Callback> cancelledCB = new ArrayList<ChargingModComponent.Callback>();
-		for (ChargingModComponent.Callback cb : listeningCB) {
+		List<Callback> cancelledCB = new ArrayList<Callback>();
+		for (Callback cb : listeningCB) {
 			if (cb.getContext().getCaster() == event.getEntityLiving()) {
 				cancelledCB.add(cb);
 			}
 		}
-		for(ChargingModComponent.Callback cb:cancelledCB) {
+		for (Callback cb : cancelledCB) {
 			cb.cancel(true);
 		}
 	}
@@ -127,7 +115,7 @@ public class ChargingModComponent extends AbstractCastModComponent {
 
 	@Override
 	public int applyCDMod(int in) {
-		return in;
+		return (int) Math.max(in * 0.8, 100 * this.getPropertyValue(KEY_CHARGE_TIME, 1));
 	}
 
 }

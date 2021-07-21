@@ -14,25 +14,16 @@ import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent.Callback;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public abstract class AbstractCastModContainerComponent extends AbstractCastComponent<AbstractCastComponent<?>> {
 	AbstractCastComponent<?> children;
-	/*
-	 * private List<AbstractCastModComponent> childrenCastMod; private
-	 * List<AbstractCastEffectComponent> childrenCast;
-	 */
 
 	public AbstractCastModContainerComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
 			throws RunePropertiesException {
 		super(propFactory, parent);
-		/*
-		 * childrenCastMod = new ArrayList<AbstractCastModComponent>(); childrenCast =
-		 * new ArrayList<AbstractCastEffectComponent>();
-		 */
 	}
 
 	@Override
@@ -46,10 +37,7 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 
 			Boolean checkManaCost = checkManaCost(cap, context);
 			if (checkManaCost == null || !checkManaCost)
-				return checkCd;
-
-			if (!checkManaCost(cap, context))
-				return false;
+				return checkManaCost;
 
 			Boolean checkChildrens = checkChildrenCastType(context);
 			if (checkChildrens == null || !checkChildrens)
@@ -74,8 +62,7 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 
 	@Override
 	public boolean canAddChildren(AbstractSpellComponent children) {
-		return (getSize() < getMaxSize()) && ((children instanceof AbstractCastModComponent)
-				|| (children instanceof AbstractCastEffectComponent));
+		return (getSize() < getMaxSize()) && (children instanceof AbstractCastComponent);
 	}
 
 	@Override
@@ -94,33 +81,40 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 
 	@Override
 	protected boolean internalCast(SpellContext context) {
-		Set<Callback> setCB = new HashSet<Callback>();
-		if (children instanceof AbstractCastModComponent) {
-			((AbstractCastModComponent) children).internalCastGetCallback(context, this, setCB);
+		if(children instanceof CallbackMod) {
+			((CallbackMod) children).buildNRegisterCallback(context, this, new HashSet<Callback>());
+			return true;
+		} else if (children instanceof AbstractCastComponent) {
+			return ((AbstractCastComponent<?>) children).internalCast(context);
 		}
-		return true;
+		System.out.println("NIKE TA MERER LE JEU");
+		return false;
 	}
 
 	public boolean update(Callback cb, SpellContext context, boolean failed) {
 		Set<Callback> setCB = cb.getSetCB();
+		System.out.println("updating, is it failed ? " + failed);
 		if (failed) {
 			for (Callback callback : setCB) {
+				System.out.println("canceling the cb");
 				callback.cancel(false);
 			}
 			return false;
 		}
 		// PAS ECHEC, CAST ?
 		for (Callback callback : setCB) {
+			System.out.println("if cb not triggered, return false");
 			if (!callback.isTriggered()) {
 				return false;
 			}
 		}
+		System.out.println("Casting the children :D");
 		return castChildren(context);
 	}
 
 	private boolean castChildren(SpellContext context) {
-		if (children instanceof AbstractCastEffectComponent) {
-			return ((AbstractCastEffectComponent) children).internalCast(context);
+		if (children instanceof AbstractCastComponent) {
+			return ((AbstractCastComponent<?>) children).internalCast(context);
 		}
 		return false;
 	}
