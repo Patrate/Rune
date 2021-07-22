@@ -3,17 +3,17 @@ package fr.emmuliette.rune.mod.spells.properties.possibleValue;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
 
-public class PossibleInt extends PossibleValues<Integer>{
+public class PossibleInt extends PossibleValues<Integer> {
 	private int min, max, step;
-	
+
 	public PossibleInt() {
 		this(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
 	}
-	
+
 	public PossibleInt(Integer defaultValue, int min, int max, int step) {
 		super(defaultValue);
 		this.min = min;
-		this.max = max - ((max - min)%step);
+		this.max = max - ((max - min) % step);
 		this.step = step;
 	}
 
@@ -24,10 +24,10 @@ public class PossibleInt extends PossibleValues<Integer>{
 
 	@Override
 	public boolean _isValid(Integer val) {
-		if(val < min || val > max) {
+		if (val < min || val > max) {
 			return false;
 		}
-		if((val - min)%step != 0) {
+		if ((val - min) % step != 0) {
 			return false;
 		}
 		return true;

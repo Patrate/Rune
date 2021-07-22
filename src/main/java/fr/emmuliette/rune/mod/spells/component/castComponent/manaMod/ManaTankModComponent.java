@@ -4,12 +4,10 @@ import com.google.common.base.Function;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
-import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
@@ -31,7 +29,6 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 		super(PROPFACT, parent);
 	}
 
-	
 	@Override
 	protected boolean internalCast(SpellContext context) {
 		int currentMana = getCurrentMana(context);
@@ -41,14 +38,12 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 			return true;
 		}
 		try {
-			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
-					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 			int remaining = (int) Math.ceil(getManaCost());
-			int manaSaved = (int) Math.min(cap.getMana(), remaining);
+			int manaSaved = (int) Math.min(getCasterMana(context), remaining);
 			if (manaSaved > 0) {
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
 						context.getCaster().getZ(), SoundEvents.BOTTLE_FILL, SoundCategory.AMBIENT, 1.0f, 0.4f);
-				cap.delMana((float) manaSaved);
+				delCasterMana(context, (float) manaSaved);
 				setCurrentMana(currentMana + manaSaved, context);
 			}
 		} catch (CasterCapabilityException | NotEnoughManaException e) {
@@ -64,19 +59,19 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 
 	private int getCurrentMana(SpellContext context) {
 		int defaut = 8;
-		try {
-			ItemStack item = context.getItemStack();
-			if (item == null) {
-				RuneMain.LOGGER.error("item est null (getCurrentMana)");
-				return defaut;
-			}
-			ISpell ispell = item.getCapability(SpellCapability.SPELL_CAPABILITY)
-					.orElseThrow(new SpellCapabilityExceptionSupplier(context.getItemStack()));
-			return ispell.getSpell().getPropertyValue(this.getSpellInternalId(), KEY_CURRENT_MANA, defaut);
-		} catch (SpellCapabilityException e) {
-			e.printStackTrace();
+		ItemStack item = context.getItemStack();
+		if (item == null) {
+			RuneMain.LOGGER.error("item est null (getCurrentMana)");
+			return defaut;
 		}
-		return defaut;
+
+		return this.getPropertyValue(KEY_CURRENT_MANA, defaut);
+		/*
+		 * ISpell ispell = item.getCapability(SpellCapability.SPELL_CAPABILITY)
+		 * .orElseThrow(new SpellCapabilityExceptionSupplier(context.getItemStack()));
+		 * return ispell.getSpell().getPropertyValue(this.getSpellInternalId(),
+		 * KEY_CURRENT_MANA, defaut);
+		 */
 	}
 
 	private void setCurrentMana(int currentMana, SpellContext context) {
@@ -114,7 +109,8 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 	}
 
 	@Override
-	protected void payManaCost(ICaster cap, SpellContext context) throws NotEnoughManaException {}
+	protected void payManaCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
+	}
 
 	// PROPERTIES
 

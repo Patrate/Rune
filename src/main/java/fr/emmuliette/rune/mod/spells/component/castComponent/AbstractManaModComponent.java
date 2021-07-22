@@ -1,7 +1,10 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent;
 
+import fr.emmuliette.rune.exception.CasterCapabilityException;
+import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
@@ -56,5 +59,17 @@ public abstract class AbstractManaModComponent extends AbstractCastModComponent 
 	@Override
 	public int applyCDMod(int in) {
 		return in;
+	}
+	
+	protected float getCasterMana(SpellContext context) throws CasterCapabilityException {
+		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
+				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
+		return cap.getMana();
+	}
+	
+	protected void delCasterMana(SpellContext context, float amount) throws CasterCapabilityException, NotEnoughManaException {
+		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
+				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
+		cap.delMana(amount);
 	}
 }
