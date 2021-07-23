@@ -92,7 +92,7 @@ public class GuiManaBar {
 		if (cap == null)
 			cap = player.getItemInHand(Hand.OFF_HAND).getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
 		if (cap != null && cap.getSpell() != null)
-			manaCost = MathHelper.ceil(cap.getSpell().getManaCost());
+			manaCost = MathHelper.ceil(cap.getSpell().getCost().getManaCost());
 
 		int manaRows = MathHelper.ceil((manaMax + bonusMana) / 2.0F / 10.0F);
 		int rowHeight = Math.max(10 - (manaRows - 2), 3);

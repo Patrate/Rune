@@ -8,6 +8,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -19,6 +20,7 @@ public class Spell {
 	private String name;
 	private AbstractCastComponent<?> startingComponent;
 	private List<AbstractSpellComponent> components;
+	private Cost<?> cost;
 
 	public Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components) {
 		this.name = name;
@@ -34,8 +36,16 @@ public class Spell {
 		return name;
 	}
 
-	public float getManaCost() {
-		return startingComponent.getManaCost();
+	public Cost<?> getCost() {
+		return startingComponent.getCost();
+	}
+	
+	public Cost<?> getCostNew() {
+		return cost;
+	}
+	
+	private void refreshCost() {
+		// TODO
 	}
 
 	public Boolean castSpecial(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,

@@ -6,6 +6,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.UnknownPropertyException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -109,7 +110,7 @@ public abstract class AbstractSpellComponent {
 		return retour;
 	}
 
-	public abstract float getManaCost();
+	public abstract Cost<?> getCost();
 
 	public int getCooldown() {
 		return 0;

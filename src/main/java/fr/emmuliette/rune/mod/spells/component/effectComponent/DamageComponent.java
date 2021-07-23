@@ -2,6 +2,8 @@ package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
@@ -23,7 +25,7 @@ public class DamageComponent extends AbstractEffectComponent {
 	}
 	
 	@Override
-	public float getManaCost() {
-		return 1f;
+	public Cost<?> getCost() {
+		return new ManaCost(null, 1);
 	}
 }

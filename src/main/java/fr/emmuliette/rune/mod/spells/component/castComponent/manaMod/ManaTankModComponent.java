@@ -14,6 +14,8 @@ import fr.emmuliette.rune.mod.spells.capability.ISpell;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractManaModComponent;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
@@ -32,13 +34,13 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 	@Override
 	protected boolean internalCast(SpellContext context) {
 		int currentMana = getCurrentMana(context);
-		int cost = (int) Math.ceil(getBaseCost());
+		int cost = (int) Math.ceil(getBaseCost().getManaCost());
 		if (currentMana >= cost) {
 			setCurrentMana(currentMana - cost, context);
 			return true;
 		}
 		try {
-			int remaining = (int) Math.ceil(getManaCost());
+			int remaining = (int) Math.ceil(getCost().getManaCost());
 			int manaSaved = (int) Math.min(getCasterMana(context), remaining);
 			if (manaSaved > 0) {
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
@@ -90,8 +92,8 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 	}
 
 	@Override
-	protected Boolean checkManaCost(ICaster cap, SpellContext context) {
-		if (this.getManaCost() <= cap.getMana()) {
+	protected Boolean checkCost(ICaster cap, SpellContext context) {
+		if (this.getCost().getManaCost() <= cap.getMana()) {
 			if (cap.getMana() >= 1) {
 				return null;
 			} else {
@@ -102,14 +104,16 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 	}
 
 	@Override
-	public float getManaCost() {
-		float baseCost = getBaseCost();
-		int currentMana = getCurrentMana();
-		return Math.max(0, baseCost - currentMana);
+	public Cost<?> getCost() {
+		ManaCost paid = new ManaCost(null, this.getCurrentMana());
+		Cost<?> supCost = super.getCost();
+		supCost.remove(paid);
+		return supCost;
 	}
 
 	@Override
-	protected void payManaCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
+	protected void payCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
+		super.payCost(cap, context);
 	}
 
 	// PROPERTIES

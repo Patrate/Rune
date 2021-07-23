@@ -14,6 +14,8 @@ import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.Callback;
 import fr.emmuliette.rune.mod.spells.component.castComponent.CallbackMod;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
@@ -108,9 +110,10 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 	};
 
 	@Override
-	public float applyManaMod(float in) {
+	public Cost<?> applyCostMod(Cost<?> in) {
 		int chargeTime = (int) this.getPropertyValue(KEY_CHARGE_TIME, 1);
-		return in - chargeTime;
+		in.remove(new ManaCost(null, chargeTime));
+		return in;
 	}
 
 	@Override

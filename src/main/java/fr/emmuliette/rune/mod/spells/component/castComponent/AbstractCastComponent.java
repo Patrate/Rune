@@ -12,6 +12,7 @@ import fr.emmuliette.rune.mod.spells.component.ComponentContainer;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +37,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 	protected final void payCost(SpellContext context) throws CasterCapabilityException, NotEnoughManaException {
 		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-		payManaCost(cap, context);
+		payCost(cap, context);
 		setCooldown(cap, context);
 	}	
 
@@ -50,8 +51,8 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return false;
 	}
 
-	protected void payManaCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
-		cap.delMana(this.getManaCost());
+	protected void payCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
+		this.getCost().payCost(cap, context);
 	}
 
 	protected void setCooldown(ICaster cap, SpellContext context) {
@@ -64,8 +65,8 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return (!cap.isCooldown());
 	}
 
-	protected Boolean checkManaCost(ICaster cap, SpellContext context) {
-		return (this.getManaCost() <= cap.getMana());
+	protected Boolean checkCost(ICaster cap, SpellContext context) {
+		return this.getCost().canPay(cap, context);
 	}
 
 	protected Boolean chechCastType(SpellContext context) {
@@ -144,12 +145,12 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 	}
 
 	@Override
-	public float getManaCost() {
-		float totalCost = 0f;
+	public Cost<?> getCost() {
+		Cost<?> cost = Cost.getZeroCost();
 		for (AbstractSpellComponent sc : getChildrens()) {
-			totalCost += sc.getManaCost();
+			cost.add(sc.getCost());
 		}
-		return totalCost;
+		return cost;
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public abstract class AbstractCastEffectComponent extends AbstractCastComponent<
 			if (checkCd == null || !checkCd)
 				return checkCd;
 
-			Boolean checkManaCost = checkManaCost(cap, context);
+			Boolean checkManaCost = checkCost(cap, context);
 			if (checkManaCost == null || !checkManaCost)
 				return checkManaCost;
 

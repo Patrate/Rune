@@ -2,6 +2,8 @@ package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Blocks;
@@ -31,7 +33,7 @@ public class FireComponent extends AbstractEffectComponent {
 	}
 	
 	@Override
-	public float getManaCost() {
-		return 5f;
+	public Cost<?> getCost() {
+		return new ManaCost(null, 2);
 	}
 }

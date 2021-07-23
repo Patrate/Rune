@@ -8,6 +8,7 @@ import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 
 public abstract class AbstractManaModComponent extends AbstractCastModComponent {
@@ -16,43 +17,43 @@ public abstract class AbstractManaModComponent extends AbstractCastModComponent 
 			throws RunePropertiesException {
 		super(fact, parent);
 	}
-	
+
 	@Override
 	public boolean cast(SpellContext context) {
-		if(internalCast(context)) {
+		if (internalCast(context)) {
 			return super.internalCast(context);
 		}
 		return false;
 	}
 
 	@Override
-	protected Boolean checkManaCost(ICaster cap, SpellContext context) {
+	protected Boolean checkCost(ICaster cap, SpellContext context) {
 		// TODO this method will be changed sometime in the turfu
-		return super.checkManaCost(cap, context);
+		return super.checkCost(cap, context);
 	}
 
 	@Override
-	public float getManaCost() {
+	public Cost<?> getCost() {
 		// TODO this method will be changed sometime in the turfu
-		return super.getManaCost();
+		return super.getCost();
 	}
 
 	@Override
-	protected void payManaCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
+	protected void payCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
 		// TODO this method will be changed sometime in the turfu
-		super.payManaCost(cap, context);
+		super.payCost(cap, context);
 	}
-	
-	protected float getBaseCost() {
-		float totalCost = 0f;
+
+	protected Cost<?> getBaseCost() {
+		Cost<?> totalCost = Cost.getZeroCost();
 		for (AbstractSpellComponent sc : getChildrens()) {
-			totalCost += sc.getManaCost();
+			totalCost.add(sc.getCost());
 		}
 		return totalCost;
 	}
 
 	@Override
-	public float applyManaMod(float in) {
+	public Cost<?> applyCostMod(Cost<?> in) {
 		return in;
 	}
 
@@ -60,14 +61,15 @@ public abstract class AbstractManaModComponent extends AbstractCastModComponent 
 	public int applyCDMod(int in) {
 		return in;
 	}
-	
+
 	protected float getCasterMana(SpellContext context) throws CasterCapabilityException {
 		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 		return cap.getMana();
 	}
-	
-	protected void delCasterMana(SpellContext context, float amount) throws CasterCapabilityException, NotEnoughManaException {
+
+	protected void delCasterMana(SpellContext context, float amount)
+			throws CasterCapabilityException, NotEnoughManaException {
 		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 		cap.delMana(amount);

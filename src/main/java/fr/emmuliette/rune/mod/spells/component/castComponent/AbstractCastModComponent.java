@@ -5,6 +5,7 @@ import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 
 public abstract class AbstractCastModComponent extends AbstractCastModContainerComponent {
@@ -35,9 +36,9 @@ public abstract class AbstractCastModComponent extends AbstractCastModContainerC
 	}
 
 	@Override
-	public float getManaCost() {
-		float retour = applyManaMod(super.getManaCost());
-		return Math.max(0f, retour);
+	public Cost<?> getCost() {
+		Cost<?> retour = applyCostMod(super.getCost());
+		return retour;
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public abstract class AbstractCastModComponent extends AbstractCastModContainerC
 		return Math.max(0, retour);
 	}
 
-	public abstract float applyManaMod(float in);
+	public abstract Cost<?> applyCostMod(Cost<?> in);
 
 	public abstract int applyCDMod(int in);
 }

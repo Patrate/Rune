@@ -2,13 +2,12 @@ package fr.emmuliette.rune.mod.spells.component.castComponent.manaMod;
 
 import com.google.common.base.Function;
 
-import fr.emmuliette.rune.exception.CasterCapabilityException;
-import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
-import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractManaModComponent;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.cost.LifeCost;
+import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
@@ -23,76 +22,42 @@ public class ManaLifeModComponent extends AbstractManaModComponent {
 		super(PROPFACT, parent);
 	}
 
+	/*
+	 * @Override protected boolean internalCast(SpellContext context) { String mode
+	 * = getMode(); float cost = getBaseCost().getLifeCost(); try { float casterMana
+	 * = this.getCasterMana(context); int availableLife = (int) Math.max(0,
+	 * context.getCaster().getHealth() - 1); int lifeCost; int manaCost; switch
+	 * (mode) { case MODE_PRIO: case MODE_RATIO: lifeCost = (int)
+	 * Math.ceil((getRate() * cost)); manaCost = (int) (cost - lifeCost); lifeCost
+	 * *= MANA_TO_LIFE_RATIO; if (casterMana >= manaCost && availableLife >=
+	 * lifeCost) { delCasterMana(context, manaCost);
+	 * context.getCaster().setHealth(context.getCaster().getHealth() - lifeCost);
+	 * return true; } return false; case MODE_COMPLETE: default: if (casterMana >=
+	 * cost) { return true; } float manaOverflow = casterMana - cost; manaCost =
+	 * (int) (cost - manaOverflow); lifeCost = (int) Math.ceil(manaOverflow *
+	 * MANA_TO_LIFE_RATIO); if (availableLife >= lifeCost) { delCasterMana(context,
+	 * manaCost); context.getCaster().setHealth(context.getCaster().getHealth() -
+	 * lifeCost); return true; } return false; } } catch (CasterCapabilityException
+	 * | NotEnoughManaException e) { e.printStackTrace(); } return false; }
+	 */
+
 	@Override
-	protected boolean internalCast(SpellContext context) {
-		String mode = getMode();
-		float cost = getBaseCost();
-		try {
-			float casterMana = this.getCasterMana(context);
-			int availableLife = (int) Math.max(0, context.getCaster().getHealth() - 1);
-			int lifeCost;
-			int manaCost;
-			switch (mode) {
-			case MODE_PRIO:
-			case MODE_RATIO:
-				lifeCost = (int) Math.ceil((getRate() * cost));
-				manaCost = (int) (cost - lifeCost);
-				lifeCost *= MANA_TO_LIFE_RATIO;
-				if (casterMana >= manaCost && availableLife >= lifeCost) {
-					delCasterMana(context, manaCost);
-					context.getCaster().setHealth(context.getCaster().getHealth() - lifeCost);
-					return true;
-				}
-				return false;
-			case MODE_COMPLETE:
-			default:
-				if (casterMana >= cost) {
-					return true;
-				}
-				float manaOverflow = casterMana - cost;
-				manaCost = (int) (cost - manaOverflow);
-				lifeCost = (int) Math.ceil(manaOverflow * MANA_TO_LIFE_RATIO);
-				if (availableLife >= lifeCost) {
-					delCasterMana(context, manaCost);
-					context.getCaster().setHealth(context.getCaster().getHealth() - lifeCost);
-					return true;
-				}
-				return false;
-			}
-		} catch (CasterCapabilityException | NotEnoughManaException e) {
-			e.printStackTrace();
-		}
-		return false;
+	public Cost<?> applyCostMod(Cost<?> in) {
+		float oldMana = in.getManaCost();
+		float lifeCost = oldMana * this.getRate();
+		ManaCost removedMana = new ManaCost(null, lifeCost);
+		LifeCost addedLife = new LifeCost(null, lifeCost * MANA_TO_LIFE_RATIO);
+		in.add(addedLife);
+		in.remove(removedMana);
+		return in;
 	}
 
 	private String getMode() {
-		return getPropertyValue(KEY_MODE, MODE_COMPLETE);
+		return getPropertyValue(KEY_MODE, MODE_RATIO);
 	}
 
 	private float getRate() {
 		return ((float) getPropertyValue(KEY_RATE, 0)) / 100;
-	}
-
-	@Override
-	protected Boolean checkManaCost(ICaster cap, SpellContext context) {
-		if (this.getManaCost() <= cap.getMana()) {
-			if (cap.getMana() >= 1) {
-				return null;
-			} else {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public float getManaCost() {
-		float baseCost = getBaseCost();
-		return Math.max(0, baseCost);
-	}
-
-	@Override
-	protected void payManaCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
 	}
 
 	// PROPERTIES
