@@ -27,7 +27,7 @@ public class Spell {
 		this.startingComponent = startingComponent;
 		this.components = components;
 		int i = 0;
-		for(AbstractSpellComponent component:components) {
+		for (AbstractSpellComponent component : components) {
 			component.setSpellInternalId(i++);
 		}
 	}
@@ -39,41 +39,41 @@ public class Spell {
 	public Cost<?> getCost() {
 		return startingComponent.getCost();
 	}
-	
+
 	public Cost<?> getCostNew() {
 		return cost;
 	}
-	
+
 	private void refreshCost() {
 		// TODO
 	}
 
-	public Boolean castSpecial(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	public Boolean castSpecial(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext);
 		return startingComponent.specialCast(context);
 	}
 
-	public Boolean castable(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	public Boolean castable(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext);
 		return startingComponent.canCast(context);
 	}
 
-	public Boolean cast(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	public Boolean cast(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(itemStack, target, world, caster, itemUseContext);
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext);
 		Boolean canCast = startingComponent.canCast(context);
 		if (canCast == null || canCast == true) {
 			return startingComponent.cast(context);
 		}
 		return false;
 	}
-	
+
 	public void setPropertyValue(int componentId, String key, Object value) {
 		components.get(componentId).setPropertyValue(key, value);
 	}
-	
+
 	public <T> T getPropertyValue(int componentId, String key, T defaut) {
 		return (T) components.get(componentId).getPropertyValue(key, defaut);
 	}
@@ -106,14 +106,14 @@ public class Spell {
 		}
 		return SpellBuilder.buildSpell(name, components);
 	}
-	
+
 	public void sync(Spell other) {
-		if(this.components.size() != other.components.size()) {
+		if (this.components.size() != other.components.size()) {
 			// TODO throw BAD SYNC error
 			RuneMain.LOGGER.debug("SYNC ERROR HERE, DIFFERENT SIZES !");
 			return;
 		}
-		for(int i = 0; i < this.components.size(); i++) {
+		for (int i = 0; i < this.components.size(); i++) {
 			AbstractSpellComponent myComp = this.components.get(i);
 			AbstractSpellComponent otherComp = other.components.get(i);
 			myComp.syncProperties(otherComp);

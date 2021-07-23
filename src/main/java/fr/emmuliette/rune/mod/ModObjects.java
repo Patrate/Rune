@@ -28,7 +28,7 @@ public enum ModObjects {
 	TOUCH_RUNE(new RuneModItem("touch_rune", RuneMain.RUNE_GROUP, TouchComponent.class)),
 	SELF_RUNE(new RuneModItem("self_rune", RuneMain.RUNE_GROUP, SelfComponent.class)),
 
-	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_GROUP, ChargingModComponent.class)),
+	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_GROUP, LoadingModComponent.class)),
 	MANA_TANK_RUNE(new RuneModItem("mana_tank_rune", RuneMain.RUNE_GROUP, ManaTankModComponent.class)),
 	
 	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_GROUP, FireComponent.class)),

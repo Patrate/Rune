@@ -1,5 +1,7 @@
 package fr.emmuliette.rune.mod.items;
 
+import java.util.function.Predicate;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -16,13 +18,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.ShootableItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
-public class SpellItem extends Item {
+public class SpellItem extends ShootableItem {
 	public static enum ItemType {
 		PARCHMENT, GRIMOIRE, SOCKET, SPELL;
 	}
@@ -72,7 +75,7 @@ public class SpellItem extends Item {
 						.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
 				Spell spell = cap.getSpell();
 				if (spell != null) {
-					if (spell.castSpecial(itemStack, target, caster.level, caster, null)) {
+					if (spell.castSpecial(1f, itemStack, target, caster.level, caster, null)) {
 						try {
 							retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
 						} catch (NotAnItemException e) {
@@ -114,9 +117,9 @@ public class SpellItem extends Item {
 		}
 	}
 
-	
-	//  ItemStack itemStack, LivingEntity target, World world, LivingEntity caster, ItemUseContext itemUseContext, Hand hand
-	
+	// ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	// ItemUseContext itemUseContext, Hand hand
+
 	// On clic droit living entity
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity player, LivingEntity target,
@@ -142,7 +145,32 @@ public class SpellItem extends Item {
 		return retour.resultType;
 	}
 
+	// On release using
+	@Override
+	public void releaseUsing(ItemStack itemStack, World world, LivingEntity caster, int tick) {
+		int chargeTime = this.getUseDuration(itemStack) - tick;
+		// TODO créer un event perso à caller ici
+		// chargeTime =
+		// net.minecraftforge.event.ForgeEventFactory.onArrowLoose(itemStack, world,
+		// playerentity, chargeTime, !itemstack.isEmpty() || flag);
+		if (chargeTime < 0)
+			return;
+		float power = getPowerForTime(chargeTime);
+		if (((double) power < 0.1D))
+			return;
+		Result retour = castSpell(power, itemStack, null, world, caster, null,
+				(caster.getItemInHand(Hand.MAIN_HAND) == itemStack) ? Hand.MAIN_HAND : Hand.OFF_HAND);
+		if (retour.consume) {
+			// TODO delete the item lol
+		}
+	}
+
 	private Result castSpell(@Nonnull ItemStack itemStack, LivingEntity target, World world,
+			@Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
+		return castSpell(1f, itemStack, target, world, caster, itemUseContext, hand);
+	}
+
+	private Result castSpell(float power, @Nonnull ItemStack itemStack, LivingEntity target, World world,
 			@Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
 		final Result retour = new Result(itemStack);
 		try {
@@ -153,7 +181,7 @@ public class SpellItem extends Item {
 				return retour;
 			}
 			if (!caster.level.isClientSide) {
-				Boolean cont = spell.cast(itemStack, target, world, caster, itemUseContext);
+				Boolean cont = spell.cast(power, itemStack, target, world, caster, itemUseContext);
 				if (cont == null) {
 					retour.resultType = ActionResultType.SUCCESS;
 					retour.result = ActionResult.success(itemStack);
@@ -174,7 +202,7 @@ public class SpellItem extends Item {
 					retour.resultType = ActionResultType.PASS;
 				}
 			} else {
-				Boolean cont = spell.castable(itemStack, target, world, caster, itemUseContext);
+				Boolean cont = spell.castable(power, itemStack, target, world, caster, itemUseContext);
 				if (cont == null) {
 					retour.resultType = ActionResultType.SUCCESS;
 					retour.result = ActionResult.success(itemStack);
@@ -241,6 +269,27 @@ public class SpellItem extends Item {
 					.orElseThrow(() -> new IllegalArgumentException("LazyOptional must not be empty!"));
 			cap.fromNBT(nbt.get("CAP"));
 		}
+	}
+
+	@Override
+	public Predicate<ItemStack> getAllSupportedProjectiles() {
+		RuneMain.LOGGER.error("This should never be called ! getAllSupportedProjectiles in SpellItem");
+		return null;
+	}
+
+	@Override
+	public int getDefaultProjectileRange() {
+		return 15;
+	}
+
+	public static float getPowerForTime(int p_185059_0_) {
+		float f = (float) p_185059_0_ / 20.0F;
+		f = (f * f + f * 2.0F) / 3.0F;
+		if (f > 1.0F) {
+			f = 1.0F;
+		}
+
+		return f;
 	}
 
 }

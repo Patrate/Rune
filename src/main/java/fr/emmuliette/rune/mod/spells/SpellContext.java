@@ -10,22 +10,22 @@ public class SpellContext {
 		BLOCK, ENTITY, AIR;
 	}
 	
-	public SpellContext(ItemStack itemStack, LivingEntity target, World world, LivingEntity caster, ItemUseContext itemUseContext) {
+	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster, ItemUseContext itemUseContext) {
 		if(target!= null) {
-			setLivingEntityContext(itemStack, caster, target);
+			setLivingEntityContext(power, itemStack, caster, target);
 		}
 		// target block
 		if(itemUseContext != null) {
-			setBlockContext(itemUseContext);
+			setBlockContext(power, itemUseContext);
 		}
 		// target air
 		if(world != null) {
-			setAirContext(itemStack, world, caster);
+			setAirContext(power, itemStack, world, caster);
 		}
 	}
 	
 	
-	private void setBlockContext(ItemUseContext itemUseContext) {
+	private void setBlockContext(float power, ItemUseContext itemUseContext) {
 		this.targetType = TargetType.BLOCK;
 		this.itemStack = itemUseContext.getItemInHand();
 		this.target = null;
@@ -33,7 +33,7 @@ public class SpellContext {
 		this.caster = itemUseContext.getPlayer();
 		this.itemUseContext = itemUseContext;
 	}
-	private void setAirContext(ItemStack itemStack, World world, LivingEntity caster) {
+	private void setAirContext(float power, ItemStack itemStack, World world, LivingEntity caster) {
 		this.targetType = TargetType.AIR;
 		this.itemStack = itemStack;
 		this.target = null;
@@ -41,7 +41,7 @@ public class SpellContext {
 		this.caster = caster;
 		this.itemUseContext = null;
 	}
-	private void setLivingEntityContext(ItemStack itemStack, LivingEntity caster, LivingEntity target) {
+	private void setLivingEntityContext(float power, ItemStack itemStack, LivingEntity caster, LivingEntity target) {
 		this.targetType = TargetType.ENTITY;
 		this.itemStack = itemStack;
 		this.target = target;
@@ -56,6 +56,11 @@ public class SpellContext {
 	private World world;
 	private LivingEntity caster;
 	private ItemUseContext itemUseContext;
+	private float power;
+	
+	public float getPower() {
+		return power;
+	}
 
 	public TargetType getTargetType() {
 		return targetType;
