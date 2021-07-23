@@ -37,7 +37,7 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 
 	@Override
 	public Callback castCallback(SpellContext context) {
-		return new Callback(this, context, 100 * this.getPropertyValue(KEY_CHARGE_TIME, 1)) {
+		return new Callback(this, context, getChargeTime()) {
 			private float oldSpeed = 0;
 
 			@Override
@@ -115,10 +115,14 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 		in.remove(new ManaCost(null, chargeTime));
 		return in;
 	}
+	
+	private int getChargeTime() {
+		return 100 * this.getPropertyValue(KEY_CHARGE_TIME, 1);
+	}
 
 	@Override
 	public int applyCDMod(int in) {
-		return (int) Math.max(in * 0.8, 100 * this.getPropertyValue(KEY_CHARGE_TIME, 1));
+		return (int) (in * 0.8);
 	}
 
 }

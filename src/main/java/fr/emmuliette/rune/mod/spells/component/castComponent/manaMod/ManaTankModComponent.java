@@ -36,8 +36,14 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 		int currentMana = getCurrentMana(context);
 		int cost = (int) Math.ceil(getBaseCost().getManaCost());
 		if (currentMana >= cost) {
-			setCurrentMana(currentMana - cost, context);
-			return true;
+			try {
+				setCurrentMana(currentMana - cost, context);
+				setCooldown(context);
+				return true;
+			} catch (CasterCapabilityException e) {
+				e.printStackTrace();
+				return false;
+			}
 		}
 		try {
 			int remaining = (int) Math.ceil(getCost().getManaCost());
@@ -109,6 +115,12 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 		Cost<?> supCost = super.getCost();
 		supCost.remove(paid);
 		return supCost;
+	}
+
+	@Override
+	public Cost<?> applyCostMod(Cost<?> in) {
+		in.add(new ManaCost(null, (float) Math.ceil(in.getManaCost() * 0.3)));
+		return super.applyCostMod(in);
 	}
 
 	@Override

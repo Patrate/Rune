@@ -44,10 +44,6 @@ public class Spell {
 		return cost;
 	}
 
-	private void refreshCost() {
-		// TODO
-	}
-
 	public Boolean castSpecial(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
 		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext);

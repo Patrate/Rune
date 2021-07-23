@@ -40,8 +40,12 @@ public abstract class AbstractManaModComponent extends AbstractCastModComponent 
 
 	@Override
 	protected void payCost(ICaster cap, SpellContext context) throws NotEnoughManaException {
-		// TODO this method will be changed sometime in the turfu
 		super.payCost(cap, context);
+	}
+	
+	@Override
+	protected void setCooldown(ICaster cap, SpellContext context) {
+		super.setCooldown(cap, context);
 	}
 
 	protected Cost<?> getBaseCost() {
@@ -73,5 +77,12 @@ public abstract class AbstractManaModComponent extends AbstractCastModComponent 
 		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 		cap.delMana(amount);
+	}
+	
+	protected void setCooldown(SpellContext context)
+			throws CasterCapabilityException {
+		ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
+				.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
+		setCooldown(cap, context);
 	}
 }

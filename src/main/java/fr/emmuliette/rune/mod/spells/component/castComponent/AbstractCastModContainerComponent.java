@@ -81,7 +81,7 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 
 	@Override
 	protected boolean internalCast(SpellContext context) {
-		if(children instanceof CallbackMod) {
+		if (children instanceof CallbackMod) {
 			((CallbackMod) children).buildNRegisterCallback(context, this, new HashSet<Callback>());
 			return true;
 		} else if (children instanceof AbstractCastComponent) {
@@ -93,22 +93,18 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 
 	public boolean update(Callback cb, SpellContext context, boolean failed) {
 		Set<Callback> setCB = cb.getSetCB();
-		System.out.println("updating, is it failed ? " + failed);
 		if (failed) {
 			for (Callback callback : setCB) {
-				System.out.println("canceling the cb");
 				callback.cancel(false);
 			}
 			return false;
 		}
 		// PAS ECHEC, CAST ?
 		for (Callback callback : setCB) {
-			System.out.println("if cb not triggered, return false");
 			if (!callback.isTriggered()) {
 				return false;
 			}
 		}
-		System.out.println("Casting the children :D");
 		return castChildren(context);
 	}
 
