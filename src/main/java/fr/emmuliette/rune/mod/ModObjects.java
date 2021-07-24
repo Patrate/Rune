@@ -19,6 +19,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChannelingM
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChargingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.LoadingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.manaMod.ManaTankModComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.BlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.DamageComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.FireComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.TeleportComponent;
@@ -40,40 +41,38 @@ public enum ModObjects {
 	LOAD_RUNE(new RuneModItem("load_rune", RuneMain.RUNE_GROUP, LoadingModComponent.class)),
 	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_GROUP, ChargingModComponent.class)),
 	CHANNEL_RUNE(new RuneModItem("channel_rune", RuneMain.RUNE_GROUP, ChannelingModComponent.class)),
-	
+
 	// Cost mod
 	MANA_TANK_RUNE(new RuneModItem("mana_tank_rune", RuneMain.RUNE_GROUP, ManaTankModComponent.class)),
-	
+
 	// Effect
 	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_GROUP, FireComponent.class)),
 	DAMAGE_RUNE(new RuneModItem("damage_rune", RuneMain.RUNE_GROUP, DamageComponent.class)),
 	TELEPORT_RUNE(new RuneModItem("teleport_rune", RuneMain.RUNE_GROUP, TeleportComponent.class)),
-	
+	BLOCK_RUNE(new RuneModItem("block_rune", RuneMain.RUNE_GROUP, BlockEffectComponent.class)),
+
 	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
 			return () -> new GrimoireSpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
 		}
-	}),
-	PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
+	}), PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
 			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));
 		}
-	}),
-	GRIMOIRE(new AdvancedModItem("grimoire", RuneMain.RUNE_GROUP) {
+	}), GRIMOIRE(new AdvancedModItem("grimoire", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
 			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
 		}
-	}),
-	SOCKET(new AdvancedModItem("socket", RuneMain.RUNE_GROUP) {
+	}), SOCKET(new AdvancedModItem("socket", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
 			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));
 		}
 	}),
-	
+
 	CASTER_BLOCK(new ModBlock("caster_block", RuneMain.RUNE_GROUP,
 			() -> new Block(net.minecraft.block.AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f)
 					.harvestLevel(1).harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK))));
