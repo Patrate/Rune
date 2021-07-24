@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
 import com.google.common.base.Function;
 
+import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
@@ -62,7 +63,7 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 		projectile.shoot(lookAngle.x, lookAngle.y, lookAngle.z, this.getPropertyValue(KEY_SPEED, 8) / 10f, 0F);// 12.0F);
 		context.getWorld().addFreshEntity(projectile);
 		context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-				context.getCaster().getZ(), SoundEvents.SNOW_GOLEM_SHOOT, SoundCategory.AMBIENT, 1.0f, 0.4f);
+				context.getCaster().getZ(), ModSounds.PROJECTILE_LAUNCH, SoundCategory.AMBIENT, 1.0f, 0.4f);
 		return true;
 	}
 

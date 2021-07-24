@@ -2,10 +2,12 @@
 3aebd4860e532208331f36aa6c15886aef7049bc assets/rune/models/block/caster_block.json
 eee3d95b1f5217dc2b7d18b3456ab61960b79aa4 assets/rune/models/item/blank_rune.json
 c32aa689a4e532a781ffeca334a7166783eff508 assets/rune/models/item/caster_block.json
+887f73b3cef0044d2af9bcd8d8759a12ee1a4431 assets/rune/models/item/channel_rune.json
 9c3b51acda049eda9e9fd932e88cb46092edbd69 assets/rune/models/item/charge_rune.json
 83f7589a76413f1bf526314066c8fd004b79d262 assets/rune/models/item/damage_rune.json
 d510f89ab6e24947afa1225c66190e05dadafa59 assets/rune/models/item/fire_rune.json
 a1c6b6882b9e7e383b790f71d771933b76d6b698 assets/rune/models/item/grimoire.json
+373af4502115a00e938997ea5c61b7122debf83e assets/rune/models/item/load_rune.json
 5120959f5c7a05bece7c59ced543074bf1692b9e assets/rune/models/item/mana_tank_rune.json
 669c77eb9fbaa562dcec86ebc661a6c0d7f75597 assets/rune/models/item/parchment.json
 acfa5fa96a37ad43a37ddb614708f3a394be6c9b assets/rune/models/item/projectile_rune.json

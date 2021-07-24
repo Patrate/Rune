@@ -3,6 +3,7 @@ package fr.emmuliette.rune.mod.spells.component.castComponent.manaMod;
 import com.google.common.base.Function;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
@@ -23,7 +24,6 @@ import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 
 public class ManaTankModComponent extends AbstractManaModComponent {
 
@@ -50,7 +50,7 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 			int manaSaved = (int) Math.min(getCasterMana(context), remaining);
 			if (manaSaved > 0) {
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.BOTTLE_FILL, SoundCategory.AMBIENT, 1.0f, 0.4f);
+						context.getCaster().getZ(), ModSounds.MANA_TANK_FILL, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				delCasterMana(context, (float) manaSaved);
 				setCurrentMana(currentMana + manaSaved, context);
 			}

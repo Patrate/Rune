@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
@@ -27,7 +28,6 @@ import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleBoolean;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -45,14 +45,14 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 		return new Callback(this, context, -1, true) {
 			private int tick;
 			private int modulo;
-			
+
 			@Override
 			public boolean begin() {
 				tick = 0;
 				modulo = ((ChargingModComponent) getParent()).getChargeSpeed();
 				listeningCB.add(this);
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.CHAIN_PLACE, SoundCategory.AMBIENT, 1.0f, 0.4f);
+						context.getCaster().getZ(), ModSounds.CHARGING_BEGIN, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				return true;
 			}
 
@@ -67,25 +67,24 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 					context.getCaster().stopUsingItem();
 				if (result)
 					context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-							context.getCaster().getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.AMBIENT, 1.0f,
-							0.4f);
+							context.getCaster().getZ(), ModSounds.CHARGING_END, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				return result;
 			}
 
 			@Override
 			public boolean tick() {
 				++tick;
-				if(tick == modulo) {
+				if (tick == modulo) {
 					tick = 0;
 					try {
 						ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 								.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 						Cost<?> cost = getCost();
-						if(cost.canPay(cap, context)) {
+						if (cost.canPay(cap, context)) {
 							System.out.println("CHARGE ++");
 							payCost(cap, context);
 							context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-									context.getCaster().getZ(), SoundEvents.BOTTLE_EMPTY, SoundCategory.AMBIENT, 1.0f,
+									context.getCaster().getZ(), ModSounds.CHARGING_TICK, SoundCategory.AMBIENT, 1.0f,
 									0.4f);
 							return true;
 						} else {
@@ -100,7 +99,7 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 
 		};
 	}
-	
+
 	@SubscribeEvent
 	public static void castOnRelease(StopCastingEvent event) {
 		List<Callback> finishedCB = new ArrayList<Callback>();
@@ -111,8 +110,7 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 		}
 		for (Callback cb : finishedCB) {
 			// Number of tick divided by tickCount for 1 power
-			cb.getContext().setPower(event.getCount()
-					/ ((ChargingModComponent) cb.getParent()).getChargeSpeed());
+			cb.getContext().setPower(event.getCount() / ((ChargingModComponent) cb.getParent()).getChargeSpeed());
 			cb.castChildren();
 			cb.finish(true);
 		}
@@ -138,7 +136,7 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 	}
 
 	protected int getChargeSpeed() {
-		return 100 - 10	 * getPropertyValue(KEY_CHARGE_SPEED, 1);
+		return 100 - 10 * getPropertyValue(KEY_CHARGE_SPEED, 1);
 	}
 
 	// PROPERTIES
@@ -152,7 +150,8 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 				@Override
 				protected void init() {
 					this.addNewProperty(Grade.WOOD,
-							new Property<Integer>(KEY_CHARGE_SPEED, new PossibleInt(1, 1, 5, 1), PossibleInt.ONE_FOR_ONE))
+							new Property<Integer>(KEY_CHARGE_SPEED, new PossibleInt(1, 1, 5, 1),
+									PossibleInt.ONE_FOR_ONE))
 							.addNewProperty(Grade.GOLD, new Property<Boolean>(KEY_IGNORE_CANCEL_ON_DAMAGE,
 									new PossibleBoolean(false), PossibleBoolean.PLUS_ONE_IF_TRUE));
 				}

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
@@ -28,7 +29,6 @@ import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleBoolean;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -53,7 +53,7 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 				modulo = ((ChannelingModComponent) getParent()).getCastSpeed();
 				listeningCB.add(this);
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.CHAIN_PLACE, SoundCategory.AMBIENT, 1.0f, 0.4f);
+						context.getCaster().getZ(), ModSounds.CHANNELING_BEGIN, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				return true;
 			}
 
@@ -66,17 +66,12 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 			public boolean finalize(boolean result) {
 				if (context.getCaster().isUsingItem())
 					context.getCaster().stopUsingItem();
-				if (result)
-					context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-							context.getCaster().getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.AMBIENT, 1.0f,
-							0.4f);
 				return result;
 			}
 
 			@Override
 			public boolean tick() {
-				++tick;
-				if (tick == modulo) {
+				if (++tick >= modulo) {
 					tick = 0;
 					try {
 						ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
@@ -85,11 +80,9 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 						if (cost.canPay(cap, context)) {
 							payCost(cap, context);
 							context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-									context.getCaster().getZ(), SoundEvents.BOTTLE_EMPTY, SoundCategory.AMBIENT, 1.0f,
+									context.getCaster().getZ(), ModSounds.CHANNELING_TICK, SoundCategory.AMBIENT, 1.0f,
 									0.4f);
-							boolean result = castChildren();
-							System.out.println("CHANNEL RESULT IS " + result);
-							return result;
+							return castChildren();
 						} else {
 							return false;
 						}
@@ -108,7 +101,7 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 	public static void stopOnRelease(StopCastingEvent event) {
 		List<Callback> finishedCB = new ArrayList<Callback>();
 		Iterator<Callback> cbIterator = listeningCB.iterator();
-		while(cbIterator.hasNext()) {
+		while (cbIterator.hasNext()) {
 			Callback cb = cbIterator.next();
 			if (cb.getContext().getCaster() == event.getCaster()) {
 				finishedCB.add(cb);
@@ -140,7 +133,7 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 	}
 
 	protected int getCastSpeed() {
-		return 100 - 10 * getPropertyValue(KEY_CAST_SPEED, 1);
+		return 75 - 10 * getPropertyValue(KEY_CAST_SPEED, 1);
 	}
 
 	// PROPERTIES

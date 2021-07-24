@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.RunePropertiesException;
@@ -26,7 +27,6 @@ import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleBoolean;
 import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -47,7 +47,7 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 			public boolean begin() {
 				listeningCB.add(this);
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.CHAIN_PLACE, SoundCategory.AMBIENT, 1.0f, 0.4f);
+						context.getCaster().getZ(), ModSounds.LOADING_BEGIN, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				return true;
 			}
 
@@ -71,8 +71,7 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 				}
 				if (result) {
 					context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-							context.getCaster().getZ(), SoundEvents.WOODEN_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 1.0f,
-							0.4f);
+							context.getCaster().getZ(), ModSounds.LOADING_END, SoundCategory.AMBIENT, 1.0f, 0.4f);
 					return true;
 				}
 				return false;
@@ -106,8 +105,8 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 		List<Callback> cancelledCB = new ArrayList<Callback>();
 		for (Callback cb : listeningCB) {
 			if (cb.getParent() instanceof LoadingModComponent) {
-				if (cb.getContext().getCaster() == event.getEntityLiving()
-						&& !((LoadingModComponent) cb.getParent()).getPropertyValue(KEY_IGNORE_CANCEL_ON_DAMAGE, false)) {
+				if (cb.getContext().getCaster() == event.getEntityLiving() && !((LoadingModComponent) cb.getParent())
+						.getPropertyValue(KEY_IGNORE_CANCEL_ON_DAMAGE, false)) {
 					cancelledCB.add(cb);
 				}
 			}
