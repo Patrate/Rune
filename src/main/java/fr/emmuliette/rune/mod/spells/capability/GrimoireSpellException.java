@@ -1,6 +1,19 @@
 package fr.emmuliette.rune.mod.spells.capability;
 
-public class GrimoireSpellException extends Exception {
+import fr.emmuliette.rune.exception.SpellCapabilityException;
+import net.minecraft.item.ItemStack;
+
+public class GrimoireSpellException extends SpellCapabilityException {
+
+
+	public GrimoireSpellException() {
+		super(null);
+	}
+	
+	public GrimoireSpellException(ItemStack e) {
+		super(e);
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * 

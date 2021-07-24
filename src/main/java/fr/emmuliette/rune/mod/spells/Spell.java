@@ -17,23 +17,28 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class Spell {
+	private LivingEntity cacheTarget;
+	private BlockPos cacheBlock;
+
 	private String name;
 	private AbstractCastComponent<?> startingComponent;
 	private List<AbstractSpellComponent> components;
 	private List<SpellTag> tags;
 	private Cost<?> cost;
 
-	public Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components, List<SpellTag> tags) {
+	public Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components,
+			List<SpellTag> tags) {
 		this.name = name;
 		this.startingComponent = startingComponent;
 		this.components = components;
 		Set<SpellTag> uniqTag = new HashSet<SpellTag>();
-		for(SpellTag tag:tags) {
-			if(tag.isUnique())
-				if(!uniqTag.add(tag)) {
+		for (SpellTag tag : tags) {
+			if (tag.isUnique())
+				if (!uniqTag.add(tag)) {
 					RuneMain.LOGGER.error("THE TAG " + tag + " MUST BE UNIQUE IN A SPELL");
 					// TODO throw error
 				}
@@ -64,14 +69,14 @@ public class Spell {
 	}
 
 	public Boolean castable(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
-			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext);
+			BlockPos block, ItemUseContext itemUseContext) {
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext);
 		return startingComponent.canCast(context);
 	}
 
 	public Boolean cast(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
-			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext);
+			BlockPos block, ItemUseContext itemUseContext) {
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext);
 		Boolean canCast = startingComponent.canCast(context);
 		if (canCast == null || canCast == true) {
 			return startingComponent.cast(context);
@@ -86,11 +91,11 @@ public class Spell {
 	public <T> T getPropertyValue(int componentId, String key, T defaut) {
 		return (T) components.get(componentId).getPropertyValue(key, defaut);
 	}
-	
+
 	public List<SpellTag> getTags() {
 		return tags;
 	}
-	
+
 	public boolean hasTag(SpellTag tag) {
 		return tags.contains(tag);
 	}
@@ -135,5 +140,21 @@ public class Spell {
 			AbstractSpellComponent otherComp = other.components.get(i);
 			myComp.syncProperties(otherComp);
 		}
+	}
+
+	public LivingEntity getCacheTarget() {
+		return cacheTarget;
+	}
+
+	public void setCacheTarget(LivingEntity cacheTarget) {
+		this.cacheTarget = cacheTarget;
+	}
+
+	public BlockPos getCacheBlock() {
+		return cacheBlock;
+	}
+
+	public void setCacheBlock(BlockPos cacheBlock) {
+		this.cacheBlock = cacheBlock;
 	}
 }

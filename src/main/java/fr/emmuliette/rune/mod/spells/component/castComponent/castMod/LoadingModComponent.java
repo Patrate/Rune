@@ -8,7 +8,12 @@ import java.util.Set;
 import com.google.common.base.Function;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.exception.CasterCapabilityException;
+import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
@@ -38,16 +43,12 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 	@Override
 	public Callback castCallback(SpellContext context) {
 		return new Callback(this, context, getChargeTime()) {
-			private float oldSpeed = 0;
 
 			@Override
 			public boolean begin() {
 				listeningCB.add(this);
-				oldSpeed = context.getCaster().getSpeed();
-				context.getCaster().setSpeed(oldSpeed / 10);
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.CHAIN_PLACE, SoundCategory.AMBIENT, 1.0f,
-						0.4f);
+						context.getCaster().getZ(), SoundEvents.CHAIN_PLACE, SoundCategory.AMBIENT, 1.0f, 0.4f);
 				return true;
 			}
 
@@ -58,10 +59,24 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 
 			@Override
 			public boolean finalize(boolean result) {
-				context.getCaster().setSpeed(oldSpeed); // TODO FIX
-				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundCategory.AMBIENT, 1.0f, 0.4f);
-				return true;
+				if (context.getCaster().isUsingItem()) {
+					context.getCaster().stopUsingItem();
+					try {
+						ICaster cap;
+						cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
+								.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
+						setCooldown(cap, context);
+					} catch (CasterCapabilityException e) {
+						e.printStackTrace();
+					}
+				}
+				if (result) {
+					context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
+							context.getCaster().getZ(), SoundEvents.WOODEN_BUTTON_CLICK_ON, SoundCategory.AMBIENT, 1.0f,
+							0.4f);
+					return true;
+				}
+				return false;
 			}
 
 			@Override
@@ -69,6 +84,19 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 				return false;
 			}
 		};
+	}
+
+	@SubscribeEvent
+	public static void cancelOnRelease(StopCastingEvent event) {
+		List<Callback> cancelledCB = new ArrayList<Callback>();
+		for (Callback cb : listeningCB) {
+			if (cb.getContext().getCaster() == event.getCaster()) {
+				cancelledCB.add(cb);
+			}
+		}
+		for (Callback cb : cancelledCB) {
+			cb.cancel(true);
+		}
 	}
 
 	@SubscribeEvent
@@ -115,7 +143,7 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 		in.remove(new ManaCost(null, chargeTime));
 		return in;
 	}
-	
+
 	private int getChargeTime() {
 		return 100 * this.getPropertyValue(KEY_CHARGE_TIME, 1);
 	}

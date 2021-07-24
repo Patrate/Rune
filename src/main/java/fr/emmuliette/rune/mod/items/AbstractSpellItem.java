@@ -1,29 +1,30 @@
 package fr.emmuliette.rune.mod.items;
 
-import java.util.function.Predicate;
-
 import javax.annotation.Nonnull;
 
-import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.ShootableItem;
+import net.minecraft.item.UseAction;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
-public abstract class AbstractSpellItem extends ShootableItem {
+public abstract class AbstractSpellItem extends Item {
 	public AbstractSpellItem(Properties p_i48487_1_) {
 		super(p_i48487_1_);
 	}
@@ -45,9 +46,7 @@ public abstract class AbstractSpellItem extends ShootableItem {
 		final Result retour = new Result(itemStack);
 		if (!caster.level.isClientSide) {
 			try {
-				ISpell cap = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
-						.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
-				Spell spell = cap.getSpell();
+				Spell spell = getSpell(itemStack, caster);
 				if (spell != null) {
 					if (spell.castSpecial(1f, itemStack, target, caster.level, caster, null)) {
 						try {
@@ -101,18 +100,25 @@ public abstract class AbstractSpellItem extends ShootableItem {
 
 	// On clic droit living entity
 	@Override
-	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity player, LivingEntity target,
+	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity caster, LivingEntity target,
 			Hand hand) {
 		try {
-			Spell spell = getSpell(itemStack);
+			Spell spell = getSpell(itemStack, caster);
 			if (spell.hasTag(SpellTag.CHARGING)) {
-				// TODO enregistrer l'entité, startcharging
+				spell.setCacheTarget(target);
+				caster.startUsingItem(hand);
+				// TODO startcharging
 				return ActionResultType.PASS;
 			} else if (spell.hasTag(SpellTag.CHANNELING)) {
-				// TODO *startCastingSpell
+				caster.startUsingItem(hand);
+				// TODO startCastingSpell
 				return ActionResultType.PASS;
 			}
-			Result retour = castSpell(spell, itemStack, target, null, player, null, hand);
+			Result retour = castSpell(spell, 1f, itemStack, target, null, caster, null, null, hand);
+			if (spell.hasTag(SpellTag.LOADING) && retour.resultType == ActionResultType.SUCCESS) {
+				caster.startUsingItem(hand);
+				return ActionResultType.PASS;
+			} 
 			return retour.resultType;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -122,18 +128,24 @@ public abstract class AbstractSpellItem extends ShootableItem {
 
 	// On clic droit air
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-		ItemStack itemStack = player.getItemInHand(hand);
+	public ActionResult<ItemStack> use(World world, PlayerEntity caster, Hand hand) {
+		ItemStack itemStack = caster.getItemInHand(hand);
 		try {
-			Spell spell = getSpell(itemStack);
+			Spell spell = getSpell(itemStack, caster);
 			if (spell.hasTag(SpellTag.CHARGING)) {
 				// TODO startcharging
+				caster.startUsingItem(hand);
 				return ActionResult.pass(itemStack);
 			} else if (spell.hasTag(SpellTag.CHANNELING)) {
 				// TODO startCastingSpell
+				caster.startUsingItem(hand);
 				return ActionResult.pass(itemStack);
 			}
-			Result retour = castSpell(spell, itemStack, null, world, player, null, hand);
+			Result retour = castSpell(spell, 1f, itemStack, null, world, caster, null, null, hand);
+			if (spell.hasTag(SpellTag.LOADING) && retour.resultType == ActionResultType.SUCCESS) {
+				caster.startUsingItem(hand);
+				return ActionResult.pass(itemStack);
+			} 
 			return retour.result;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -144,40 +156,43 @@ public abstract class AbstractSpellItem extends ShootableItem {
 	// On clic droit block
 	@Override
 	public ActionResultType useOn(ItemUseContext itemUseContext) {
-		// TODO si c'est un charging on doit enregistrer le bloc pour le passer au
-		// moment de relacher
-		// TODO si c'est un channeling, on doit plutôt faire "startCastingSpell" ? et
-		// "stopCastingSpell" quand on relache
-		// Si c'est un charging, castSpell suffit
 		ItemStack itemStack = itemUseContext.getItemInHand();
 
 		try {
-			Spell spell = getSpell(itemStack);
+			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
 			if (spell.hasTag(SpellTag.CHARGING)) {
-				// TODO enregistrer l'entité, startcharging
+				spell.setCacheBlock(itemUseContext.getClickedPos());
+				// TODO startcharging
+				itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
 				return ActionResultType.PASS;
 			} else if (spell.hasTag(SpellTag.CHANNELING)) {
 				// TODO *startCastingSpell
+				itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
 				return ActionResultType.PASS;
 			}
 			Result retour;
-			retour = castSpell(spell, itemStack, null, null, itemUseContext.getPlayer(), itemUseContext,
+			retour = castSpell(spell, 1f, itemStack, null, null, itemUseContext.getPlayer(), null, itemUseContext,
 					itemUseContext.getHand());
+			if (spell.hasTag(SpellTag.LOADING) && retour.resultType == ActionResultType.SUCCESS) {
+				itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
+				return ActionResultType.PASS;
+			}
 			return retour.resultType;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
 		}
 		return ActionResultType.PASS;
 	}
-
+	
+	@Override
+	public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
+		super.onUsingTick(stack, player, count);
+	}
+	
 	// On release using
 	@Override
 	public void releaseUsing(ItemStack itemStack, World world, LivingEntity caster, int tick) {
 		int chargeTime = this.getUseDuration(itemStack) - tick;
-		// TODO créer un event perso à caller ici
-		// chargeTime =
-		// net.minecraftforge.event.ForgeEventFactory.onArrowLoose(itemStack, world,
-		// playerentity, chargeTime, !itemstack.isEmpty() || flag);
 		if (chargeTime < 0)
 			return;
 		float power = getPowerForTime(chargeTime);
@@ -185,16 +200,16 @@ public abstract class AbstractSpellItem extends ShootableItem {
 			return;
 
 		try {
-			Spell spell = getSpell(itemStack);
+			Spell spell = getSpell(itemStack, caster);
 			if (spell.hasTag(SpellTag.CHARGING)) {
-				Result retour = castSpell(spell, power, itemStack, null, world, caster, null,
+				LivingEntity target = spell.getCacheTarget();
+				BlockPos block = spell.getCacheBlock();
+				castSpell(spell, power, itemStack, target, world, caster, block, null,
 						(caster.getItemInHand(Hand.MAIN_HAND) == itemStack) ? Hand.MAIN_HAND : Hand.OFF_HAND);
-				if (retour.consume) {
-					// TODO delete the item lol
-				}
 				return;
-			} else if (spell.hasTag(SpellTag.CHANNELING)) {
-				// TODO stopCastingSpell
+			} else if (spell.hasTag(SpellTag.CHANNELING) || spell.hasTag(SpellTag.LOADING)) {
+				StopCastingEvent event = new StopCastingEvent(spell, caster);
+				MinecraftForge.EVENT_BUS.post(event);
 				return;
 			}
 		} catch (SpellCapabilityException e) {
@@ -202,24 +217,19 @@ public abstract class AbstractSpellItem extends ShootableItem {
 		}
 	}
 
-	public Result castSpell(Spell spell, @Nonnull ItemStack itemStack, LivingEntity target, World world,
-			@Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
-		return castSpell(spell, 1f, itemStack, target, world, caster, itemUseContext, hand);
-	}
-
 	public Result castSpell(Spell spell, float power, @Nonnull ItemStack itemStack, LivingEntity target, World world,
-			@Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
-		return internalcastSpell(spell, itemStack, target, world, caster, itemUseContext, hand);
+			@Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
+		return internalcastSpell(spell, itemStack, target, world, caster, block, itemUseContext, hand);
 	}
 
 	protected final Result internalcastSpell(Spell spell, @Nonnull ItemStack itemStack, LivingEntity target,
-			World world, @Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
+			World world, @Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
 		final Result retour = new Result(itemStack);
 		if (spell == null) {
 			return retour;
 		}
 		if (!caster.level.isClientSide) {
-			Boolean cont = spell.cast(1f, itemStack, target, world, caster, itemUseContext);
+			Boolean cont = spell.cast(1f, itemStack, target, world, caster, block, itemUseContext);
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
@@ -240,7 +250,7 @@ public abstract class AbstractSpellItem extends ShootableItem {
 				retour.resultType = ActionResultType.PASS;
 			}
 		} else {
-			Boolean cont = spell.castable(1f, itemStack, target, world, caster, itemUseContext);
+			Boolean cont = spell.castable(1f, itemStack, target, world, caster, block, itemUseContext);
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
@@ -299,30 +309,28 @@ public abstract class AbstractSpellItem extends ShootableItem {
 	 * itemStack.shrink(1); } return retour; }
 	 */
 
-	protected Spell getSpell(ItemStack iStack) throws SpellCapabilityException {
+	protected Spell getSpell(ItemStack iStack, LivingEntity owner) throws SpellCapabilityException {
 		ISpell cap = iStack.getCapability(SpellCapability.SPELL_CAPABILITY)
 				.orElseThrow(new SpellCapabilityExceptionSupplier(iStack));
 		return cap.getSpell();
 	}
 
-	@Override
-	public Predicate<ItemStack> getAllSupportedProjectiles() {
-		RuneMain.LOGGER.error("This should never be called ! getAllSupportedProjectiles in SpellItem");
-		return null;
-	}
-
-	@Override
-	public int getDefaultProjectileRange() {
-		return 15;
-	}
-
-	public static float getPowerForTime(int p_185059_0_) {
-		float f = (float) p_185059_0_ / 20.0F;
+	public static float getPowerForTime(int duration) {
+		float f = (float) duration / 20.0F;
 		f = (f * f + f * 2.0F) / 3.0F;
 		if (f > 1.0F) {
 			f = 1.0F;
 		}
 
 		return f;
+	}
+
+	public UseAction getUseAnimation(ItemStack iStack) {
+		return UseAction.BOW;
+	}
+
+	@Override
+	public int getUseDuration(ItemStack iStack) {
+		return 72000;
 	}
 }

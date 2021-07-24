@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -49,23 +50,19 @@ public class GrimoireSpellItem extends AbstractSpellItem {
 		super(properties);
 	}
 
-	private Spell getSpell(ItemStack itemStack, LivingEntity owner) throws GrimoireSpellException {
+	@Override
+	public Spell getSpell(ItemStack itemStack, LivingEntity owner) throws GrimoireSpellException {
 		ICaster caster = owner.getCapability(CasterCapability.CASTER_CAPABILITY)
 				.orElseThrow(GrimoireSpellException::new);
 		if (itemStack.getTag().contains(SPELL_ID))
 			return caster.getGrimoire().getSpell(itemStack.getTag().getInt(SPELL_ID)).getSpell();
-		throw new GrimoireSpellException();
+		throw new GrimoireSpellException(itemStack);
 	}
 
-	public Result castSpell(@Nonnull ItemStack itemStack, LivingEntity target, World world,
-			@Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
-		Spell spell = null;
-		try {
-			spell = getSpell(itemStack, caster);
-		} catch (GrimoireSpellException e) {
-			e.printStackTrace();
-		}
-		return internalcastSpell(spell, itemStack, target, world, caster, itemUseContext, hand);
+	@Override
+	public Result castSpell(Spell spell, float power, @Nonnull ItemStack itemStack, LivingEntity target, World world,
+			@Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
+		return internalcastSpell(spell, itemStack, target, world, caster, block, itemUseContext, hand);
 	}
 
 	@SubscribeEvent

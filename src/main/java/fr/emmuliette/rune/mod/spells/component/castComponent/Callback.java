@@ -53,14 +53,10 @@ public abstract class Callback {
 	public final boolean callBack() {
 		triggered = true;
 		boolean result = false;
-		System.out.println("In callback");
 		if (_callBack()) {
-			System.out.println("_callback is true");
 			if (getContainer() == null) {
-				System.out.println("container is null, casting childrens");
 				result = castChildren();
 			} else {
-				System.out.println("container not null, updating container");
 				getContainer().update(this, context, false);
 			}
 		}
