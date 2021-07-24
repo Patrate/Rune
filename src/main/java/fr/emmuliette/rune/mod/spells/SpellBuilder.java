@@ -10,6 +10,9 @@ import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
+import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
+import fr.emmuliette.rune.mod.spells.tags.SpellTag;
+import fr.emmuliette.rune.mod.spells.tags.Tag;
 
 public class SpellBuilder {
 
@@ -21,6 +24,7 @@ public class SpellBuilder {
 		boolean requiredCastEffect = false, requiredEffect = false;
 		AbstractCastComponent<?> start = null;
 		AbstractSpellComponent previous = null;
+		List<SpellTag> spellTags = new ArrayList<SpellTag>();
 		for (AbstractSpellComponent current : componentList) {
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
 				requiredCastEffect = true;
@@ -38,10 +42,17 @@ public class SpellBuilder {
 					return null;
 				}
 			}
+			for(Tag tag:current.getTags().getTagSet()) {
+				if(tag instanceof SpellTag) {
+					spellTags.add((SpellTag) tag);
+				} else if(tag instanceof RestrictionTag) {
+					// TODO
+				}
+			}
 			previous = current;
 		}
 		if (requiredCastEffect && requiredEffect) {
-			return new Spell(name, start, componentList);
+			return new Spell(name, start, componentList, spellTags);
 		}
 		return null;
 	}

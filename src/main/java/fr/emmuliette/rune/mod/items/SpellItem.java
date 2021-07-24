@@ -10,12 +10,9 @@ import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 
 public class SpellItem extends AbstractSpellItem {
 	public static enum ItemType {
@@ -52,40 +49,6 @@ public class SpellItem extends AbstractSpellItem {
 
 	public SpellItem(Item.Properties properties) {
 		super(properties);
-	}
-
-	public boolean hurtEnemy(ItemStack itemStack, LivingEntity target, LivingEntity caster) {
-		// TODO on clic milieux, changer de mode si le spell est modal
-		final Result retour = new Result(itemStack);
-		if (!caster.level.isClientSide) {
-			try {
-				ISpell cap = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
-						.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
-				Spell spell = cap.getSpell();
-				if (spell != null) {
-					if (spell.castSpecial(1f, itemStack, target, caster.level, caster, null)) {
-						try {
-							retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
-						} catch (NotAnItemException e) {
-							e.printStackTrace();
-						}
-						if (retour.consume) {
-							retour.resultType = ActionResultType.CONSUME;
-							retour.result = ActionResult.consume(itemStack);
-						} else {
-							retour.resultType = ActionResultType.SUCCESS;
-							retour.result = ActionResult.success(itemStack);
-						}
-					} else {
-						retour.resultType = ActionResultType.PASS;
-					}
-				}
-			} catch (SpellCapabilityException e) {
-				e.printStackTrace();
-			}
-		}
-		// if(retour.resultType)
-		return super.hurtEnemy(itemStack, target, caster);
 	}
 
 	public boolean isFoil(ItemStack itemStack) {

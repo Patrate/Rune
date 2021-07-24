@@ -2,13 +2,16 @@ package fr.emmuliette.rune.mod.spells;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -20,12 +23,22 @@ public class Spell {
 	private String name;
 	private AbstractCastComponent<?> startingComponent;
 	private List<AbstractSpellComponent> components;
+	private List<SpellTag> tags;
 	private Cost<?> cost;
 
-	public Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components) {
+	public Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components, List<SpellTag> tags) {
 		this.name = name;
 		this.startingComponent = startingComponent;
 		this.components = components;
+		Set<SpellTag> uniqTag = new HashSet<SpellTag>();
+		for(SpellTag tag:tags) {
+			if(tag.isUnique())
+				if(!uniqTag.add(tag)) {
+					RuneMain.LOGGER.error("THE TAG " + tag + " MUST BE UNIQUE IN A SPELL");
+					// TODO throw error
+				}
+		}
+		this.tags = tags;
 		int i = 0;
 		for (AbstractSpellComponent component : components) {
 			component.setSpellInternalId(i++);
@@ -72,6 +85,14 @@ public class Spell {
 
 	public <T> T getPropertyValue(int componentId, String key, T defaut) {
 		return (T) components.get(componentId).getPropertyValue(key, defaut);
+	}
+	
+	public List<SpellTag> getTags() {
+		return tags;
+	}
+	
+	public boolean hasTag(SpellTag tag) {
+		return tags.contains(tag);
 	}
 
 	private static final String NBT_NAME = "NAME";

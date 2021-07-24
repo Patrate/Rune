@@ -11,7 +11,7 @@ import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
-import fr.emmuliette.rune.mod.spells.tags.SpellTag;
+import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -125,7 +125,7 @@ public abstract class AbstractSpellComponent {
 	}
 
 	public boolean validate() {
-		SpellTag tags = getTags();
+		MainTag tags = getTags();
 		for (Tag t : tags.getTagSet()) {
 			if (t instanceof RestrictionTag) {
 				if (!((RestrictionTag) t).isValid())
@@ -145,7 +145,7 @@ public abstract class AbstractSpellComponent {
 		this.parent = parent;
 	}
 
-	public SpellTag getTags() {
-		return SpellTag.getTags(this);
+	public MainTag getTags() {
+		return MainTag.getTags(this);
 	}
 }
