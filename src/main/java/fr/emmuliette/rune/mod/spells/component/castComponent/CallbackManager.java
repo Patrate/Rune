@@ -3,6 +3,7 @@ package fr.emmuliette.rune.mod.spells.component.castComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class CallbackManager {
 	}
 
 	public static void register(Callback cb) {
-		if (cb.getTriggerTick() <= currentTick) {
+		if (cb.getTriggerTick() <= currentTick && cb.getTriggerTick() != -1) {
 			// TODO throw badTickException
 			RuneMain.LOGGER.error(
 					"WARNING registering on bad tick ! trigger " + cb.getTriggerTick() + " vs current " + currentTick);
@@ -61,8 +62,12 @@ public class CallbackManager {
 			return;
 		}
 		currentTick = getCurrentTick() + 1;
-		for (Callback cb : listeningCB) {
-			cb.tick();
+		Iterator<Callback> cbIt = listeningCB.iterator();
+		while(cbIt.hasNext()) {
+			Callback cb = cbIt.next();
+			if(cb.tick() == false) {
+				cbIt.remove();
+			}
 		}
 		if (!callBackList.containsKey(getCurrentTick())) {
 			return;

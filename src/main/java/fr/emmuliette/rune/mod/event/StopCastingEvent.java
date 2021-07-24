@@ -7,10 +7,12 @@ import net.minecraftforge.eventbus.api.Event;
 public class StopCastingEvent extends Event{
 	private Spell spell;
 	private LivingEntity caster;
+	private int count;
 	
-	public StopCastingEvent(Spell spell, LivingEntity caster) {
+	public StopCastingEvent(Spell spell, LivingEntity caster, int count) {
 		this.spell = spell;
 		this.caster = caster;
+		this.count = count;
 	}
 
 	public Spell getSpell() {
@@ -19,6 +21,10 @@ public class StopCastingEvent extends Event{
 
 	public LivingEntity getCaster() {
 		return caster;
+	}
+	
+	public int getCount() {
+		return count;
 	}
 	
 }

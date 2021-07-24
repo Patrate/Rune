@@ -15,6 +15,8 @@ import fr.emmuliette.rune.mod.items.SpellItem;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.ProjectileComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.SelfComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.TouchComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChannelingModComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChargingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.LoadingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.manaMod.ManaTankModComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.DamageComponent;
@@ -29,13 +31,20 @@ import net.minecraftforge.common.ToolType;
 
 public enum ModObjects {
 	BLANK_RUNE(new ModItem("blank_rune", RuneMain.RUNE_GROUP)),
+	// Cast
 	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_GROUP, ProjectileComponent.class)),
 	TOUCH_RUNE(new RuneModItem("touch_rune", RuneMain.RUNE_GROUP, TouchComponent.class)),
 	SELF_RUNE(new RuneModItem("self_rune", RuneMain.RUNE_GROUP, SelfComponent.class)),
 
-	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_GROUP, LoadingModComponent.class)),
+	// Cast mod
+	LOAD_RUNE(new RuneModItem("load_rune", RuneMain.RUNE_GROUP, LoadingModComponent.class)),
+	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_GROUP, ChargingModComponent.class)),
+	CHANNEL_RUNE(new RuneModItem("channel_rune", RuneMain.RUNE_GROUP, ChannelingModComponent.class)),
+	
+	// Cost mod
 	MANA_TANK_RUNE(new RuneModItem("mana_tank_rune", RuneMain.RUNE_GROUP, ManaTankModComponent.class)),
 	
+	// Effect
 	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_GROUP, FireComponent.class)),
 	DAMAGE_RUNE(new RuneModItem("damage_rune", RuneMain.RUNE_GROUP, DamageComponent.class)),
 	TELEPORT_RUNE(new RuneModItem("teleport_rune", RuneMain.RUNE_GROUP, TeleportComponent.class)),

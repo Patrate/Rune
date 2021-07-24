@@ -1,9 +1,24 @@
 package fr.emmuliette.rune.mod.spells.properties.possibleValue;
 
+import com.google.common.base.Function;
+
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
 
 public class PossibleInt extends PossibleValues<Integer> {
+	public static Function<Integer, Float> ZERO = new Function<Integer, Float>(){
+		@Override
+		public Float apply(Integer input) {
+			return 0f;
+		}
+	};
+	public static Function<Integer, Float> ONE_FOR_ONE = new Function<Integer, Float>(){
+		@Override
+		public Float apply(Integer input) {
+			return (float) input;
+		}
+	};
+	
 	private int min, max, step;
 
 	public PossibleInt() {

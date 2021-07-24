@@ -1,8 +1,23 @@
 package fr.emmuliette.rune.mod.spells.properties.possibleValue;
 
+import com.google.common.base.Function;
+
 import net.minecraft.nbt.StringNBT;
 
 public class PossibleBoolean extends PossibleValues<Boolean>{
+	public static Function<Boolean, Float> ZERO = new Function<Boolean, Float>(){
+		@Override
+		public Float apply(Boolean input) {
+			return 0f;
+		}
+	};
+	public static Function<Boolean, Float> PLUS_ONE_IF_TRUE = new Function<Boolean, Float>(){
+		@Override
+		public Float apply(Boolean input) {
+			return (input)?1f:0f;
+		}
+	};
+	
 	public PossibleBoolean() {
 		this(true);
 	}

@@ -104,21 +104,13 @@ public abstract class AbstractSpellItem extends Item {
 			Hand hand) {
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			if (spell.hasTag(SpellTag.CHARGING)) {
-				spell.setCacheTarget(target);
+			spell.setCacheTarget(target);
+			Result retour = castSpell(spell, 1f, itemStack, target, null, caster, null, null, hand);
+			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
+					&& retour.resultType == ActionResultType.SUCCESS) {
 				caster.startUsingItem(hand);
-				// TODO startcharging
-				return ActionResultType.PASS;
-			} else if (spell.hasTag(SpellTag.CHANNELING)) {
-				caster.startUsingItem(hand);
-				// TODO startCastingSpell
 				return ActionResultType.PASS;
 			}
-			Result retour = castSpell(spell, 1f, itemStack, target, null, caster, null, null, hand);
-			if (spell.hasTag(SpellTag.LOADING) && retour.resultType == ActionResultType.SUCCESS) {
-				caster.startUsingItem(hand);
-				return ActionResultType.PASS;
-			} 
 			return retour.resultType;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -132,20 +124,12 @@ public abstract class AbstractSpellItem extends Item {
 		ItemStack itemStack = caster.getItemInHand(hand);
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			if (spell.hasTag(SpellTag.CHARGING)) {
-				// TODO startcharging
-				caster.startUsingItem(hand);
-				return ActionResult.pass(itemStack);
-			} else if (spell.hasTag(SpellTag.CHANNELING)) {
-				// TODO startCastingSpell
+			Result retour = castSpell(spell, 1f, itemStack, null, world, caster, null, null, hand);
+			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
+					&& retour.resultType == ActionResultType.SUCCESS) {
 				caster.startUsingItem(hand);
 				return ActionResult.pass(itemStack);
 			}
-			Result retour = castSpell(spell, 1f, itemStack, null, world, caster, null, null, hand);
-			if (spell.hasTag(SpellTag.LOADING) && retour.resultType == ActionResultType.SUCCESS) {
-				caster.startUsingItem(hand);
-				return ActionResult.pass(itemStack);
-			} 
 			return retour.result;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -160,20 +144,11 @@ public abstract class AbstractSpellItem extends Item {
 
 		try {
 			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-			if (spell.hasTag(SpellTag.CHARGING)) {
-				spell.setCacheBlock(itemUseContext.getClickedPos());
-				// TODO startcharging
-				itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
-				return ActionResultType.PASS;
-			} else if (spell.hasTag(SpellTag.CHANNELING)) {
-				// TODO *startCastingSpell
-				itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
-				return ActionResultType.PASS;
-			}
-			Result retour;
-			retour = castSpell(spell, 1f, itemStack, null, null, itemUseContext.getPlayer(), null, itemUseContext,
-					itemUseContext.getHand());
-			if (spell.hasTag(SpellTag.LOADING) && retour.resultType == ActionResultType.SUCCESS) {
+			spell.setCacheBlock(itemUseContext.getClickedPos());
+			Result retour = castSpell(spell, 1f, itemStack, null, null, itemUseContext.getPlayer(), null,
+					itemUseContext, itemUseContext.getHand());
+			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
+					&& retour.resultType == ActionResultType.SUCCESS) {
 				itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
 				return ActionResultType.PASS;
 			}
@@ -183,32 +158,18 @@ public abstract class AbstractSpellItem extends Item {
 		}
 		return ActionResultType.PASS;
 	}
-	
-	@Override
-	public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-		super.onUsingTick(stack, player, count);
-	}
-	
+
 	// On release using
 	@Override
 	public void releaseUsing(ItemStack itemStack, World world, LivingEntity caster, int tick) {
 		int chargeTime = this.getUseDuration(itemStack) - tick;
 		if (chargeTime < 0)
 			return;
-		float power = getPowerForTime(chargeTime);
-		if (((double) power < 0.1D))
-			return;
-
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			if (spell.hasTag(SpellTag.CHARGING)) {
-				LivingEntity target = spell.getCacheTarget();
-				BlockPos block = spell.getCacheBlock();
-				castSpell(spell, power, itemStack, target, world, caster, block, null,
-						(caster.getItemInHand(Hand.MAIN_HAND) == itemStack) ? Hand.MAIN_HAND : Hand.OFF_HAND);
-				return;
-			} else if (spell.hasTag(SpellTag.CHANNELING) || spell.hasTag(SpellTag.LOADING)) {
-				StopCastingEvent event = new StopCastingEvent(spell, caster);
+			if (spell.hasTag(SpellTag.CHANNELING) || spell.hasTag(SpellTag.LOADING)
+					|| spell.hasTag(SpellTag.CHARGING)) {
+				StopCastingEvent event = new StopCastingEvent(spell, caster, chargeTime);
 				MinecraftForge.EVENT_BUS.post(event);
 				return;
 			}

@@ -102,4 +102,8 @@ public class SpellContext {
 	public ItemUseContext getItemUseContext() {
 		return itemUseContext;
 	}
+	
+	public void setPower(float power) {
+		this.power = power;
+	}
 }
