@@ -34,7 +34,7 @@ public class BlockEffectComponent extends AbstractEffectComponent {
 	private boolean moveBlocks(World world, BlockPos block, Direction moveDir) {
 		BlockPos blockpos = block.relative(moveDir);
 		if (world.getBlockState(blockpos).getBlockState() == Blocks.AIR.defaultBlockState()) {
-			System.out.println("ITS AIR ALRIGHT");
+			// TODO le 3eme paramètr ecékoa ? Et aussi apparemment ça met pas le lboc à jour tout le temps ici
 			world.setBlock(blockpos, world.getBlockState(block), 0);
 			world.setBlock(block, Blocks.AIR.defaultBlockState(), 18);
 		}
