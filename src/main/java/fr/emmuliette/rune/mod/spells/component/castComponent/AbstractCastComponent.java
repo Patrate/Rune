@@ -152,6 +152,17 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		}
 		return cost;
 	}
+	
+	@Override
+	public float getMaxPower() {
+		float maxPower = 0f;
+		for (AbstractSpellComponent sc : getChildrens()) {
+			if(sc.getMaxPower() > maxPower)
+				maxPower = sc.getMaxPower();
+		}
+		return maxPower;
+	}
+
 
 	@Override
 	public int getCooldown() {

@@ -157,4 +157,14 @@ public class Spell {
 	public void setCacheBlock(BlockPos cacheBlock) {
 		this.cacheBlock = cacheBlock;
 	}
+	
+	public float getMaxPower() {
+		// TODO
+		return 1f;
+	}
+	
+	public Cost<?> getTickCost() {
+		// TODO
+		return this.getCost();
+	}
 }

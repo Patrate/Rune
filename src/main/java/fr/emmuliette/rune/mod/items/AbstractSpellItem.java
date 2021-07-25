@@ -2,10 +2,14 @@ package fr.emmuliette.rune.mod.items;
 
 import javax.annotation.Nonnull;
 
+import fr.emmuliette.rune.exception.CasterCapabilityException;
+import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.spells.Spell;
@@ -49,7 +53,7 @@ public abstract class AbstractSpellItem extends Item {
 			try {
 				Spell spell = getSpell(itemStack, caster);
 				if (spell != null) {
-					if (spell.castSpecial(1f, itemStack, target, caster.level, caster, null)) {
+					if (spell.castSpecial(getPower(caster), itemStack, target, caster.level, caster, null)) {
 						try {
 							retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
 						} catch (NotAnItemException e) {
@@ -106,7 +110,7 @@ public abstract class AbstractSpellItem extends Item {
 		try {
 			Spell spell = getSpell(itemStack, caster);
 			spell.setCacheTarget(target);
-			Result retour = castSpell(spell, 1f, itemStack, target, null, caster, null, null, hand);
+			Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null, hand);
 			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
 					&& retour.resultType == ActionResultType.SUCCESS) {
 				caster.startUsingItem(hand);
@@ -125,7 +129,7 @@ public abstract class AbstractSpellItem extends Item {
 		ItemStack itemStack = caster.getItemInHand(hand);
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			Result retour = castSpell(spell, 1f, itemStack, null, world, caster, null, null, hand);
+			Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null, hand);
 			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
 					&& retour.resultType == ActionResultType.SUCCESS) {
 				caster.startUsingItem(hand);
@@ -146,7 +150,7 @@ public abstract class AbstractSpellItem extends Item {
 		try {
 			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
 			spell.setCacheBlock(itemUseContext.getClickedPos());
-			Result retour = castSpell(spell, 1f, itemStack, null, null, itemUseContext.getPlayer(), null,
+			Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null, itemUseContext.getPlayer(), null,
 					itemUseContext, itemUseContext.getHand());
 			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
 					&& retour.resultType == ActionResultType.SUCCESS) {
@@ -181,17 +185,17 @@ public abstract class AbstractSpellItem extends Item {
 
 	public Result castSpell(Spell spell, float power, @Nonnull ItemStack itemStack, LivingEntity target, World world,
 			@Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
-		return internalcastSpell(spell, itemStack, target, world, caster, block, itemUseContext, hand);
+		return internalcastSpell(spell, power, itemStack, target, world, caster, block, itemUseContext, hand);
 	}
 
-	protected final Result internalcastSpell(Spell spell, @Nonnull ItemStack itemStack, LivingEntity target,
+	protected final Result internalcastSpell(Spell spell, float power, @Nonnull ItemStack itemStack, LivingEntity target,
 			World world, @Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
 		final Result retour = new Result(itemStack);
 		if (spell == null || caster.hasEffect(ModEffects.SILENCED.get())) {
 			return retour;
 		}
 		if (!caster.level.isClientSide) {
-			Boolean cont = spell.cast(1f, itemStack, target, world, caster, block, itemUseContext);
+			Boolean cont = spell.cast(power, itemStack, target, world, caster, block, itemUseContext);
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
@@ -212,7 +216,7 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.PASS;
 			}
 		} else {
-			Boolean cont = spell.castable(1f, itemStack, target, world, caster, block, itemUseContext);
+			Boolean cont = spell.castable(power, itemStack, target, world, caster, block, itemUseContext);
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
@@ -294,5 +298,16 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public int getUseDuration(ItemStack iStack) {
 		return 72000;
+	}
+	
+	private float getPower(LivingEntity caster) {
+		try {
+			ICaster cap = caster.getCapability(CasterCapability.CASTER_CAPABILITY)
+					.orElseThrow(new CasterCapabilityExceptionSupplier(caster));
+			return cap.getPower();
+		} catch(CasterCapabilityException e) {
+			e.printStackTrace();
+			return 1f;
+		}
 	}
 }

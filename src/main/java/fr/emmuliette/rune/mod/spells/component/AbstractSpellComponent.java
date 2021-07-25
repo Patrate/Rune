@@ -148,4 +148,8 @@ public abstract class AbstractSpellComponent {
 	public MainTag getTags() {
 		return MainTag.getTags(this);
 	}
+	
+	public float getMaxPower() {
+		return 1f;
+	}
 }

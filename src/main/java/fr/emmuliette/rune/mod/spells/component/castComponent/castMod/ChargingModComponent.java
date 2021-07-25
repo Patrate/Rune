@@ -40,77 +40,89 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 		super(PROPFACT, parent);
 	}
 
+	private class ChargingCallback extends Callback {
+		public ChargingCallback(AbstractCastModComponent parent, SpellContext context) {
+			super(parent, context, -1, true);
+		}
+		private int tick;
+		private int modulo;
+		private float power, maxPower;
+
+		@Override
+		public boolean begin() {
+			tick = 0;
+			power = this.getContext().getPower();
+			maxPower = getMaxPower();
+			System.out.println("STARTING CHARGE: " + power + "/ " + maxPower);
+			modulo = ((ChargingModComponent) getParent()).getChargeSpeed();
+			listeningCB.add(this);
+			this.getContext().getWorld().playSound(null, this.getContext().getCaster().getX(), this.getContext().getCaster().getY(),
+					this.getContext().getCaster().getZ(), ModSounds.CHARGING_BEGIN, SoundCategory.AMBIENT, 1.0f, 0.4f);
+			return true;
+		}
+
+		@Override
+		public boolean _callBack() {
+			return true;
+		}
+
+		@Override
+		public boolean finalize(boolean result) {
+			if (this.getContext().getCaster().isUsingItem())
+				this.getContext().getCaster().stopUsingItem();
+			if (result)
+				this.getContext().getWorld().playSound(null, this.getContext().getCaster().getX(), this.getContext().getCaster().getY(),
+						this.getContext().getCaster().getZ(), ModSounds.CHARGING_END, SoundCategory.AMBIENT, 1.0f, 0.4f);
+			return result;
+		}
+
+		@Override
+		public boolean tick() {
+			if(power >= maxPower) {
+				return true;
+			}
+			++tick;
+			if (tick == modulo) {
+				tick = 0;
+				try {
+					ICaster cap = this.getContext().getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
+							.orElseThrow(new CasterCapabilityExceptionSupplier(this.getContext().getCaster()));
+					Cost<?> cost = getCost(); // TODO Change for spell tickCost ?
+					if (cost.canPay(cap, this.getContext())) {
+						payCost(cap, this.getContext());
+						this.getContext().getWorld().playSound(null, this.getContext().getCaster().getX(), this.getContext().getCaster().getY(),
+								this.getContext().getCaster().getZ(), ModSounds.CHARGING_TICK, SoundCategory.AMBIENT, 1.0f,
+								0.4f);
+						power += 1f;
+						System.out.println("CURRENT CHARGE: " + power + "/ " + maxPower);
+						return true;
+					} else {
+						return true;
+					}
+				} catch (CasterCapabilityException | NotEnoughManaException e) {
+					e.printStackTrace();
+				}
+			}
+			return true;
+		}
+	}
+	
 	@Override
 	public Callback castCallback(SpellContext context) {
-		return new Callback(this, context, -1, true) {
-			private int tick;
-			private int modulo;
-
-			@Override
-			public boolean begin() {
-				tick = 0;
-				modulo = ((ChargingModComponent) getParent()).getChargeSpeed();
-				listeningCB.add(this);
-				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-						context.getCaster().getZ(), ModSounds.CHARGING_BEGIN, SoundCategory.AMBIENT, 1.0f, 0.4f);
-				return true;
-			}
-
-			@Override
-			public boolean _callBack() {
-				return true;
-			}
-
-			@Override
-			public boolean finalize(boolean result) {
-				if (context.getCaster().isUsingItem())
-					context.getCaster().stopUsingItem();
-				if (result)
-					context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-							context.getCaster().getZ(), ModSounds.CHARGING_END, SoundCategory.AMBIENT, 1.0f, 0.4f);
-				return result;
-			}
-
-			@Override
-			public boolean tick() {
-				++tick;
-				if (tick == modulo) {
-					tick = 0;
-					try {
-						ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
-								.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-						Cost<?> cost = getCost();
-						if (cost.canPay(cap, context)) {
-							System.out.println("CHARGE ++");
-							payCost(cap, context);
-							context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
-									context.getCaster().getZ(), ModSounds.CHARGING_TICK, SoundCategory.AMBIENT, 1.0f,
-									0.4f);
-							return true;
-						} else {
-							return false;
-						}
-					} catch (CasterCapabilityException | NotEnoughManaException e) {
-						e.printStackTrace();
-					}
-				}
-				return true;
-			}
-
-		};
+		return new ChargingCallback(this, context);
 	}
 
 	@SubscribeEvent
 	public static void castOnRelease(StopCastingEvent event) {
-		List<Callback> finishedCB = new ArrayList<Callback>();
+		List<ChargingCallback> finishedCB = new ArrayList<ChargingCallback>();
 		for (Callback cb : listeningCB) {
-			if (cb.getContext().getCaster() == event.getCaster()) {
-				finishedCB.add(cb);
+			if (cb instanceof ChargingCallback && cb.getContext().getCaster() == event.getCaster()) {
+				finishedCB.add((ChargingCallback) cb);
 			}
 		}
-		for (Callback cb : finishedCB) {
+		for (ChargingCallback cb : finishedCB) {
 			// Number of tick divided by tickCount for 1 power
-			cb.getContext().setPower(event.getCount() / ((ChargingModComponent) cb.getParent()).getChargeSpeed());
+			cb.getContext().setPower(cb.power);
 			cb.castChildren();
 			cb.finish(true);
 		}

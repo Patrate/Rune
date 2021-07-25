@@ -62,7 +62,7 @@ public class GrimoireSpellItem extends AbstractSpellItem {
 	@Override
 	public Result castSpell(Spell spell, float power, @Nonnull ItemStack itemStack, LivingEntity target, World world,
 			@Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
-		return internalcastSpell(spell, itemStack, target, world, caster, block, itemUseContext, hand);
+		return internalcastSpell(spell, power, itemStack, target, world, caster, block, itemUseContext, hand);
 	}
 
 	@SubscribeEvent

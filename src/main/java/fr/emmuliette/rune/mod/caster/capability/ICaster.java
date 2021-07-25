@@ -14,6 +14,8 @@ public interface ICaster {
 	public Grimoire getGrimoire();
 	public void setGrimoire(Grimoire grimoire);
 
+	public float getPower();
+	public void setPower(float power);
 	public float getMana();
 	public float getMaxMana();
 	public int getManaRegenTick();

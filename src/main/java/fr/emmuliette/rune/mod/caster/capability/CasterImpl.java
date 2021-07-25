@@ -16,9 +16,11 @@ import net.minecraft.nbt.IntNBT;
 public class CasterImpl implements ICaster {
 	private final static String GRIMOIRE_KEY = "grimoire", MANA_KEY = "mana", MAXMANA_KEY = "max_mana",
 			COOLDOWN_KEY = "cooldown";
-	private final static float BASE_MANA = 50;
+	private final static float BASE_MANA = 50, BASE_POWER = 1f;
+	private final static int BASE_MANA_REGEN = 40;
 	private Grimoire grimoire;
 	private Entity owner;
+	private float power;
 	private float currentMana;
 	private float maxMana;
 	private int currentManaRegen;
@@ -28,9 +30,10 @@ public class CasterImpl implements ICaster {
 	public CasterImpl(Entity owner) {
 		this.owner = owner;
 		grimoire = new Grimoire();
+		power = BASE_POWER;
 		currentMana = BASE_MANA;
 		maxMana = BASE_MANA;
-		manaRegen = 80;
+		manaRegen = BASE_MANA_REGEN;
 		currentManaRegen = 0;
 		cooldown = 0;
 	}
@@ -199,5 +202,15 @@ public class CasterImpl implements ICaster {
 		if (owner instanceof ServerPlayerEntity) {
 			SyncHandler.sendTo(new CasterPacket(this.toNBT()), (ServerPlayerEntity) owner);
 		}
+	}
+
+	@Override
+	public float getPower() {
+		return power;
+	}
+	
+	@Override
+	public void setPower(float power) {
+		this.power = power;
 	}
 }
