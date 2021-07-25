@@ -3,12 +3,14 @@ package fr.emmuliette.rune.setup;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.SyncHandler;
+import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.spells.SpellRecipe;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.potion.Effect;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -21,7 +23,11 @@ public class Registration {
 			RuneMain.MOD_ID);
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RuneMain.MOD_ID);
 
-	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, RuneMain.MOD_ID);
+	public static final DeferredRegister<Effect> EFFECTS = DeferredRegister.create(ForgeRegistries.POTIONS,
+			RuneMain.MOD_ID);
+
+	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE = DeferredRegister
+			.create(ForgeRegistries.RECIPE_SERIALIZERS, RuneMain.MOD_ID);
 
 	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> SPELL_RECIPE = Registration.RECIPE
 			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<>(SpellRecipe::new));
@@ -31,9 +37,12 @@ public class Registration {
 		BLOCKS.register(modEventBus);
 		ITEMS.register(modEventBus);
 		RECIPE.register(modEventBus);
+		EFFECTS.register(modEventBus);
+
+		ModEffects.register();
 		ModObjects.register();
 		SyncHandler.register();
-		
+
 		MainTag.register();
 	}
 }

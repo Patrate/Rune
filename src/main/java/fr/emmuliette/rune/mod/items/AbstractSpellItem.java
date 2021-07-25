@@ -6,6 +6,7 @@ import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
@@ -186,7 +187,7 @@ public abstract class AbstractSpellItem extends Item {
 	protected final Result internalcastSpell(Spell spell, @Nonnull ItemStack itemStack, LivingEntity target,
 			World world, @Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
 		final Result retour = new Result(itemStack);
-		if (spell == null) {
+		if (spell == null || caster.hasEffect(ModEffects.SILENCED.get())) {
 			return retour;
 		}
 		if (!caster.level.isClientSide) {

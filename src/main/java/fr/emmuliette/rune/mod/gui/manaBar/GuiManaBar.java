@@ -10,14 +10,18 @@ import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.spells.capability.ISpell;
 import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -60,10 +64,6 @@ public class GuiManaBar {
 		int screenWidth = minecraft.getWindow().getGuiScaledWidth();
 		int screenHeight = minecraft.getWindow().getGuiScaledHeight();
 		int tickCount = minecraft.gui.getGuiTicks();
-		bind(GUI_ICONS_LOCATION);
-
-		// minecraft.getProfiler().push("mana");
-		RenderSystem.enableBlend();
 
 		int mana = MathHelper.ceil(iplayer.getMana());
 		boolean highlight = manaBlinkTime > (long) tickCount && (manaBlinkTime - (long) tickCount) / 3L % 2L == 1L;
@@ -83,101 +83,143 @@ public class GuiManaBar {
 		}
 
 		lastMana = mana;
-		int manaLast = displayMana;
 
 		float manaMax = (float) iplayer.getMaxMana();
 		float bonusMana = 0;
 		int manaCost = 0;
-		ISpell cap = player.getItemInHand(Hand.MAIN_HAND).getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if (cap == null)
-			cap = player.getItemInHand(Hand.OFF_HAND).getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if (cap != null && cap.getSpell() != null)
-			manaCost = MathHelper.ceil(cap.getSpell().getCost().getManaCost());
+		ISpell spellCap = player.getItemInHand(Hand.MAIN_HAND).getCapability(SpellCapability.SPELL_CAPABILITY)
+				.orElse(null);
+		if (spellCap == null)
+			spellCap = player.getItemInHand(Hand.OFF_HAND).getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
+		if (spellCap != null && spellCap.getSpell() != null)
+			manaCost = MathHelper.ceil(spellCap.getSpell().getCost().getManaCost());
 
-		int manaRows = MathHelper.ceil((manaMax + bonusMana) / 2.0F / 10.0F);
-		int rowHeight = Math.max(10 - (manaRows - 2), 3);
+		int manaGold = MathHelper.ceil(((mana + bonusMana) - 20f) / 20f);
+		boolean overpriced = (manaCost > (bonusMana + mana));
+		float bonusRemaining = bonusMana;
+		int costRemaining = manaCost;
+
+		int rowHeight = 11;
 
 		Random random = new Random((long) (tickCount * 312871));
 
 		int left = screenWidth / 2 - 91;
 		int top = screenHeight - ForgeIngameGui.left_height;
-		ForgeIngameGui.left_height += (manaRows * rowHeight);
+		ForgeIngameGui.left_height += rowHeight;
 		if (rowHeight != 10)
 			ForgeIngameGui.left_height += 10 - rowHeight;
 
-		final int TOP = 0;// 9 * (minecraft.level.getLevelData().isHardcore() ? 5 : 0);
-		final int BACKGROUND = (highlight ? 27 : 0);
-		int MARGIN = 0;
-		// if (player.hasEffect(Effects.SILENCED)) MARGIN += 36; TODO faire la mécanique
-		// de silenced (pas de sort)
-		// else if (player.hasEffect(Effects.FREEMAGIC)) MARGIN += 72; TODO faire la
-		// mécanique de free spell
-		boolean overpriced = (manaCost > (bonusMana + mana));
-		float bonusRemaining = bonusMana;
-		int costRemaining = manaCost;
+		// TODO:
+		boolean silenced = player.hasEffect(ModEffects.SILENCED.get());
+//		boolean mana_regen = player.hasEffect(ModEffect.MANA_REGENERATION.get());
+//		boolean mana_poison = player.hasEffect(ModEffect.MANA_POISON.get());
+//		boolean mana_boost = player.hasEffect(ModEffect.MANA_BOOST.get());
+//		boolean free_spell = player.hasEffect(ModEffect.FREE_SPELL.get());
 
-		for (int i = MathHelper.ceil((manaMax + bonusMana) / 2.0F) - 1; i >= 0; --i) {
-			// int b0 = (highlight ? 1 : 0);
-			int row = MathHelper.ceil((float) (i + 1) / 10.0F) - 1;
-			int x = left + i % 10 * 8;
-			int y = top - row * rowHeight;
+		final int STEP = 9;
+		final int Y_BORDER = 0, Y_FULL = 9;
 
+		// Change when effect silenced is implemented
+		final int BACKGROUND = (silenced) ? 9 * STEP : 0;
+
+		int x = left - 18;
+		int y = top;
+		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x, y, 255);
+		
+		bind(GUI_ICONS_LOCATION);
+
+		// minecraft.getProfiler().push("mana");
+		RenderSystem.enableBlend();
+
+		for (int i = Math.min(9, MathHelper.ceil((manaMax + bonusMana) / 2.0F) - 1); i >= 0; --i) {
+			int manaTmp = (mana - 1) % 20 + 1;
+			x = left + i % 10 * 8;
+			y = top;
+			
 			if (mana <= 4 || overpriced)
 				y += random.nextInt(2);
 
-			blit(mStack, x, y, BACKGROUND, TOP, 9, 9);
+			// drawing background
+			// black if silenced
+			// normal otherwise
+			if (overpriced && i * 2 + 1 <= manaTmp) {
+				// red if overprice
+				if (i * 2 + 1 < manaTmp) // full
+					blit(mStack, x, y, STEP * 9, Y_FULL * 1, STEP, STEP);
+				else if (i * 2 + 1 == manaTmp) { // half
+					blit(mStack, x, y, STEP * 10, Y_FULL * 1, STEP, STEP);
+					blit(mStack, x, y, BACKGROUND + 1, Y_FULL * 1, STEP, STEP);
+				}
+			} else {
+				blit(mStack, x, y, BACKGROUND, Y_FULL * 1, STEP, STEP);
+			}
 
-			/*
-			 * if(overpriced) { blit(mStack, x, y, BACKGROUND - 8, TOP, 9, 9); }
-			 */
-
-			if (highlight) {
-				if (i * 2 + 1 < manaLast) // pair
-					blit(mStack, x, y, MARGIN + 27, TOP, 9, 9);
-				else if (i * 2 + 1 == manaLast) // impair
-					blit(mStack, x, y, MARGIN + 36, TOP, 9, 9);
+			// drawing border
+			if (manaGold > i) {
+				// gold if manaGold
+				blit(mStack, x, y, STEP * 12, Y_BORDER, STEP, STEP);
+			} else if (overpriced && i * 2 + 1 <= manaTmp) {
+				// red if overprice
+				if (i * 2 + 1 < manaTmp) // full
+					blit(mStack, x, y, STEP * 6, Y_BORDER, STEP, STEP);
+				else if (i * 2 + 1 == manaTmp) { // half
+					blit(mStack, x, y, STEP * 7, Y_BORDER, STEP, STEP);
+					if (highlight)
+						blit(mStack, x, y, STEP * 11, Y_BORDER, STEP, STEP);
+					else
+						blit(mStack, x, y, STEP * 2, Y_BORDER, STEP, STEP);
+				}
+			} else if (highlight) {
+				// white if highlight
+				blit(mStack, x, y, STEP * 9, Y_BORDER, STEP, STEP);
+			} else {
+				// black if normal
+				blit(mStack, x, y, 0, Y_BORDER, STEP, STEP);
 			}
 
 			if (overpriced) {
 				// Overpriced: red stars
-				if (i * 2 + 1 < mana) {
-					blit(mStack, x, y, MARGIN + 99, TOP, 9, 9);
-				} else if (i * 2 + 1 == mana) {
-					blit(mStack, x, y, MARGIN + 108, TOP, 9, 9);
+				if (i * 2 + 1 < manaTmp) {
+					// full
+					blit(mStack, x, y, STEP * 9, Y_FULL, STEP, STEP);
+				} else if (i * 2 + 1 == manaTmp) {
+					// half
+					blit(mStack, x, y, STEP * 10, Y_FULL, STEP, STEP);
 				}
 			} else if (bonusRemaining > 0.0F) {
 				// Bonus, gold star
 				if (bonusRemaining == bonusMana && bonusMana % 2.0F == 1.0F) {
-					blit(mStack, x, y, MARGIN + 153, TOP, 9, 9); // 17 TODO
+					blit(mStack, x, y, STEP * 6, Y_FULL, STEP, STEP);
 					bonusRemaining -= 1.0F;
 				} else {
-					blit(mStack, x, y, MARGIN + 144, TOP, 9, 9); // 16 TODO
+					blit(mStack, x, y, STEP * 7, Y_FULL, STEP, STEP);
 					bonusRemaining -= 2.0F;
 				}
 			} else if (costRemaining > 0) {
-				// Gost, yellow star
-				if (i * 2 + 1 < mana) {
+				if (i * 2 + 1 < manaTmp) {
 					if (costRemaining == 1) {
-						// half right side
-						blit(mStack, x, y, MARGIN + 90, TOP, 9, 9);
-						blit(mStack, x, y, MARGIN + 54, TOP, 9, 9);
+						// half right gold, half left blue
+						blit(mStack, x, y, STEP * 8, Y_FULL, STEP, STEP);
+						blit(mStack, x, y, STEP * 4, Y_FULL, STEP, STEP);
 						costRemaining -= 1.0F;
 					} else {
-						// full
-						blit(mStack, x, y, MARGIN + 72, TOP, 9, 9);
+						// full gold
+						blit(mStack, x, y, STEP * 6, Y_FULL, STEP, STEP);
 						costRemaining -= 2.0F;
 					}
-				} else if (i * 2 + 1 == mana) {
-					// half left side
-					blit(mStack, x, y, MARGIN + 81, TOP, 9, 9);
+				} else if (i * 2 + 1 == manaTmp) {
+					// half left gold
+					blit(mStack, x, y, STEP * 7, Y_FULL, STEP, STEP);
 					costRemaining -= 1.0F;
 				}
 			} else {
 				// Normal, blue stars
-				if (i * 2 + 1 < mana) {
-					blit(mStack, x, y, MARGIN + 45, TOP, 9, 9);
-				} else if (i * 2 + 1 == mana) {
-					blit(mStack, x, y, MARGIN + 54, TOP, 9, 9);
+				if (i * 2 + 1 < manaTmp) {
+					// full blue
+					blit(mStack, x, y, STEP * 3, Y_FULL, STEP, STEP);
+				} else if (i * 2 + 1 == manaTmp) {
+					// left side blue
+					blit(mStack, x, y, STEP * 4, Y_FULL, STEP, STEP);
 				}
 			}
 		}
@@ -189,6 +231,12 @@ public class GuiManaBar {
 
 	private static void blit(MatrixStack mStack, int x, int y, int i, int top, int j, int k) {
 		ForgeIngameGui.blit(mStack, x, y, 1, (float) i, (float) top, j, k, 256, 256);
+	}
+
+	private static void drawString(MatrixStack mStack, FontRenderer font, ITextComponent textCmp, int x, int y,
+			int rgbColor) {
+		ForgeIngameGui.drawString(mStack, font, textCmp, x, y, rgbColor);
+
 	}
 
 	private static void bind(ResourceLocation res) {

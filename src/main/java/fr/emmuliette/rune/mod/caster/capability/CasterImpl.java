@@ -16,7 +16,7 @@ import net.minecraft.nbt.IntNBT;
 public class CasterImpl implements ICaster {
 	private final static String GRIMOIRE_KEY = "grimoire", MANA_KEY = "mana", MAXMANA_KEY = "max_mana",
 			COOLDOWN_KEY = "cooldown";
-	private final static float BASE_MANA = 20;
+	private final static float BASE_MANA = 50;
 	private Grimoire grimoire;
 	private Entity owner;
 	private float currentMana;
