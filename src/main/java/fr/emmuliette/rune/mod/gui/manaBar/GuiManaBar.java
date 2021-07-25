@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.gui.manaBar;
 
+import java.awt.Color;
 import java.util.Random;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -35,7 +36,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE, value = Dist.CLIENT)
 public class GuiManaBar {
 	private static int lastMana = 0;
-	private static int displayMana;
 	private static long lastManaTime, manaBlinkTime;
 	public static final ResourceLocation GUI_ICONS_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/icons.png");
@@ -78,7 +78,6 @@ public class GuiManaBar {
 
 		if (Util.getMillis() - lastManaTime > 1000L) {
 			lastMana = mana;
-			displayMana = mana;
 			lastManaTime = Util.getMillis();
 		}
 
@@ -122,9 +121,10 @@ public class GuiManaBar {
 		// Change when effect silenced is implemented
 		final int BACKGROUND = (silenced) ? 9 * STEP : 0;
 
-		int x = left - 18;
+		int x = left - 8 * (int)Math.max(1, (Math.floor(Math.log10(mana))));
 		int y = top;
-		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x, y, 255);
+		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x+1, y+2, Color.BLUE.getRGB());
+		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x, y+1, Color.WHITE.getRGB());
 		
 		bind(GUI_ICONS_LOCATION);
 
