@@ -30,8 +30,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 public class Parchment {
 	private static final RenderType MAP_BACKGROUND = RenderType
 			.text(new ResourceLocation("textures/map/map_background.png"));
-	private static final RenderType MAP_BACKGROUND_CHECKERBOARD = RenderType
-			.text(new ResourceLocation("textures/map/map_background_checkerboard.png"));
+//	private static final RenderType MAP_BACKGROUND_CHECKERBOARD = RenderType
+//			.text(new ResourceLocation("textures/map/map_background_checkerboard.png"));
 
 	@SuppressWarnings("resource")
 	@SubscribeEvent

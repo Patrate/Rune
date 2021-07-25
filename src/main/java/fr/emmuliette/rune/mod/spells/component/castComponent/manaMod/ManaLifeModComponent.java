@@ -52,9 +52,9 @@ public class ManaLifeModComponent extends AbstractManaModComponent {
 		return in;
 	}
 
-	private String getMode() {
-		return getPropertyValue(KEY_MODE, MODE_RATIO);
-	}
+//	private String getMode() {
+//		return getPropertyValue(KEY_MODE, MODE_RATIO);
+//	}
 
 	private float getRate() {
 		return ((float) getPropertyValue(KEY_RATE, 0)) / 100;

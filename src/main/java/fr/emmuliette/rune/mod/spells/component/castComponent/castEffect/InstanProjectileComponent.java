@@ -1,7 +1,5 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
-import java.util.List;
-
 import com.google.common.base.Function;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
@@ -23,7 +21,7 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 	@Override
 	public boolean internalCast(SpellContext context) {
 		String mode = this.getPropertyValue(KEY_MODE, "laser");
-		List<Object> targets;
+//		List<Object> targets;
 		switch (mode) {
 		case ("eclair"):
 			// TODO

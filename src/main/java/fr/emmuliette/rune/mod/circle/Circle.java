@@ -66,20 +66,20 @@ public class Circle {
 		}
 	}
 
-	@SuppressWarnings("resource")
+//	@SuppressWarnings("resource")
 	public void renderCape(LivingRenderer<?, ?> renderer, MatrixStack mStack, IRenderTypeBuffer buffer) {
 
 		double d0 = renderer.getDispatcher().distanceToSqr(caster);
 		if (isCircleInRenderDistance(caster, d0)) {
 			float f = (float) caster.getY(); // Height I guess, position of the tag
-			int i = 0; // deadmaus wtf jsp ?
+			//int i = 0; // deadmaus wtf jsp ?
 			mStack.pushPose();
 			// mStack.mulPose(Vector3f.ZP.rotationDegrees(180));
 			mStack.translate(0.0D, (double) f, 0.0D);
-			float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
-			int j = (int) (f1 * 255.0F) << 24;
+			//float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
+			//int j = (int) (f1 * 255.0F) << 24;
 
-			IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.entitySolid(IMAGE_LOCATION));
+			//IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.entitySolid(IMAGE_LOCATION));
 
 			mStack.popPose();
 		}
@@ -116,19 +116,19 @@ public class Circle {
 		strength = (float) Math.min(Math.max(0, strength), 1);
 		AxisAlignedBB axisalignedbb = voxelshape.bounds();
 		double xMin = (double) blockpos.getX() + axisalignedbb.minX;
-		double xMax = (double) blockpos.getX() + axisalignedbb.maxX;
+//		double xMax = (double) blockpos.getX() + axisalignedbb.maxX;
 		double yMin = (double) entity.getY() + axisalignedbb.minY + 0.01;
 		double zMin = (double) blockpos.getZ() + axisalignedbb.minZ;
-		double zMax = (double) blockpos.getZ() + axisalignedbb.maxZ;
+//		double zMax = (double) blockpos.getZ() + axisalignedbb.maxZ;
 		float f1 = (float) (xMin - x) * 2f;
-		float f2 = (float) (xMax - x);
+//		float f2 = (float) (xMax - x);
 		float f3 = (float) (yMin - y);
 		float f4 = (float) (zMin - z) * 2f;
-		float f5 = (float) (zMax - z);
+//		float f5 = (float) (zMax - z);
 		float f6 = -f1 / 2.0F / radius + 0.5F;
-		float f7 = -f2 / 2.0F / radius + 0.5F;
+//		float f7 = -f2 / 2.0F / radius + 0.5F;
 		float f8 = -f4 / 2.0F / radius + 0.5F;
-		float f9 = -f5 / 2.0F / radius + 0.5F;
+//		float f9 = -f5 / 2.0F / radius + 0.5F;
 		//circleVertex(mStack, builder, strength, f1, f3, f4, f6, f8);
 		circleVertex(mStack, builder, strength, f1, f3, f4, f6, f8);
 		// circleVertex(mStack, builder, strength, f1, f3, f5, f6, f9);
