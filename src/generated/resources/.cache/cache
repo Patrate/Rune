@@ -1,6 +1,7 @@
 29a126e1afc38f2379efba61ddd0972bc3449173 assets/rune/blockstates/caster_block.json
 3aebd4860e532208331f36aa6c15886aef7049bc assets/rune/models/block/caster_block.json
 eee3d95b1f5217dc2b7d18b3456ab61960b79aa4 assets/rune/models/item/blank_rune.json
+01dccf92be66a0c40d1fe16be2abd90baa7c6b41 assets/rune/models/item/block_rune.json
 c32aa689a4e532a781ffeca334a7166783eff508 assets/rune/models/item/caster_block.json
 887f73b3cef0044d2af9bcd8d8759a12ee1a4431 assets/rune/models/item/channel_rune.json
 9c3b51acda049eda9e9fd932e88cb46092edbd69 assets/rune/models/item/charge_rune.json
