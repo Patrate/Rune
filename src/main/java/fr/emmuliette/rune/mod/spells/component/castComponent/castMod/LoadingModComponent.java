@@ -22,10 +22,8 @@ import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.Property;
+import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleBoolean;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,7 +39,7 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 
 	@Override
 	public Callback castCallback(SpellContext context) {
-		return new Callback(this, context, getChargeTime()) {
+		return new Callback(this, context, getChargeTime(context)) {
 
 			@Override
 			public boolean begin() {
@@ -106,7 +104,7 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 		for (Callback cb : listeningCB) {
 			if (cb.getParent() instanceof LoadingModComponent) {
 				if (cb.getContext().getCaster() == event.getEntityLiving() && !((LoadingModComponent) cb.getParent())
-						.getPropertyValue(KEY_IGNORE_CANCEL_ON_DAMAGE, false)) {
+						.getBoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE)) {
 					cancelledCB.add(cb);
 				}
 			}
@@ -126,10 +124,8 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD,
-							new Property<Integer>(KEY_CHARGE_TIME, new PossibleInt(1, 1, 6, 1), PossibleInt.ZERO))
-							.addNewProperty(Grade.GOLD, new Property<Boolean>(KEY_IGNORE_CANCEL_ON_DAMAGE,
-									new PossibleBoolean(false), PossibleBoolean.PLUS_ONE_IF_TRUE));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CHARGE_TIME, 10, new ManaCost(1)))
+							.addNewProperty(Grade.GOLD, new LevelProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, 1, new ManaCost(10)));
 				}
 			};
 			return retour;
@@ -138,13 +134,13 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 
 	@Override
 	public Cost<?> applyCostMod(Cost<?> in) {
-		int chargeTime = (int) this.getPropertyValue(KEY_CHARGE_TIME, 1);
-		in.remove(new ManaCost(null, chargeTime));
+		int chargeTime = (int) this.getIntProperty(KEY_CHARGE_TIME);
+		in.remove(new ManaCost(chargeTime));
 		return in;
 	}
 
-	private int getChargeTime() {
-		return 100 * this.getPropertyValue(KEY_CHARGE_TIME, 1);
+	private int getChargeTime(SpellContext context) {
+		return 100 * this.getIntProperty(KEY_CHARGE_TIME, context.getPower());
 	}
 
 	@Override

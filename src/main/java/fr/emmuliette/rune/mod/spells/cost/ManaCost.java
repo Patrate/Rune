@@ -9,6 +9,10 @@ import fr.emmuliette.rune.mod.spells.SpellContext;
 public class ManaCost extends Cost<Float> {
 	private float value;
 
+	public ManaCost(float value) {
+		this(null, value);
+	}
+	
 	public ManaCost(Map<Class<? extends Cost<?>>, Cost<?>> internalCost, float value) {
 		super(internalCost);
 		this.value = value;

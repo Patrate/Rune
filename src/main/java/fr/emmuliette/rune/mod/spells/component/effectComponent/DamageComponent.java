@@ -17,6 +17,7 @@ public class DamageComponent extends AbstractEffectComponent {
 	@Override
 	public boolean applyOnTarget(LivingEntity target, SpellContext context) {
 		// Damage = ceil(1.4 ^ power - 0.5)
+		System.out.println("Damage component with " + context.getPower() + " power doing " + (float) Math.ceil(Math.pow(1.4f, context.getPower()) - 0.5) + " damages");
 		target.hurt(DamageSource.GENERIC, (float) Math.ceil(Math.pow(1.4f, context.getPower()) - 0.5));
 		return true;
 	}
@@ -27,7 +28,9 @@ public class DamageComponent extends AbstractEffectComponent {
 	
 	@Override
 	public Cost<?> getCost() {
-		return new ManaCost(null, 1);
+		Cost<?> retour = new ManaCost(1);
+		retour.add(super.getCost());
+		return retour;
 	}
 	
 	@Override

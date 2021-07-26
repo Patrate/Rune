@@ -146,7 +146,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 
 	@Override
 	public Cost<?> getCost() {
-		Cost<?> cost = Cost.getZeroCost();
+		Cost<?> cost = super.getCost();
 		for (AbstractSpellComponent sc : getChildrens()) {
 			cost.add(sc.getCost());
 		}
@@ -161,6 +161,15 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 				maxPower = sc.getMaxPower();
 		}
 		return maxPower;
+	}
+	
+	@Override
+	public Cost<?> getBoostCost() {
+		Cost<?> boostCost = super.getBoostCost();
+		for (AbstractSpellComponent sc : getChildrens()) {
+				boostCost.add(sc.getBoostCost());
+		}
+		return boostCost;
 	}
 
 

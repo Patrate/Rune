@@ -1,7 +1,5 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.manaMod;
 
-import com.google.common.base.Function;
-
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
@@ -18,10 +16,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractManaModComp
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
-import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 
@@ -62,7 +57,7 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 	}
 
 	private int getCurrentMana() {
-		return getPropertyValue(KEY_CURRENT_MANA, 8);
+		return getIntProperty(KEY_CURRENT_MANA);
 	}
 
 	private int getCurrentMana(SpellContext context) {
@@ -73,7 +68,7 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 			return defaut;
 		}
 
-		return this.getPropertyValue(KEY_CURRENT_MANA, defaut);
+		return this.getIntProperty(KEY_CURRENT_MANA);
 		/*
 		 * ISpell ispell = item.getCapability(SpellCapability.SPELL_CAPABILITY)
 		 * .orElseThrow(new SpellCapabilityExceptionSupplier(context.getItemStack()));
@@ -111,7 +106,7 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 
 	@Override
 	public Cost<?> getCost() {
-		ManaCost paid = new ManaCost(null, this.getCurrentMana());
+		ManaCost paid = new ManaCost(this.getCurrentMana());
 		Cost<?> supCost = super.getCost();
 		supCost.remove(paid);
 		return supCost;
@@ -119,7 +114,7 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 
 	@Override
 	public Cost<?> applyCostMod(Cost<?> in) {
-		in.add(new ManaCost(null, (float) Math.ceil(in.getManaCost() * 0.3)));
+		in.add(new ManaCost((float) Math.ceil(in.getManaCost() * 0.3)));
 		return super.applyCostMod(in);
 	}
 
@@ -137,13 +132,13 @@ public class ManaTankModComponent extends AbstractManaModComponent {
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.SECRET,
-							new Property<Integer>(KEY_CURRENT_MANA, new PossibleInt(), new Function<Integer, Float>() {
-								@Override
-								public Float apply(Integer val) {
-									return 0f;
-								}
-							}));
+					// DEPRECATED
+					/*
+					 * this.addNewProperty(Grade.SECRET, new Property<Integer>(KEY_CURRENT_MANA, new
+					 * PossibleInt(), new Function<Integer, Float>() {
+					 * 
+					 * @Override public Float apply(Integer val) { return 0f; } }));
+					 */
 				}
 			};
 			return retour;

@@ -26,6 +26,8 @@ public class TeleportComponent extends AbstractEffectComponent {
 	
 	@Override
 	public Cost<?> getCost() {
-		return new ManaCost(null, 5);
+		Cost<?> retour = new ManaCost(5);
+		retour.add(super.getCost());
+		return retour;
 	}
 }

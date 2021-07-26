@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.component;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.UnknownPropertyException;
@@ -8,6 +9,9 @@ import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
@@ -70,13 +74,43 @@ public abstract class AbstractSpellComponent {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T getPropertyValue(String key, T defVal) {
+	public int getIntProperty(String key) {
 		if (properties.getProperty(key) != null) {
-			return (T) properties.getProperty(key).getValue();
+			return ((LevelProperty) properties.getProperty(key)).getValue();
 		} else {
-			RuneMain.LOGGER.error("unknown property " + key + " in component " + this.getClass().getSimpleName());
-			return defVal;
+			RuneMain.LOGGER.error("unknown level property " + key + " in component " + this.getClass().getSimpleName());
+			return 1;
+		}
+	}
+	
+
+	public int getIntProperty(String key, float boostVal) {
+		if (properties.getProperty(key) != null) {
+			if(boostVal >= 1f)
+				return ((LevelProperty) properties.getProperty(key)).getValue(boostVal);
+			else
+				return ((LevelProperty) properties.getProperty(key)).getValue();
+		} else {
+			RuneMain.LOGGER.error("unknown level property " + key + " in component " + this.getClass().getSimpleName());
+			return 1;
+		}
+	}
+	
+	public boolean getBoolProperty(String key) {
+		if (properties.getProperty(key) != null) {
+			return ((LevelProperty) properties.getProperty(key)).getValue() == 1;
+		} else {
+			RuneMain.LOGGER.error("unknown bool property " + key + " in component " + this.getClass().getSimpleName());
+			return false;
+		}
+	}
+	
+	public String getEnumProperty(String key) {
+		if (properties.getProperty(key) != null) {
+			return ((EnumProperty) properties.getProperty(key)).getValue();
+		} else {
+			RuneMain.LOGGER.error("unknown enum property " + key + " in component " + this.getClass().getSimpleName());
+			return null;
 		}
 	}
 
@@ -109,8 +143,6 @@ public abstract class AbstractSpellComponent {
 		 */
 		return retour;
 	}
-
-	public abstract Cost<?> getCost();
 
 	public int getCooldown() {
 		return 0;
@@ -150,6 +182,38 @@ public abstract class AbstractSpellComponent {
 	}
 	
 	public float getMaxPower() {
-		return 1f;
+		float maxPower = 0f;
+		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
+		for(Property<?> prop:propList) {
+			if(prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
+				float tmpMax = ((LevelProperty)prop).getMaxLevel() - ((LevelProperty)prop).getValue();
+				if(maxPower < tmpMax)
+					maxPower = tmpMax;
+			}
+		}
+		return maxPower;
+	}
+	
+	public Cost<?> getCost() {
+		Cost<?> retour = Cost.getZeroCost();
+		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
+		for(Property<?> prop:propList) {
+			retour.add(prop.getCost());
+		}
+		return retour;
+	}
+	
+	public Cost<?> getBoostCost() {
+		Cost<?> boostCost = null;
+		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
+		for(Property<?> prop:propList) {
+			if(prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
+				if(boostCost == null)
+					boostCost = ((LevelProperty)prop).getCostPerLevel();
+				else
+					boostCost.add(((LevelProperty)prop).getCostPerLevel());
+			}
+		}
+		return boostCost;
 	}
 }

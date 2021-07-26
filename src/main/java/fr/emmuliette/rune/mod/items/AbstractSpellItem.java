@@ -167,6 +167,9 @@ public abstract class AbstractSpellItem extends Item {
 	// On release using
 	@Override
 	public void releaseUsing(ItemStack itemStack, World world, LivingEntity caster, int tick) {
+		if(caster.level.isClientSide()) {
+			return;
+		}
 		int chargeTime = this.getUseDuration(itemStack) - tick;
 		if (chargeTime < 0)
 			return;

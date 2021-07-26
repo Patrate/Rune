@@ -11,7 +11,7 @@ public abstract class Cost<T> {
 	private Map<Class<? extends Cost<?>>, Cost<?>> internalCost;
 
 	public static Cost<?> getZeroCost() {
-		return new ManaCost(null, 0f);
+		return new ManaCost(0f);
 	}
 
 	@SuppressWarnings("unchecked")

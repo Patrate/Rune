@@ -12,6 +12,10 @@ import net.minecraft.item.ItemStack;
 public class ItemCost extends Cost<Map<Item, Integer>> {
 	private Map<Item, Integer> itemCost;
 
+	public ItemCost(Item item, Integer nbr) {
+		this(null, item, nbr);
+	}
+
 	public ItemCost(Map<Class<? extends Cost<?>>, Cost<?>> internalCost, Item item, Integer nbr) {
 		super(internalCost);
 		this.itemCost = new HashMap<Item, Integer>();

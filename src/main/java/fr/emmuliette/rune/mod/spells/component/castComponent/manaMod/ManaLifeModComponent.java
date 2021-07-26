@@ -1,6 +1,6 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.manaMod;
 
-import com.google.common.base.Function;
+import java.util.HashMap;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
@@ -9,11 +9,10 @@ import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.LifeCost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.Property;
+import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleEnum;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 
 public class ManaLifeModComponent extends AbstractManaModComponent {
 	private static final float MANA_TO_LIFE_RATIO = 0.5f;
@@ -45,7 +44,7 @@ public class ManaLifeModComponent extends AbstractManaModComponent {
 	public Cost<?> applyCostMod(Cost<?> in) {
 		float oldMana = in.getManaCost();
 		float lifeCost = oldMana * this.getRate();
-		ManaCost removedMana = new ManaCost(null, lifeCost);
+		ManaCost removedMana = new ManaCost(lifeCost);
 		LifeCost addedLife = new LifeCost(null, lifeCost * MANA_TO_LIFE_RATIO);
 		in.add(addedLife);
 		in.remove(removedMana);
@@ -57,7 +56,7 @@ public class ManaLifeModComponent extends AbstractManaModComponent {
 //	}
 
 	private float getRate() {
-		return ((float) getPropertyValue(KEY_RATE, 0)) / 100;
+		return ((float) getIntProperty(KEY_RATE)) / 100;
 	}
 
 	// PROPERTIES
@@ -71,21 +70,12 @@ public class ManaLifeModComponent extends AbstractManaModComponent {
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new Property<Integer>(KEY_RATE, new PossibleInt(100, 10, 100, 10),
-							new Function<Integer, Float>() {
-								@Override
-								public Float apply(Integer val) {
-									return 0f;
-								}
-							})).addNewProperty(Grade.WOOD,
-									new Property<String>(KEY_MODE,
-											new PossibleEnum(MODE_COMPLETE, MODE_RATIO, MODE_COMPLETE, MODE_PRIO),
-											new Function<String, Float>() {
-												@Override
-												public Float apply(String val) {
-													return 0f;
-												}
-											}));
+					HashMap<String, Cost<?>> modeMap = new HashMap<String, Cost<?>>();
+					modeMap.put(MODE_RATIO, Cost.getZeroCost());
+					modeMap.put(MODE_COMPLETE, Cost.getZeroCost());
+					modeMap.put(MODE_PRIO, Cost.getZeroCost());
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_RATE, 10, new ManaCost(1)))
+						.addNewProperty(Grade.WOOD, new EnumProperty(KEY_MODE, MODE_COMPLETE, modeMap));
 				}
 			};
 			return retour;

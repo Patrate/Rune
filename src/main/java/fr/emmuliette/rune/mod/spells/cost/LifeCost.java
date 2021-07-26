@@ -8,6 +8,10 @@ import fr.emmuliette.rune.mod.spells.SpellContext;
 public class LifeCost extends Cost<Float> {
 	private float value;
 
+	public LifeCost(float value) {
+		this(null, value);
+	}
+
 	public LifeCost(Map<Class<? extends Cost<?>>, Cost<?>> internalCost, float value) {
 		super(internalCost);
 		this.value = value;

@@ -1,17 +1,19 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
-import com.google.common.base.Function;
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
+import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleEnum;
 
 public class InstanProjectileComponent extends AbstractCastEffectComponent implements TargetAir {
 	public InstanProjectileComponent(AbstractSpellComponent parent) throws RunePropertiesException {
@@ -20,12 +22,13 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 
 	@Override
 	public boolean internalCast(SpellContext context) {
-		String mode = this.getPropertyValue(KEY_MODE, "laser");
+		String mode = this.getEnumProperty(KEY_MODE);
 //		List<Object> targets;
 		switch (mode) {
 		case ("eclair"):
 			// TODO
-			// Targets list = get all valid target in range, kinda around where we looking tho ?
+			// Targets list = get all valid target in range, kinda around where we looking
+			// tho ?
 			// for now, all livingentity != caster
 			break;
 		default:
@@ -54,13 +57,10 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new Property<String>(KEY_MODE,
-							new PossibleEnum("laser", "laser", "eclair"), new Function<String, Float>() {
-								@Override
-								public Float apply(String input) {
-									return (input.equals("laser")) ? 1f : 2f;
-								}
-							}));
+					Map<String, Cost<?>> modes = new HashMap<String, Cost<?>>();
+					modes.put("laser", Cost.getZeroCost());
+					modes.put("eclair", new ManaCost(3));
+					this.addNewProperty(Grade.WOOD, new EnumProperty(KEY_MODE, "laser", modes));
 				}
 			};
 			return retour;

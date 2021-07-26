@@ -6,10 +6,8 @@ import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.Property;
+import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleBoolean;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
@@ -40,7 +38,9 @@ public class FireComponent extends AbstractEffectComponent {
 
 	@Override
 	public Cost<?> getCost() {
-		return new ManaCost(null, 2);
+		Cost<?> retour = new ManaCost(3);
+		retour.add(super.getCost());
+		return retour;
 	}
 
 	@Override
@@ -57,8 +57,7 @@ public class FireComponent extends AbstractEffectComponent {
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD,
-							new Property<Integer>(KEY_DAMAGE_LEVEL, new PossibleInt(1, 1, 6, 1), PossibleInt.ZERO));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_DAMAGE_LEVEL, 10, new ManaCost(1)));
 				}
 			};
 			return retour;

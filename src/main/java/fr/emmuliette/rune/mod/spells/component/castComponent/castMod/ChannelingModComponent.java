@@ -24,10 +24,8 @@ import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.Property;
+import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleBoolean;
-import fr.emmuliette.rune.mod.spells.properties.possibleValue.PossibleInt;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,7 +48,7 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 			@Override
 			public boolean begin() {
 				tick = 0;
-				modulo = ((ChannelingModComponent) getParent()).getCastSpeed();
+				modulo = ((ChannelingModComponent) getParent()).getCastSpeed(context);
 				listeningCB.add(this);
 				context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
 						context.getCaster().getZ(), ModSounds.CHANNELING_BEGIN, SoundCategory.AMBIENT, 1.0f, 0.4f);
@@ -122,7 +120,7 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 		for (Callback cb : listeningCB) {
 			if (cb.getParent() instanceof ChannelingModComponent) {
 				if (cb.getContext().getCaster() == event.getEntityLiving() && !((ChannelingModComponent) cb.getParent())
-						.getPropertyValue(KEY_IGNORE_CANCEL_ON_DAMAGE, false)) {
+						.getBoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE)) {
 					cancelledCB.add(cb);
 				}
 			}
@@ -132,8 +130,8 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 		}
 	}
 
-	protected int getCastSpeed() {
-		return 75 - 10 * getPropertyValue(KEY_CAST_SPEED, 1);
+	protected int getCastSpeed(SpellContext context) {
+		return 75 - 10 * getIntProperty(KEY_CAST_SPEED, context.getPower());
 	}
 
 	// PROPERTIES
@@ -146,10 +144,8 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD,
-							new Property<Integer>(KEY_CAST_SPEED, new PossibleInt(1, 1, 5, 1), PossibleInt.ONE_FOR_ONE))
-							.addNewProperty(Grade.GOLD, new Property<Boolean>(KEY_IGNORE_CANCEL_ON_DAMAGE,
-									new PossibleBoolean(false), PossibleBoolean.PLUS_ONE_IF_TRUE));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CAST_SPEED, 10, new ManaCost(1))).addNewProperty(Grade.GOLD,
+							new LevelProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, 1, new ManaCost(10)));
 				}
 			};
 			return retour;
@@ -158,8 +154,8 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 
 	@Override
 	public Cost<?> applyCostMod(Cost<?> in) {
-		int chargeTime = (int) this.getPropertyValue(KEY_CAST_SPEED, 1);
-		in.add(new ManaCost(null, chargeTime));
+		int chargeTime = (int) this.getIntProperty(KEY_CAST_SPEED);
+		in.add(new ManaCost(chargeTime));
 		return in;
 	}
 

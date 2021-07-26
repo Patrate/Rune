@@ -88,9 +88,9 @@ public class Spell {
 		components.get(componentId).setPropertyValue(key, value);
 	}
 
-	public <T> T getPropertyValue(int componentId, String key, T defaut) {
+	/*public <T> T getPropertyValue(int componentId, String key, T defaut) {
 		return (T) components.get(componentId).getPropertyValue(key, defaut);
-	}
+	}*/
 
 	public List<SpellTag> getTags() {
 		return tags;

@@ -28,7 +28,9 @@ public class BlockEffectComponent extends AbstractEffectComponent {
 
 	@Override
 	public Cost<?> getCost() {
-		return new ManaCost(null, 1);
+		Cost<?> retour = new ManaCost(1);
+		retour.add(super.getCost());
+		return retour;
 	}
 
 	private boolean moveBlocks(World world, BlockPos block, Direction moveDir) {
