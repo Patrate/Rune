@@ -63,10 +63,17 @@ public class CallbackManager {
 		}
 		currentTick = getCurrentTick() + 1;
 		Iterator<Callback> cbIt = listeningCB.iterator();
+		Set<Callback> finalize = new HashSet<Callback>();
 		while(cbIt.hasNext()) {
 			Callback cb = cbIt.next();
 			if(cb.tick() == false) {
 				cbIt.remove();
+				finalize.add(cb);
+			}
+		}
+		if(!finalize.isEmpty()) {
+			for(Callback cb:finalize) {
+				cb.finalize(false);
 			}
 		}
 		if (!callBackList.containsKey(getCurrentTick())) {

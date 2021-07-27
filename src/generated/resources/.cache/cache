@@ -16,6 +16,7 @@ acfa5fa96a37ad43a37ddb614708f3a394be6c9b assets/rune/models/item/projectile_rune
 d198415474ff1b770933d0e633f3b1ee9ac1ec13 assets/rune/models/item/socket.json
 9a415e5cfd5657cb1deaf9d2558b528ef44e203d assets/rune/models/item/spell.json
 697e1f014bf7c4cb3b052447ed0f03356d4eb13e assets/rune/models/item/teleport_rune.json
+c37dc710a7f22fdc25a8cb6aa0a21030b2b6edc1 assets/rune/models/item/toggle_rune.json
 39bcf958245b67e4c6ee56ad3a79345bb39d081e assets/rune/models/item/touch_rune.json
 9cd88cf750d419915a570c18bc3f8b2c41f0dd6e data/forge/tags/blocks/storage_blocks.json
 dccc75afee42b692cd9e3d0c2f7975452ad5b23e data/forge/tags/blocks/storage_blocks/caster.json

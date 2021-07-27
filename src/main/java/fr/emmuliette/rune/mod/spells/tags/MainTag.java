@@ -15,6 +15,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractManaModComp
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChannelingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChargingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.LoadingModComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ToggleModComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 
 public class MainTag {
@@ -81,6 +82,7 @@ public class MainTag {
 		register(LoadingModComponent.class, new MainTag(BuildTag.CAST_MOD, SpellTag.LOADING));
 		register(ChargingModComponent.class, new MainTag(BuildTag.CAST_MOD, SpellTag.CHARGING));
 		register(ChannelingModComponent.class, new MainTag(BuildTag.CAST_MOD, SpellTag.CHANNELING));
+		register(ToggleModComponent.class, new MainTag(BuildTag.CAST_MOD, SpellTag.TOGGLE));
 
 		register(AbstractManaModComponent.class, new MainTag(BuildTag.MANA_MOD));
 	}

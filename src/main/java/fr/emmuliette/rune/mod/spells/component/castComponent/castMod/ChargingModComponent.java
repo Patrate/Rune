@@ -88,7 +88,7 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 				try {
 					ICaster cap = this.getContext().getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 							.orElseThrow(new CasterCapabilityExceptionSupplier(this.getContext().getCaster()));
-					Cost<?> cost = getBoostCost(); // TODO Change for spell tickCost ?
+					Cost<?> cost = getBoostCost();
 					if (cost.canPay(cap, this.getContext())) {
 						payCost(cap, this.getContext());
 						this.getContext().getWorld().playSound(null, this.getContext().getCaster().getX(),

@@ -18,6 +18,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.TouchCom
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChannelingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChargingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.LoadingModComponent;
+import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ToggleModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.manaMod.ManaTankModComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.BlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.DamageComponent;
@@ -41,6 +42,7 @@ public enum ModObjects {
 	LOAD_RUNE(new RuneModItem("load_rune", RuneMain.RUNE_GROUP, LoadingModComponent.class)),
 	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_GROUP, ChargingModComponent.class)),
 	CHANNEL_RUNE(new RuneModItem("channel_rune", RuneMain.RUNE_GROUP, ChannelingModComponent.class)),
+	TOGGLE_RUNE(new RuneModItem("toggle_rune", RuneMain.RUNE_GROUP, ToggleModComponent.class)),
 
 	// Cost mod
 	MANA_TANK_RUNE(new RuneModItem("mana_tank_rune", RuneMain.RUNE_GROUP, ManaTankModComponent.class)),
