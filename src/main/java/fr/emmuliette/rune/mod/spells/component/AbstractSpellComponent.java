@@ -9,7 +9,7 @@ import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
-import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
@@ -24,7 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public abstract class AbstractSpellComponent {
-	private ComponentProperties properties;
+	private RuneProperties properties;
 	private AbstractSpellComponent parent;
 	private PropertyFactory propFactory;
 	private int spellInternalId;
@@ -59,7 +59,7 @@ public abstract class AbstractSpellComponent {
 		this.properties = propFactory.build();
 	}
 
-	protected ComponentProperties getProperties() {
+	protected RuneProperties getProperties() {
 		return properties;
 	}
 
@@ -137,10 +137,6 @@ public abstract class AbstractSpellComponent {
 				.newInstance((AbstractSpellComponent) null);
 		retour.properties = retour.propFactory.fromNBT((CompoundNBT) data.get(Spell.NBT_PROPERTIES));
 
-		/*
-		 * if (AbstractCastComponent.class.isAssignableFrom(clazz)) { retour =
-		 * AbstractCastComponent.fromNBT(retour, data); }
-		 */
 		return retour;
 	}
 
@@ -148,7 +144,7 @@ public abstract class AbstractSpellComponent {
 		return 0;
 	}
 
-	public final ComponentProperties getDefaultProperties() {
+	public final RuneProperties getDefaultProperties() {
 		return propFactory.build();
 	}
 

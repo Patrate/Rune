@@ -21,10 +21,11 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.CallbackMod;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
-import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -57,8 +58,9 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 
 			@Override
 			public boolean finalize(boolean result) {
-				if (context.getCaster().isUsingItem()) {
-					context.getCaster().stopUsingItem();
+				if(getContext().getCaster() instanceof LivingEntity) {
+					if (((LivingEntity) getContext().getCaster()).isUsingItem())
+						((LivingEntity) getContext().getCaster()).stopUsingItem();
 					try {
 						ICaster cap;
 						cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
@@ -121,8 +123,8 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 	private static final String KEY_IGNORE_CANCEL_ON_DAMAGE = "ignore_cancel_on_damage";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public ComponentProperties build() {
-			ComponentProperties retour = new ComponentProperties() {
+		public RuneProperties build() {
+			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
 					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CHARGE_TIME, 10, () -> new ManaCost(1)))

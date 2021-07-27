@@ -12,10 +12,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 
-public abstract class ComponentProperties {
+public abstract class RuneProperties {
 	private HashMap<Grade, Map<String, Property<?>>> properties;
 
-	public ComponentProperties() {
+	public RuneProperties() {
 		properties = new HashMap<Grade, Map<String, Property<?>>>();
 		for (Grade grade : Grade.values()) {
 			properties.put(grade, new HashMap<String, Property<?>>());
@@ -25,13 +25,13 @@ public abstract class ComponentProperties {
 
 	protected abstract void init();
 
-	public void sync(ComponentProperties other) {
+	public void sync(RuneProperties other) {
 		for (String key : getKeys()) {
 			this.getProperty(key).setValue(other.getProperty(key).getValue());
 		}
 	}
 
-	public ComponentProperties addNewProperty(Grade key, Property<?> property) {
+	public RuneProperties addNewProperty(Grade key, Property<?> property) {
 		Map<String, Property<?>> gradeMap = properties.get(key);
 		gradeMap.put(property.getName(), property);
 		return this;
@@ -72,6 +72,10 @@ public abstract class ComponentProperties {
 			retour.addAll(properties.get(g).keySet());
 		}
 		return retour;
+	}
+
+	public CompiledProperties compile(Grade g) {
+		return new CompiledProperties(this, g);
 	}
 
 	public CompoundNBT toNBT() {

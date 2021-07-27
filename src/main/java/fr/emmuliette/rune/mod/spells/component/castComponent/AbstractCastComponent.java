@@ -41,14 +41,19 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		setCooldown(cap, context);
 	}	
 
-	public boolean cast(SpellContext context) {
+	public final boolean cast(SpellContext context, boolean payCost) {
 		try {
-			payCost(context);
+			if(payCost)
+				payCost(context);
 			return internalCast(context);
 		} catch (NotEnoughManaException | CasterCapabilityException e) {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public boolean cast(SpellContext context) {
+		return cast(context, true);
 	}
 
 	protected void payCost(ICaster cap, SpellContext context) throws NotEnoughManaException {

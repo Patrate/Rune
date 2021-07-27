@@ -11,10 +11,14 @@
 	"item.rune.fire_rune": "Fire Rune",
 	"item.rune.damage_rune": "Damage Rune",
 	"item.rune.teleport_rune": "Teleportation Rune",
+	"item.rune.silence_rune": "Silence Rune",
 	"item.rune.parchment": "Parchment",
 	"item.rune.grimoire": "Grimoire",
 	"item.rune.socket": "Socket",
 	"item.rune.spell": "Spell",
 	"block.rune.caster_block": "Caster Block",
-	"itemGroup.Rune": "Rune Mod"
+	"itemGroup.Rune": "Rune Mod",
+	
+	
+	"effect.rune.silenced": "Silenced"
 }

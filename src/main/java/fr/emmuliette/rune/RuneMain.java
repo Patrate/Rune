@@ -37,8 +37,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class RuneMain {
 	
 	public static final String MOD_ID = "rune";
-	
-	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("rune");
+
+	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("rune_items");
+	public static final RuneItemGroup RUNE_EFFECT_GROUP = new RuneItemGroup("rune_effects");
+	public static final RuneItemGroup RUNE_OTHER_GROUP = new RuneItemGroup("rune_other");
 	
 	public static final String VERSION = "0.0.1";
 	
@@ -105,6 +107,7 @@ public class RuneMain {
 	private void doClientStuff(final FMLClientSetupEvent event) {
         // do something that can only be done on the client
         LOGGER.info("Got game settings {}", event.getMinecraftSupplier().get().options);
+        Registration.clientRegister();
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event)

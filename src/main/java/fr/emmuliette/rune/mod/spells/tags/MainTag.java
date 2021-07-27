@@ -17,6 +17,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChargingMod
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.LoadingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ToggleModComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.structureComponent.MagicEntityComponent;
 
 public class MainTag {
 	public static final Map<Class<? extends AbstractSpellComponent>, MainTag> spellTagMap = new HashMap<Class<? extends AbstractSpellComponent>, MainTag>();
@@ -45,13 +46,6 @@ public class MainTag {
 		}
 	}
 
-	private static void register(Class<? extends AbstractSpellComponent> clazz, MainTag tags) {
-		RuneMain.LOGGER.info("Registering spellTag for " + clazz.getSimpleName());
-		if (spellTagMap.containsKey(clazz))
-			RuneMain.LOGGER.error("Registering the spellTag for " + clazz.getSimpleName() + " twice !");
-		spellTagMap.put(clazz, tags);
-	}
-
 	public static MainTag getTags(Class<? extends AbstractSpellComponent> clazz) {
 		Class<?> clazz2 = clazz;
 		while (clazz2 != null && !spellTagMap.containsKey(clazz2)) {
@@ -77,7 +71,8 @@ public class MainTag {
 		register(AbstractCastEffectComponent.class, new MainTag(BuildTag.CAST));
 		register(AbstractCastModComponent.class, new MainTag(BuildTag.CAST_MOD));
 		register(AbstractCastModContainerComponent.class, new MainTag(BuildTag.CAST_MOD));
-		
+
+		register(MagicEntityComponent.class, new MainTag(BuildTag.MAGIC_ENTITY));
 		
 		register(LoadingModComponent.class, new MainTag(BuildTag.CAST_MOD, SpellTag.LOADING));
 		register(ChargingModComponent.class, new MainTag(BuildTag.CAST_MOD, SpellTag.CHARGING));
@@ -85,5 +80,12 @@ public class MainTag {
 		register(ToggleModComponent.class, new MainTag(BuildTag.CAST_MOD, SpellTag.TOGGLE));
 
 		register(AbstractManaModComponent.class, new MainTag(BuildTag.MANA_MOD));
+	}
+
+	private static void register(Class<? extends AbstractSpellComponent> clazz, MainTag tags) {
+		RuneMain.LOGGER.info("Registering spellTag for " + clazz.getSimpleName());
+		if (spellTagMap.containsKey(clazz))
+			RuneMain.LOGGER.error("Registering the spellTag for " + clazz.getSimpleName() + " twice !");
+		spellTagMap.put(clazz, tags);
 	}
 }

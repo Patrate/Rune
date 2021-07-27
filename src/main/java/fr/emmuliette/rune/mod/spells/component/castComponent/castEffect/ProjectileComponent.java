@@ -10,7 +10,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
-import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -31,7 +31,7 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 
 	@Override
 	public boolean internalCast(SpellContext context) {
-		ProjectileItemEntity projectile = new ProjectileItemEntity(EntityType.EGG, context.getCaster(),
+		ProjectileItemEntity projectile = new ProjectileItemEntity(EntityType.EGG, context.getCaster().getX(), context.getCaster().getEyeY(), context.getCaster().getZ(),
 				context.getWorld()) {
 			@Override
 			protected Item getDefaultItem() {
@@ -70,8 +70,8 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 	private static final String KEY_GRAVITY = "gravity";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public ComponentProperties build() {
-			ComponentProperties retour = new ComponentProperties() {
+		public RuneProperties build() {
+			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
 					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_SPEED, 6, () -> new ManaCost(1), true))

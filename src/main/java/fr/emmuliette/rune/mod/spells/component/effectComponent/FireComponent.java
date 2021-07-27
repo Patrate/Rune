@@ -4,7 +4,7 @@ import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
-import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -48,8 +48,8 @@ public class FireComponent extends AbstractEffectComponent {
 	private static final String KEY_DURATION = "duration";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public ComponentProperties build() {
-			ComponentProperties retour = new ComponentProperties() {
+		public RuneProperties build() {
+			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
 					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_DURATION, 10, () -> new ManaCost(1), true));

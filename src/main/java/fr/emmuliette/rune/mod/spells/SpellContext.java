@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.spells;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -11,12 +12,22 @@ public class SpellContext {
 		BLOCK, ENTITY, AIR;
 	}
 
-	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	private TargetType targetType;
+	private ItemStack itemStack;
+	private LivingEntity target;
+	private World world;
+	private Entity currentCaster;
+	private Entity originalCaster;
+	private ItemUseContext itemUseContext;
+	private float power;
+	private BlockPos block;
+
+	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
 			ItemUseContext itemUseContext) {
 		this(power, itemStack, target, world, caster, null, itemUseContext);
 	}
 
-	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
+	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
 			BlockPos block, ItemUseContext itemUseContext) {
 		if (target != null) {
 			setLivingEntityContext(power, itemStack, caster, target);
@@ -32,6 +43,9 @@ public class SpellContext {
 		if (block != null) {
 			this.block = block;
 		}
+		if(this.getOriginalCaster() == null) {
+			this.originalCaster = this.currentCaster;
+		}
 	}
 
 	private void setBlockContext(float power, ItemUseContext itemUseContext) {
@@ -39,37 +53,28 @@ public class SpellContext {
 		this.itemStack = itemUseContext.getItemInHand();
 		this.target = null;
 		this.world = itemUseContext.getLevel();
-		this.caster = itemUseContext.getPlayer();
+		this.currentCaster = itemUseContext.getPlayer();
 		this.itemUseContext = itemUseContext;
 		this.block = itemUseContext.getClickedPos();
 	}
 
-	private void setAirContext(float power, ItemStack itemStack, World world, LivingEntity caster) {
+	private void setAirContext(float power, ItemStack itemStack, World world, Entity caster) {
 		this.targetType = TargetType.AIR;
 		this.itemStack = itemStack;
 		this.target = null;
 		this.world = world;
-		this.caster = caster;
+		this.currentCaster = caster;
 		this.itemUseContext = null;
 	}
 
-	private void setLivingEntityContext(float power, ItemStack itemStack, LivingEntity caster, LivingEntity target) {
+	private void setLivingEntityContext(float power, ItemStack itemStack, Entity caster, LivingEntity target) {
 		this.targetType = TargetType.ENTITY;
 		this.itemStack = itemStack;
 		this.target = target;
 		this.world = caster.level;
-		this.caster = caster;
+		this.currentCaster = caster;
 		this.itemUseContext = null;
 	}
-
-	private TargetType targetType;
-	private ItemStack itemStack;
-	private LivingEntity target;
-	private World world;
-	private LivingEntity caster;
-	private ItemUseContext itemUseContext;
-	private float power;
-	private BlockPos block;
 
 	public float getPower() {
 		return power;
@@ -91,8 +96,8 @@ public class SpellContext {
 		return world;
 	}
 
-	public LivingEntity getCaster() {
-		return caster;
+	public Entity getCaster() {
+		return currentCaster;
 	}
 
 	public BlockPos getBlock() {
@@ -105,5 +110,21 @@ public class SpellContext {
 	
 	public void setPower(float power) {
 		this.power = power;
+	}
+
+	public void setTarget(LivingEntity target) {
+		this.target = target;
+	}
+
+	public void setBlock(BlockPos block) {
+		this.block = block;
+	}
+	
+	public void setCurrentCaster(Entity caster) {
+		this.currentCaster = caster;
+	}
+
+	public Entity getOriginalCaster() {
+		return originalCaster;
 	}
 }

@@ -26,6 +26,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -33,6 +35,24 @@ public abstract class AbstractSpellItem extends Item {
 	public AbstractSpellItem(Properties p_i48487_1_) {
 		super(p_i48487_1_);
 	}
+	
+	@Override
+	public ITextComponent getName(ItemStack iStack) {
+		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
+		if(iSpell != null && iSpell.getSpell() != null)
+			return new StringTextComponent(iSpell.getSpell().getName());
+		return super.getName(iStack);
+	}
+	
+	/*@Override
+	public Set<ToolType> getToolTypes(ItemStack iStack) {
+		Set<ToolType> retour = super.getToolTypes(iStack);
+		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
+		if(iSpell != null) {
+			retour.add(ToolType.get("bite"));
+		}
+		return retour;
+	}*/
 
 	protected static class Result {
 		ActionResult<ItemStack> result;

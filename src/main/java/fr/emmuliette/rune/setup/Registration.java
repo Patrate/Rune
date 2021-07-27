@@ -5,8 +5,11 @@ import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.spells.SpellRecipe;
+import fr.emmuliette.rune.mod.spells.entities.ModEntities;
+import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
@@ -26,9 +29,12 @@ public class Registration {
 	public static final DeferredRegister<Effect> EFFECTS = DeferredRegister.create(ForgeRegistries.POTIONS,
 			RuneMain.MOD_ID);
 
+	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES,
+			RuneMain.MOD_ID);
+
 	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE = DeferredRegister
 			.create(ForgeRegistries.RECIPE_SERIALIZERS, RuneMain.MOD_ID);
-
+	
 	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> SPELL_RECIPE = Registration.RECIPE
 			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<>(SpellRecipe::new));
 
@@ -38,11 +44,18 @@ public class Registration {
 		ITEMS.register(modEventBus);
 		RECIPE.register(modEventBus);
 		EFFECTS.register(modEventBus);
+		ENTITIES.register(modEventBus);
 
 		ModEffects.register();
 		ModObjects.register();
 		SyncHandler.register();
+		ModEntities.register();
 
 		MainTag.register();
+	}
+	
+	// For client only stuff (rendering)
+	public static void clientRegister() {
+		ModRenderer.register();
 	}
 }

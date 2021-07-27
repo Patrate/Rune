@@ -4,6 +4,7 @@ import java.util.Map;
 
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import net.minecraft.entity.LivingEntity;
 
 public class LifeCost extends Cost<Float> {
 	private float value;
@@ -40,12 +41,17 @@ public class LifeCost extends Cost<Float> {
 
 	@Override
 	protected boolean internalPayCost(ICaster cap, SpellContext context) {
-		context.getCaster().setHealth(context.getCaster().getHealth() - value);
-		return true;
+		if(context.getCaster() instanceof LivingEntity) {
+			((LivingEntity) context.getCaster()).setHealth(((LivingEntity) context.getCaster()).getHealth() - value);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	protected boolean internalCanPay(ICaster cap, SpellContext context) {
-		return context.getCaster().getHealth() > value;
+		if(context.getCaster() instanceof LivingEntity)
+			return ((LivingEntity) context.getCaster()).getHealth() > value;
+		return false;
 	}
 }

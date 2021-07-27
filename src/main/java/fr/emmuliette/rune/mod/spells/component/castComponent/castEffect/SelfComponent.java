@@ -6,6 +6,7 @@ import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import net.minecraft.entity.LivingEntity;
 
 public class SelfComponent extends AbstractCastEffectComponent implements TargetAir {
 
@@ -15,6 +16,8 @@ public class SelfComponent extends AbstractCastEffectComponent implements Target
 
 	@Override
 	public boolean internalCast(SpellContext context) {
-		return applyOnSelf(context.getCaster(), context);
+		if(context.getCaster() instanceof LivingEntity)
+			return applyOnSelf((LivingEntity) context.getCaster(), context);
+		return false;
 	}
 }

@@ -12,6 +12,8 @@ import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 
 public class SpellItem extends AbstractSpellItem {
 	public static enum ItemType {
@@ -35,6 +37,18 @@ public class SpellItem extends AbstractSpellItem {
 				break;
 			}
 			ItemStack itemStack = new ItemStack(spellitem);
+			CompoundNBT tags = itemStack.getOrCreateTag();
+			if(!tags.contains("display")) {
+				tags.put("display", new CompoundNBT());
+			}
+			CompoundNBT displayTag = tags.getCompound("display");
+			if(!displayTag.contains("Lore")) {
+				displayTag.put("Lore", new ListNBT());
+			}
+			ListNBT lore = (ListNBT) displayTag.get("Lore");
+			displayTag.put("Name", StringNBT.valueOf("TOTO"));
+			lore.add(StringNBT.valueOf(" BONJOUR JE SUIS LE LORENT" ));
+			
 			// itemStack.setHoverName(new StringTextComponent(spell.getName()));
 			ISpell ispell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
 					.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));

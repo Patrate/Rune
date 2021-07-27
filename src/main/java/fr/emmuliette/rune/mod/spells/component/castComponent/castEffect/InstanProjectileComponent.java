@@ -11,7 +11,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectC
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
-import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -54,8 +54,8 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 	private static final String KEY_MODE = "mode";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public ComponentProperties build() {
-			ComponentProperties retour = new ComponentProperties() {
+		public RuneProperties build() {
+			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
 					Map<String, Supplier<? extends Cost<?>>> modes = new HashMap<String, Supplier<? extends Cost<?>>>();
