@@ -8,14 +8,15 @@ import fr.emmuliette.rune.exception.UnknownPropertyException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
-import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
+import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -82,11 +83,10 @@ public abstract class AbstractSpellComponent {
 			return 1;
 		}
 	}
-	
 
 	public int getIntProperty(String key, float boostVal) {
 		if (properties.getProperty(key) != null) {
-			if(boostVal >= 1f)
+			if (boostVal >= 1f)
 				return ((LevelProperty) properties.getProperty(key)).getValue(boostVal);
 			else
 				return ((LevelProperty) properties.getProperty(key)).getValue();
@@ -95,16 +95,16 @@ public abstract class AbstractSpellComponent {
 			return 1;
 		}
 	}
-	
+
 	public boolean getBoolProperty(String key) {
 		if (properties.getProperty(key) != null) {
-			return ((LevelProperty) properties.getProperty(key)).getValue() == 1;
+			return ((BoolProperty) properties.getProperty(key)).getValue();
 		} else {
 			RuneMain.LOGGER.error("unknown bool property " + key + " in component " + this.getClass().getSimpleName());
 			return false;
 		}
 	}
-	
+
 	public String getEnumProperty(String key) {
 		if (properties.getProperty(key) != null) {
 			return ((EnumProperty) properties.getProperty(key)).getValue();
@@ -180,38 +180,38 @@ public abstract class AbstractSpellComponent {
 	public MainTag getTags() {
 		return MainTag.getTags(this);
 	}
-	
+
 	public float getMaxPower() {
 		float maxPower = 0f;
 		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
-		for(Property<?> prop:propList) {
-			if(prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
-				float tmpMax = ((LevelProperty)prop).getMaxLevel() - ((LevelProperty)prop).getValue();
-				if(maxPower < tmpMax)
+		for (Property<?> prop : propList) {
+			if (prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
+				float tmpMax = ((LevelProperty) prop).getMaxLevel() - ((LevelProperty) prop).getValue();
+				if (maxPower < tmpMax)
 					maxPower = tmpMax;
 			}
 		}
 		return maxPower;
 	}
-	
+
 	public Cost<?> getCost() {
-		Cost<?> retour = Cost.getZeroCost();
+		Cost<?> retour = Cost.ZERO_COST.get();
 		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
-		for(Property<?> prop:propList) {
+		for (Property<?> prop : propList) {
 			retour.add(prop.getCost());
 		}
 		return retour;
 	}
-	
+
 	public Cost<?> getBoostCost() {
 		Cost<?> boostCost = null;
 		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
-		for(Property<?> prop:propList) {
-			if(prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
-				if(boostCost == null)
-					boostCost = ((LevelProperty)prop).getCostPerLevel();
+		for (Property<?> prop : propList) {
+			if (prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
+				if (boostCost == null)
+					boostCost = ((LevelProperty) prop).getCostPerLevel();
 				else
-					boostCost.add(((LevelProperty)prop).getCostPerLevel());
+					boostCost.add(((LevelProperty) prop).getCostPerLevel());
 			}
 		}
 		return boostCost;

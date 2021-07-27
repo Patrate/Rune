@@ -71,7 +71,8 @@ public class Spell {
 	public Boolean castable(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			BlockPos block, ItemUseContext itemUseContext) {
 		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext);
-		return startingComponent.canCast(context);
+		Boolean retour = startingComponent.canCast(context);
+		return retour;
 	}
 
 	public Boolean cast(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,

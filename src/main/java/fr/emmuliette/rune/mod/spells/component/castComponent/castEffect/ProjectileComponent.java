@@ -6,7 +6,10 @@ import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
+import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
+import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
+import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
@@ -21,7 +24,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class ProjectileComponent extends AbstractCastEffectComponent implements TargetAir {
+public class ProjectileComponent extends AbstractCastEffectComponent implements TargetAir, TargetBlock, TargetLivingEntity {
 	public ProjectileComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PROPFACT, parent);
 	}
@@ -53,7 +56,7 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 				this.remove();
 			}
 		};
-		projectile.setNoGravity(!this.getBoolProperty(KEY_GRAVITY));
+		projectile.setNoGravity(this.getBoolProperty(KEY_GRAVITY));
 
 		Vector3d lookAngle = context.getCaster().getLookAngle();
 		projectile.shoot(lookAngle.x, lookAngle.y, lookAngle.z, (this.getIntProperty(KEY_SPEED, context.getPower()) + 2 ) * 4f * 0.1f, 0F);
@@ -71,8 +74,8 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_SPEED, 6, new ManaCost(1), true))
-					.addNewProperty(Grade.IRON,	new LevelProperty(KEY_GRAVITY, 1, new ManaCost(10)));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_SPEED, 6, () -> new ManaCost(1), true))
+					.addNewProperty(Grade.IRON,	new BoolProperty(KEY_GRAVITY, () -> new ManaCost(10)));
 				}
 			};
 			return retour;

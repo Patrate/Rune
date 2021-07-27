@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.manaMod;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
@@ -70,11 +71,11 @@ public class ManaLifeModComponent extends AbstractManaModComponent {
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					HashMap<String, Cost<?>> modeMap = new HashMap<String, Cost<?>>();
-					modeMap.put(MODE_RATIO, Cost.getZeroCost());
-					modeMap.put(MODE_COMPLETE, Cost.getZeroCost());
-					modeMap.put(MODE_PRIO, Cost.getZeroCost());
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_RATE, 10, new ManaCost(1)))
+					HashMap<String, Supplier<? extends Cost<?>>> modeMap = new HashMap<String, Supplier<? extends Cost<?>>>();
+					modeMap.put(MODE_RATIO, Cost.ZERO_COST);
+					modeMap.put(MODE_COMPLETE, Cost.ZERO_COST);
+					modeMap.put(MODE_PRIO, Cost.ZERO_COST);
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_RATE, 10, () -> new ManaCost(1)))
 						.addNewProperty(Grade.WOOD, new EnumProperty(KEY_MODE, MODE_COMPLETE, modeMap));
 				}
 			};

@@ -59,7 +59,32 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		cap.setCooldown(Math.max(DEFAULT_COOLDOWN, this.getCooldown()));
 	}
 
-	public abstract Boolean canCast(SpellContext context);
+	public Boolean canCast(SpellContext context) {
+		try {
+			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
+					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
+			Boolean checkCd = checkCooldown(cap, context);
+			if (checkCd == null || !checkCd)
+				return checkCd;
+
+			Boolean checkManaCost = checkCost(cap, context);
+			if (checkManaCost == null || !checkManaCost)
+				return checkManaCost;
+
+			Boolean checkCastType;
+			if(this instanceof AbstractCastModComponent)
+				checkCastType = checkChildrenCastType(context);
+			else
+				checkCastType = chechCastType(context);
+			if (checkCastType == null || !checkCastType)
+				return checkCastType;
+
+			return true;
+		} catch (CasterCapabilityException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 	protected Boolean checkCooldown(ICaster cap, SpellContext context) {
 		return (!cap.isCooldown());
@@ -155,7 +180,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 	
 	@Override
 	public float getMaxPower() {
-		float maxPower = 0f;
+		float maxPower = super.getMaxPower();
 		for (AbstractSpellComponent sc : getChildrens()) {
 			if(sc.getMaxPower() > maxPower)
 				maxPower = sc.getMaxPower();
@@ -166,8 +191,12 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 	@Override
 	public Cost<?> getBoostCost() {
 		Cost<?> boostCost = super.getBoostCost();
+		if(boostCost == null)
+			boostCost = Cost.ZERO_COST.get();
 		for (AbstractSpellComponent sc : getChildrens()) {
-				boostCost.add(sc.getBoostCost());
+			Cost<?> childCost = sc.getBoostCost();
+			if(childCost != null)
+				boostCost.add(childCost);
 		}
 		return boostCost;
 	}

@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.spells.cost;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
@@ -10,9 +11,7 @@ import net.minecraft.item.Item;
 public abstract class Cost<T> {
 	private Map<Class<? extends Cost<?>>, Cost<?>> internalCost;
 
-	public static Cost<?> getZeroCost() {
-		return new ManaCost(0f);
-	}
+	public static Supplier<? extends Cost<?>> ZERO_COST = () -> new ManaCost(0f);
 
 	@SuppressWarnings("unchecked")
 	protected Cost(Map<Class<? extends Cost<?>>, Cost<?>> internalCost) {
@@ -64,7 +63,7 @@ public abstract class Cost<T> {
 			return new HashMap<Item, Integer>();
 		return mCost.getCost();
 	}
-	
+
 	public boolean canPay(ICaster cap, SpellContext context) {
 		for (Class<? extends Cost<?>> clazz : internalCost.keySet()) {
 			if (!(internalCost.get(clazz).internalCanPay(cap, context)))
@@ -88,7 +87,15 @@ public abstract class Cost<T> {
 	public abstract T getCost();
 
 	protected abstract boolean internalCanPay(ICaster cap, SpellContext context);
-	
+
 	protected abstract boolean internalPayCost(ICaster cap, SpellContext context);
 
+	@Override
+	public String toString() {
+		String retour = "";
+		for (Class<? extends Cost<?>> clazz : internalCost.keySet()) {
+			retour += clazz.getSimpleName() + ": " + internalCost.get(clazz).getCost().toString() + "\t\t";
+		}
+		return retour;
+	}
 }

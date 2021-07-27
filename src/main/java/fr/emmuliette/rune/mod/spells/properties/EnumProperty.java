@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.properties;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import net.minecraft.nbt.INBT;
@@ -8,9 +9,9 @@ import net.minecraft.nbt.StringNBT;
 
 public final class EnumProperty extends Property<String> {
 
-	private Map<String, Cost<?>> tagNCost;
+	private Map<String, Supplier<? extends Cost<?>>> tagNCost;
 
-	public EnumProperty(String name, String def, Map<String, Cost<?>> tagNCost) {
+	public EnumProperty(String name, String def, Map<String, Supplier<? extends Cost<?>>> tagNCost) {
 		super(name, def);
 		this.tagNCost = tagNCost;
 	}
@@ -34,7 +35,7 @@ public final class EnumProperty extends Property<String> {
 
 	@Override
 	public Cost<?> getCost() {
-		return tagNCost.get(this.getValue());
+		return tagNCost.get(this.getValue()).get();
 	}
 
 	@Override

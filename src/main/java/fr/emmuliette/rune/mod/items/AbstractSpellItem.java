@@ -278,10 +278,14 @@ public abstract class AbstractSpellItem extends Item {
 	 * itemStack.shrink(1); } return retour; }
 	 */
 
-	protected Spell getSpell(ItemStack iStack, LivingEntity owner) throws SpellCapabilityException {
+	protected Spell getSpell(ItemStack iStack) throws SpellCapabilityException {
 		ISpell cap = iStack.getCapability(SpellCapability.SPELL_CAPABILITY)
 				.orElseThrow(new SpellCapabilityExceptionSupplier(iStack));
 		return cap.getSpell();
+	}
+	
+	protected Spell getSpell(ItemStack iStack, LivingEntity owner) throws SpellCapabilityException {
+		return getSpell(iStack);
 	}
 
 	public static float getPowerForTime(int duration) {
@@ -295,6 +299,20 @@ public abstract class AbstractSpellItem extends Item {
 	}
 
 	public UseAction getUseAnimation(ItemStack iStack) {
+		try {
+			Spell spell = getSpell(iStack);
+			if(spell.hasTag(SpellTag.CHANNELING)) {
+				return UseAction.DRINK;
+			} else if(spell.hasTag(SpellTag.CHARGING)) {
+				return UseAction.BLOCK;
+			} else if(spell.hasTag(SpellTag.LOADING)) {
+				return UseAction.BOW;
+			}
+		} catch (SpellCapabilityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return UseAction.BOW;
 	}
 

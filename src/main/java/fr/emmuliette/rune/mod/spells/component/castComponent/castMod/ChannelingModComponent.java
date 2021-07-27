@@ -22,6 +22,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.Callback;
 import fr.emmuliette.rune.mod.spells.component.castComponent.CallbackMod;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
+import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
@@ -144,8 +145,8 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CAST_SPEED, 10, new ManaCost(1))).addNewProperty(Grade.GOLD,
-							new LevelProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, 1, new ManaCost(10)));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CAST_SPEED, 10, () -> new ManaCost(1))).addNewProperty(Grade.GOLD,
+							new BoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, () -> new ManaCost(10)));
 				}
 			};
 			return retour;

@@ -21,6 +21,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.Callback;
 import fr.emmuliette.rune.mod.spells.component.castComponent.CallbackMod;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
+import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.ComponentProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
@@ -52,7 +53,6 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 			tick = 0;
 			power = this.getContext().getPower();
 			maxPower = getMaxPower();
-			System.out.println("STARTING CHARGE: " + power + "/ " + maxPower);
 			modulo = ((ChargingModComponent) getParent()).getChargeSpeed(this.getContext());
 			listeningCB.add(this);
 			this.getContext().getWorld().playSound(null, this.getContext().getCaster().getX(),
@@ -95,13 +95,14 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 								this.getContext().getCaster().getY(), this.getContext().getCaster().getZ(),
 								ModSounds.CHARGING_TICK, SoundCategory.AMBIENT, 1.0f, 0.4f);
 						power += 1f;
-						System.out.println("CURRENT CHARGE: " + power + "/ " + maxPower);
 						return true;
 					} else {
 						return true;
 					}
-				} catch (CasterCapabilityException | NotEnoughManaException e) {
+				} catch (CasterCapabilityException e) {
 					e.printStackTrace();
+				} catch(NotEnoughManaException e) {
+					
 				}
 			}
 			return true;
@@ -115,11 +116,6 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 
 	@SubscribeEvent
 	public static void castOnRelease(StopCastingEvent event) {
-		try {
-			throw new Exception("Test");
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
 		List<ChargingCallback> finishedCB = new ArrayList<ChargingCallback>();
 		for (Callback cb : listeningCB) {
 			if (cb instanceof ChargingCallback && cb.getContext().getCaster() == event.getCaster()) {
@@ -168,8 +164,8 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CHARGE_SPEED, 10, new ManaCost(1)))
-							.addNewProperty(Grade.GOLD, new LevelProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, 1, new ManaCost(10)));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CHARGE_SPEED, 10, () -> new ManaCost(1)))
+							.addNewProperty(Grade.GOLD, new BoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, () -> new ManaCost(10)));
 				}
 			};
 			return retour;

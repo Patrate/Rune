@@ -29,7 +29,7 @@ public final class Configuration {
 
 	@SubscribeEvent
 	public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent) {
-		System.out.println("Baking configuration");
+		RuneMain.LOGGER.info("Baking configuration");
 		final ForgeConfigSpec spec = configEvent.getConfig().getSpec();
 		if (spec == Client.SPEC)
 			Client.bake();

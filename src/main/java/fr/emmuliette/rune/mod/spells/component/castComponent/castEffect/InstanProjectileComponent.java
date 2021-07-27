@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
@@ -57,9 +58,9 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					Map<String, Cost<?>> modes = new HashMap<String, Cost<?>>();
-					modes.put("laser", Cost.getZeroCost());
-					modes.put("eclair", new ManaCost(3));
+					Map<String, Supplier<? extends Cost<?>>> modes = new HashMap<String, Supplier<? extends Cost<?>>>();
+					modes.put("laser", Cost.ZERO_COST);
+					modes.put("eclair", () -> new ManaCost(3));
 					this.addNewProperty(Grade.WOOD, new EnumProperty(KEY_MODE, "laser", modes));
 				}
 			};

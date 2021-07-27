@@ -49,7 +49,7 @@ public abstract class AbstractManaModComponent extends AbstractCastModComponent 
 	}
 
 	protected Cost<?> getBaseCost() {
-		Cost<?> totalCost = Cost.getZeroCost();
+		Cost<?> totalCost = Cost.ZERO_COST.get();
 		for (AbstractSpellComponent sc : getChildrens()) {
 			totalCost.add(sc.getCost());
 		}

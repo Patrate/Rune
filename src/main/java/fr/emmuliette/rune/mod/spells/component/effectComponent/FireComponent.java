@@ -21,7 +21,7 @@ public class FireComponent extends AbstractEffectComponent {
 
 	@Override
 	public boolean applyOnTarget(LivingEntity target, SpellContext context) {
-		target.setSecondsOnFire((int) (1 + context.getPower()));
+		target.setSecondsOnFire((int) (1 + Math.pow(1.4f, this.getIntProperty(KEY_DURATION, context.getPower()))));
 		return true;
 	}
 
@@ -43,21 +43,16 @@ public class FireComponent extends AbstractEffectComponent {
 		return retour;
 	}
 
-	@Override
-	public float getMaxPower() {
-		return 10; // TODO mettre les apramètres à la place
-	}
-
 	// PROPERTIES
 
-	private static final String KEY_DAMAGE_LEVEL = "damage_level";
+	private static final String KEY_DURATION = "duration";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
 		public ComponentProperties build() {
 			ComponentProperties retour = new ComponentProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_DAMAGE_LEVEL, 10, new ManaCost(1)));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_DURATION, 10, () -> new ManaCost(1), true));
 				}
 			};
 			return retour;

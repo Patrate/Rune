@@ -2,7 +2,6 @@ package fr.emmuliette.rune.mod.items;
 
 import javax.annotation.Nullable;
 
-import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
@@ -68,21 +67,13 @@ public class SpellItem extends AbstractSpellItem {
 
 		if (superTag != null)
 			retour.put("TAG", superTag);
-		if (retour.isEmpty()) {
-			RuneMain.LOGGER.debug("retour is null in getShareTag");
-		} else {
-			RuneMain.LOGGER.debug("retour in getShareTag: " + retour);
-		}
 		return retour;
 	}
 
 	@Override
 	public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt) {
 		if (nbt == null) {
-			RuneMain.LOGGER.debug("nbt is null in readShareTag");
 			return;
-		} else {
-			RuneMain.LOGGER.debug("nbt in readShareTag: " + nbt.toString());
 		}
 		if (nbt.contains("TAG"))
 			super.readShareTag(stack, nbt.getCompound("TAG"));

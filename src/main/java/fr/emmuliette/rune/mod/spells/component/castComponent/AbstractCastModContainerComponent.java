@@ -7,11 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.exception.CasterCapabilityException;
-import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -24,30 +20,6 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 	public AbstractCastModContainerComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
 			throws RunePropertiesException {
 		super(propFactory, parent);
-	}
-
-	@Override
-	public Boolean canCast(SpellContext context) {
-		try {
-			ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
-					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
-			Boolean checkCd = checkCooldown(cap, context);
-			if (checkCd == null || !checkCd)
-				return checkCd;
-
-			Boolean checkManaCost = checkCost(cap, context);
-			if (checkManaCost == null || !checkManaCost)
-				return checkManaCost;
-
-			Boolean checkChildrens = checkChildrenCastType(context);
-			if (checkChildrens == null || !checkChildrens)
-				return checkChildrens;
-
-			return true;
-		} catch (CasterCapabilityException e) {
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 	@Override
