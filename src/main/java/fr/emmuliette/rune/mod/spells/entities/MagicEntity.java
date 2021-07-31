@@ -17,11 +17,8 @@ import fr.emmuliette.rune.mod.spells.component.structureComponent.AI.AbstractAIC
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.command.arguments.EntityAnchorArgument.Type;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
@@ -29,9 +26,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -61,16 +56,20 @@ public class MagicEntity extends Entity {
 	// When to cast spell: Contact ? Every interval of time ? Continuously ?
 	// how long to survive: amount of spell detemined ? amount of time ?
 
-	public MagicEntity(EntityType<? extends MagicEntity> areaEffectCloudEntity, World world) {
-		super(areaEffectCloudEntity, world);
+	public MagicEntity(EntityType<? extends MagicEntity> magicEntity, World world) {
+		super(magicEntity, world);
 		this.noPhysics = true;
-		this.setInvisible(false);
+		this.setInvulnerable(true);
 	}
 
 	public MagicEntity(SpellContext context, MagicEntityComponent<?> component, World world, BlockPos position) {
 		this(ModEntities.MAGIC_ENTITY.get(), world);
-		this.setPos(position.getX() + 0.5, position.getY() + 1., position.getZ() + 0.5);
-		recalculateBoundingBox();
+		this.setPos(position.getX(), position.getY() + 1, position.getZ());
+	    this.setDeltaMovement(Vector3d.ZERO);
+	    this.refreshDimensions();
+		/*this.setBoundingBox(new AxisAlignedBB(getX() - 0.5F, getY() - 0.5F, getZ() - 0.5F, getY() + 0.5F, getY() - 0.4f,
+				getZ() + 0.5F));*/
+		// recalculateBoundingBox();
 		this.mana = 0;
 		this.context = context;
 		this.startingPosition = position;
@@ -102,38 +101,13 @@ public class MagicEntity extends Entity {
 	public void setTarget(LivingEntity target) {
 		context.setTarget(target);
 	}
-
-	protected void recalculateBoundingBox() {
-		double d1 = (double) this.position().x + 0.5D - (double) Direction.UP.getStepX() * 0.46875D;
-		double d2 = (double) this.position().y + 0.5D - (double) Direction.UP.getStepY() * 0.46875D;
-		double d3 = (double) this.position().z + 0.5D - (double) Direction.UP.getStepZ() * 0.46875D;
-		this.setPosRaw(d1, d2, d3);
-		double d4 = 1;// (double)this.getWidth();
-		double d5 = 0.2;// (double)this.getHeight();
-		double d6 = 1; // (double)this.getWidth();
-		Direction.Axis direction$axis = Direction.UP.getAxis();
-		switch (direction$axis) {
-		case X:
-			d4 = 1.0D;
-			break;
-		case Y:
-			d5 = 1.0D;
-			break;
-		case Z:
-			d6 = 1.0D;
-		}
-
-		d4 = d4 / 32.0D;
-		d5 = d5 / 32.0D;
-		d6 = d6 / 32.0D;
-		this.setBoundingBox(new AxisAlignedBB(d1 - d4, d2 - d5, d3 - d6, d1 + d4, d2 + d5, d3 + d6));
-	}
-
+	
 	@Override
 	public ActionResultType interact(PlayerEntity player, Hand hand) {
 		System.out.println("INTERACTING !!!");
 		// TODO chargeable Magic Entity
-		if (true) { // TODO changer par this.isChargeable()
+		if (!this.level.isClientSide) { // TODO changer par this.isChargeable()
+			ActionResultType retour[] = new ActionResultType[] { ActionResultType.PASS };
 			player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(new NonNullConsumer<ICaster>() {
 				@Override
 				public void accept(ICaster cap) {
@@ -143,6 +117,7 @@ public class MagicEntity extends Entity {
 							cap.delMana(1f);
 							addMana(1);
 							System.out.println("MANA GIVETH");
+							retour[0] = ActionResultType.SUCCESS;
 							player.startUsingItem(hand);
 						} catch (NotEnoughManaException e) {
 							e.printStackTrace();
@@ -150,9 +125,42 @@ public class MagicEntity extends Entity {
 					}
 				}
 			});
+			return retour[0];
 		}
 		return super.interact(player, hand);
 	}
+
+	public ActionResultType interactAt(PlayerEntity player, Vector3d dir, Hand hand) {
+		System.out.println("INTERACT AT !!!");
+		if (!this.level.isClientSide) { // TODO changer par this.isChargeable()
+			ActionResultType retour[] = new ActionResultType[] { ActionResultType.PASS };
+			player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(new NonNullConsumer<ICaster>() {
+				@Override
+				public void accept(ICaster cap) {
+					System.out.println("GIVING ONE MANA");
+					if (cap.getMana() >= 1f) {
+						try {
+							cap.delMana(1f);
+							addMana(1);
+							System.out.println("MANA GIVETH");
+							retour[0] = ActionResultType.SUCCESS;
+							player.startUsingItem(hand);
+						} catch (NotEnoughManaException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			return retour[0];
+		}
+		return super.interact(player, hand);
+	}
+	
+	/*@Override
+	public void playerTouch(PlayerEntity player) {
+		System.out.println("PLAYER TOUCH !!!");
+		super.playerTouch(player);
+	}*/
 
 	@Override
 	protected void defineSynchedData() {
@@ -165,14 +173,11 @@ public class MagicEntity extends Entity {
 		 */
 	}
 
-	@Override
-	public void refreshDimensions() {
-		double d0 = this.getX();
-		double d1 = this.getY();
-		double d2 = this.getZ();
-		super.refreshDimensions();
-		this.setPos(d0, d1, d2);
-	}
+	/*
+	 * @Override public void refreshDimensions() { double d0 = this.getX(); double
+	 * d1 = this.getY(); double d2 = this.getZ(); super.refreshDimensions();
+	 * this.setPos(d0, d1, d2); }
+	 */
 
 	@Override
 	public void tick() {
@@ -207,7 +212,7 @@ public class MagicEntity extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundNBT nbt) {
+	public void readAdditionalSaveData(CompoundNBT nbt) {
 		this.tickCount = nbt.getInt("Age");
 		this.mana = nbt.getInt("Mana");
 		if (nbt.hasUUID("Owner")) {
@@ -216,7 +221,7 @@ public class MagicEntity extends Entity {
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundNBT nbt) {
+	public void addAdditionalSaveData(CompoundNBT nbt) {
 		nbt.putInt("Age", this.tickCount);
 		nbt.putFloat("Mana", this.mana);
 		if (this.ownerUUID != null) {
@@ -226,7 +231,8 @@ public class MagicEntity extends Entity {
 
 	@Override
 	public boolean isAttackable() {
-		return false;
+		return super.isAttackable();
+		//return false;
 	}
 
 	@Override
@@ -237,11 +243,6 @@ public class MagicEntity extends Entity {
 	@Override
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
-	}
-
-	@Override
-	public EntitySize getDimensions(Pose pose) {
-		return EntitySize.scalable(5.0F * 2.0F, 0.5F);
 	}
 
 	@Override
@@ -277,14 +278,17 @@ public class MagicEntity extends Entity {
 	public Random getRandom() {
 		return this.random;
 	}
-	
-	
 
 	@Override
 	public boolean canBeCollidedWith() {
-		return false;
-		//return true; // TODO return true only if can be interacted with
+		// return false;
+		return true; // TODO return true only if can be interacted with
 		// Can be interacted for: registering player
 		// giving mana
 	}
+	
+	@Override
+	public boolean isPushedByFluid() {
+      return false;
+   }
 }

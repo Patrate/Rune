@@ -1,7 +1,6 @@
 package fr.emmuliette.rune.mod.spells.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.spells.entities.MagicEntity;
@@ -9,10 +8,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.model.BoatModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +17,7 @@ public class MagicEntityRenderer extends EntityRenderer<MagicEntity> {
 	private static final ResourceLocation BOAT_TEXTURE_LOCATIONS = new ResourceLocation("textures/entity/boat/oak.png");
 	protected static final ResourceLocation IMAGE_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/magic_circle.png");
-	private static final ModelResourceLocation FRAME_LOCATION = new ModelResourceLocation("item_frame", "map=false");
+	//private static final ModelResourceLocation FRAME_LOCATION = new ModelResourceLocation("item_frame", "map=false");
 	protected final BoatModel model = new BoatModel();
 	
 	public MagicEntityRenderer(EntityRendererManager erm) {
@@ -37,7 +33,7 @@ public class MagicEntityRenderer extends EntityRenderer<MagicEntity> {
 	public void render(MagicEntity entity, float p_225623_2_, float p_225623_3_, MatrixStack mStack,
 			IRenderTypeBuffer buffer, int partialTick) {
 		// boat renderer !
-		mStack.pushPose();
+		/*mStack.pushPose();
 		mStack.translate(0.0D, 0.375D, 0.0D);
 		mStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - p_225623_2_));
 
@@ -48,8 +44,8 @@ public class MagicEntityRenderer extends EntityRenderer<MagicEntity> {
 		this.model.renderToBuffer(mStack, ivertexbuilder, partialTick, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F,
 				1.0F);
 
-		mStack.popPose();
-		super.render(entity, p_225623_2_, p_225623_3_, mStack, buffer, partialTick);
+		mStack.popPose();*/
+		
 
 		// Frame renderer !
 		/*
@@ -65,5 +61,6 @@ public class MagicEntityRenderer extends EntityRenderer<MagicEntity> {
 		 * OverlayTexture.NO_OVERLAY); mStack.popPose(); super.render(entity,
 		 * p_225623_2_, p_225623_3_, mStack, buffer, partialTick);
 		 */
+		super.render(entity, p_225623_2_, p_225623_3_, mStack, buffer, partialTick);
 	}
 }
