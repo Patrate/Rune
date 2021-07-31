@@ -65,15 +65,11 @@ public class MagicEntity extends Entity {
 	public MagicEntity(SpellContext context, MagicEntityComponent<?> component, World world, BlockPos position) {
 		this(ModEntities.MAGIC_ENTITY.get(), world);
 		this.setPos(position.getX(), position.getY() + 1, position.getZ());
-	    this.setDeltaMovement(Vector3d.ZERO);
-	    this.refreshDimensions();
-		/*this.setBoundingBox(new AxisAlignedBB(getX() - 0.5F, getY() - 0.5F, getZ() - 0.5F, getY() + 0.5F, getY() - 0.4f,
-				getZ() + 0.5F));*/
-		// recalculateBoundingBox();
+		this.refreshDimensions();
 		this.mana = 0;
 		this.context = context;
 		this.startingPosition = position;
-		this.lookAt(Type.FEET, context.getCaster().getPosition(0));
+		this.lookAt(Type.EYES, context.getCaster().getPosition(0));
 		context.setCurrentCaster(this);
 		context.setBlock(null);
 		context.setTarget(null);
@@ -101,7 +97,7 @@ public class MagicEntity extends Entity {
 	public void setTarget(LivingEntity target) {
 		context.setTarget(target);
 	}
-	
+
 	@Override
 	public ActionResultType interact(PlayerEntity player, Hand hand) {
 		System.out.println("INTERACTING !!!");
@@ -155,12 +151,11 @@ public class MagicEntity extends Entity {
 		}
 		return super.interact(player, hand);
 	}
-	
-	/*@Override
-	public void playerTouch(PlayerEntity player) {
-		System.out.println("PLAYER TOUCH !!!");
-		super.playerTouch(player);
-	}*/
+
+	/*
+	 * @Override public void playerTouch(PlayerEntity player) {
+	 * System.out.println("PLAYER TOUCH !!!"); super.playerTouch(player); }
+	 */
 
 	@Override
 	protected void defineSynchedData() {
@@ -232,7 +227,7 @@ public class MagicEntity extends Entity {
 	@Override
 	public boolean isAttackable() {
 		return super.isAttackable();
-		//return false;
+		// return false;
 	}
 
 	@Override
@@ -286,9 +281,13 @@ public class MagicEntity extends Entity {
 		// Can be interacted for: registering player
 		// giving mana
 	}
-	
+
 	@Override
 	public boolean isPushedByFluid() {
-      return false;
-   }
+		return false;
+	}
+
+	public void render() {
+		renderAI.render(this);
+	}
 }

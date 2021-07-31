@@ -6,6 +6,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.mod.blocks.ModBlock;
+import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingBlock;
 import fr.emmuliette.rune.mod.items.AdvancedModItem;
 import fr.emmuliette.rune.mod.items.GrimoireSpellItem;
 import fr.emmuliette.rune.mod.items.ModItem;
@@ -45,6 +46,7 @@ import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vani
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.WeaknessEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.WitherEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.structureComponent.MagicEntityComponent;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -78,27 +80,33 @@ public enum ModObjects {
 	// VANILLA EFFECTS
 	BLINDNESS_RUNE(new RuneModItem("blindness_rune", RuneMain.RUNE_EFFECT_GROUP, BlindnessEffectComponent.class)),
 	CONFUSION_RUNE(new RuneModItem("confusion_rune", RuneMain.RUNE_EFFECT_GROUP, ConfusionEffectComponent.class)),
-	DAMAGEBOOST_RUNE(new RuneModItem("damage_boost_rune", RuneMain.RUNE_EFFECT_GROUP, DamageBoostEffectComponent.class)),
-	DAMAGERESISTANCE_RUNE(new RuneModItem("damage_resistance_rune", RuneMain.RUNE_EFFECT_GROUP, DamageResistanceEffectComponent.class)),
+	DAMAGEBOOST_RUNE(
+			new RuneModItem("damage_boost_rune", RuneMain.RUNE_EFFECT_GROUP, DamageBoostEffectComponent.class)),
+	DAMAGERESISTANCE_RUNE(new RuneModItem("damage_resistance_rune", RuneMain.RUNE_EFFECT_GROUP,
+			DamageResistanceEffectComponent.class)),
 	DIGSLOW_RUNE(new RuneModItem("dig_slow_rune", RuneMain.RUNE_EFFECT_GROUP, DigSlowEffectComponent.class)),
 	DIGSPEED_RUNE(new RuneModItem("dig_speed_rune", RuneMain.RUNE_EFFECT_GROUP, DigSpeedEffectComponent.class)),
-	FIRERESISTANCE_RUNE(new RuneModItem("fire_resistance_rune", RuneMain.RUNE_EFFECT_GROUP, FireResistanceEffectComponent.class)),
+	FIRERESISTANCE_RUNE(
+			new RuneModItem("fire_resistance_rune", RuneMain.RUNE_EFFECT_GROUP, FireResistanceEffectComponent.class)),
 	GLOW_RUNE(new RuneModItem("glow_rune", RuneMain.RUNE_EFFECT_GROUP, GlowEffectComponent.class)),
-	INVISIBILITY_RUNE(new RuneModItem("invisibility_rune", RuneMain.RUNE_EFFECT_GROUP, InvisibilityEffectComponent.class)),
+	INVISIBILITY_RUNE(
+			new RuneModItem("invisibility_rune", RuneMain.RUNE_EFFECT_GROUP, InvisibilityEffectComponent.class)),
 	JUMP_RUNE(new RuneModItem("jump_rune", RuneMain.RUNE_EFFECT_GROUP, JumpEffectComponent.class)),
 	LEVITATION_RUNE(new RuneModItem("levitation_rune", RuneMain.RUNE_EFFECT_GROUP, LevitationEffectComponent.class)),
 	MOVESLOW_RUNE(new RuneModItem("move_slow_rune", RuneMain.RUNE_EFFECT_GROUP, MoveDownEffectComponent.class)),
 	MOVESPEED_RUNE(new RuneModItem("move_speed_rune", RuneMain.RUNE_EFFECT_GROUP, MoveSpeedEffectComponent.class)),
 	NIGHTVISION_RUNE(new RuneModItem("nightvision_rune", RuneMain.RUNE_EFFECT_GROUP, NightVisionEffectComponent.class)),
 	POISON_RUNE(new RuneModItem("poison_rune", RuneMain.RUNE_EFFECT_GROUP, PoisonEffectComponent.class)),
-	REGENERATION_RUNE(new RuneModItem("regeneration_rune", RuneMain.RUNE_EFFECT_GROUP, RegenerationEffectComponent.class)),
+	REGENERATION_RUNE(
+			new RuneModItem("regeneration_rune", RuneMain.RUNE_EFFECT_GROUP, RegenerationEffectComponent.class)),
 	SLOWFALL_RUNE(new RuneModItem("slow_fall_rune", RuneMain.RUNE_EFFECT_GROUP, SlowFallEffectComponent.class)),
-	WATERBREATHING_RUNE(new RuneModItem("water_breathing_rune", RuneMain.RUNE_EFFECT_GROUP, WaterBreathingEffectComponent.class)),
+	WATERBREATHING_RUNE(
+			new RuneModItem("water_breathing_rune", RuneMain.RUNE_EFFECT_GROUP, WaterBreathingEffectComponent.class)),
 	WEAKNESS_RUNE(new RuneModItem("weakness_rune", RuneMain.RUNE_EFFECT_GROUP, WeaknessEffectComponent.class)),
 	WITHER_RUNE(new RuneModItem("wither_rune", RuneMain.RUNE_EFFECT_GROUP, WitherEffectComponent.class)),
 
 	// Spells
-	
+
 	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
@@ -123,8 +131,11 @@ public enum ModObjects {
 
 	// Blocks
 	CASTER_BLOCK(new ModBlock("caster_block", RuneMain.RUNE_GROUP,
-			() -> new Block(net.minecraft.block.AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f)
-					.harvestLevel(1).harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK))));
+			() -> new Block(AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f).harvestLevel(1)
+					.harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK)))),
+
+	SPELLBINDING_BLOCK(new ModBlock("spellbinding_block", RuneMain.RUNE_GROUP, () -> new SpellBindingBlock(
+			AbstractBlock.Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD))));
 
 	private AbstractModObject entity;
 

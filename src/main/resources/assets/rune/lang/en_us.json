@@ -19,6 +19,8 @@
 	"block.rune.caster_block": "Caster Block",
 	"itemGroup.Rune": "Rune Mod",
 	
+	"container.spellbinding": "Spell binder",
+	
 	
 	"effect.rune.silenced": "Silenced"
 }
