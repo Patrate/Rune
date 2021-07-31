@@ -21,12 +21,17 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -34,6 +39,8 @@ import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class MagicEntity extends Entity {
+	private static final DataParameter<Integer> DATA_ID_MANA = EntityDataManager.defineId(MagicEntity.class,
+			DataSerializers.INT);
 	private UUID ownerUUID;
 
 	private SpellContext context;
@@ -45,7 +52,7 @@ public class MagicEntity extends Entity {
 	private TargetAI targetAI = new ClosestEntityAI(false);// TargetAI.DEFAULT;;
 	private CastAI castAI = CastAI.DEFAULT.get();
 	private RenderAI renderAI = RenderAI.DEFAULT.get();
-	private float mana;
+	private int mana;
 	// private IA brain;
 	// Used to define comportment, aka where yo go, when to cast spell, how long
 	// survive
@@ -63,6 +70,7 @@ public class MagicEntity extends Entity {
 	public MagicEntity(SpellContext context, MagicEntityComponent<?> component, World world, BlockPos position) {
 		this(ModEntities.MAGIC_ENTITY.get(), world);
 		this.setPos(position.getX() + 0.5, position.getY() + 1., position.getZ() + 0.5);
+		recalculateBoundingBox();
 		this.mana = 0;
 		this.context = context;
 		this.startingPosition = position;
@@ -94,21 +102,46 @@ public class MagicEntity extends Entity {
 	public void setTarget(LivingEntity target) {
 		context.setTarget(target);
 	}
-	
-	
-	
+
+	protected void recalculateBoundingBox() {
+		double d1 = (double) this.position().x + 0.5D - (double) Direction.UP.getStepX() * 0.46875D;
+		double d2 = (double) this.position().y + 0.5D - (double) Direction.UP.getStepY() * 0.46875D;
+		double d3 = (double) this.position().z + 0.5D - (double) Direction.UP.getStepZ() * 0.46875D;
+		this.setPosRaw(d1, d2, d3);
+		double d4 = 1;// (double)this.getWidth();
+		double d5 = 0.2;// (double)this.getHeight();
+		double d6 = 1; // (double)this.getWidth();
+		Direction.Axis direction$axis = Direction.UP.getAxis();
+		switch (direction$axis) {
+		case X:
+			d4 = 1.0D;
+			break;
+		case Y:
+			d5 = 1.0D;
+			break;
+		case Z:
+			d6 = 1.0D;
+		}
+
+		d4 = d4 / 32.0D;
+		d5 = d5 / 32.0D;
+		d6 = d6 / 32.0D;
+		this.setBoundingBox(new AxisAlignedBB(d1 - d4, d2 - d5, d3 - d6, d1 + d4, d2 + d5, d3 + d6));
+	}
+
 	@Override
 	public ActionResultType interact(PlayerEntity player, Hand hand) {
+		System.out.println("INTERACTING !!!");
 		// TODO chargeable Magic Entity
-		if(true) { // TODO changer par this.isChargeable()
+		if (true) { // TODO changer par this.isChargeable()
 			player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(new NonNullConsumer<ICaster>() {
 				@Override
 				public void accept(ICaster cap) {
 					System.out.println("GIVING ONE MANA");
-					if(cap.getMana() >= 1f) {
+					if (cap.getMana() >= 1f) {
 						try {
 							cap.delMana(1f);
-							addMana(1f);
+							addMana(1);
 							System.out.println("MANA GIVETH");
 							player.startUsingItem(hand);
 						} catch (NotEnoughManaException e) {
@@ -123,6 +156,7 @@ public class MagicEntity extends Entity {
 
 	@Override
 	protected void defineSynchedData() {
+		this.entityData.define(DATA_ID_MANA, 0);
 		/*
 		 * this.getEntityData().define(DATA_COLOR, 0);
 		 * this.getEntityData().define(DATA_RADIUS, 0.5F);
@@ -175,7 +209,7 @@ public class MagicEntity extends Entity {
 	@Override
 	protected void readAdditionalSaveData(CompoundNBT nbt) {
 		this.tickCount = nbt.getInt("Age");
-		this.mana = nbt.getFloat("Mana");
+		this.mana = nbt.getInt("Mana");
 		if (nbt.hasUUID("Owner")) {
 			this.ownerUUID = nbt.getUUID("Owner");
 		}
@@ -223,16 +257,34 @@ public class MagicEntity extends Entity {
 	public SpellContext getContext() {
 		return context;
 	}
-	
+
 	public BlockPos getStartingPosition() {
 		return startingPosition;
 	}
-	
-	public void addMana(float mana) {
+
+	public void setMana(int newMana) {
+		this.entityData.set(DATA_ID_MANA, newMana);
+	}
+
+	public int getMana() {
+		return this.entityData.get(DATA_ID_MANA);
+	}
+
+	public void addMana(int mana) {
 		this.mana += mana;
 	}
-	
+
 	public Random getRandom() {
 		return this.random;
+	}
+	
+	
+
+	@Override
+	public boolean canBeCollidedWith() {
+		return false;
+		//return true; // TODO return true only if can be interacted with
+		// Can be interacted for: registering player
+		// giving mana
 	}
 }

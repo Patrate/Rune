@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.potion.Effect;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,6 +32,9 @@ public class Registration {
 
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES,
 			RuneMain.MOD_ID);
+	
+	public static final DeferredRegister<TileEntityType<?>> TILE_ENTITIES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES,
+			RuneMain.MOD_ID);
 
 	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE = DeferredRegister
 			.create(ForgeRegistries.RECIPE_SERIALIZERS, RuneMain.MOD_ID);
@@ -45,6 +49,7 @@ public class Registration {
 		RECIPE.register(modEventBus);
 		EFFECTS.register(modEventBus);
 		ENTITIES.register(modEventBus);
+		TILE_ENTITIES.register(modEventBus);
 
 		ModEffects.register();
 		ModObjects.register();
