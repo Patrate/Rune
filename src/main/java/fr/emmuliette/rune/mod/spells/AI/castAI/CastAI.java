@@ -9,14 +9,15 @@ import fr.emmuliette.rune.mod.spells.entities.MagicEntity;
 public abstract class CastAI extends AbstractAI {
 	private int cast_count = 0;
 	public static Supplier<CastAI> DEFAULT = () -> new CastAI(){
-		private int tickCount = 10;
+		//private int tickCount = 10;
 		@Override
 		public boolean canCast(SpellContext context, MagicEntity entity) {
 			return (getCastCount() == 0 && context.getTarget() != null);
 		}
 		@Override
 		public boolean isAlive(SpellContext context, MagicEntity entity) {
-			return entity.tickCount <= tickCount || getCastCount() > 0;
+			//return entity.tickCount <= tickCount || getCastCount() > 0;
+			return entity.tickCount < 900;
 		}
 	};
 	public abstract boolean canCast(SpellContext context, MagicEntity entity);

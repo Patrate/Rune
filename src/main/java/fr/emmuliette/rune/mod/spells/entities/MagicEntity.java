@@ -1,7 +1,11 @@
 package fr.emmuliette.rune.mod.spells.entities;
 
+import java.util.Random;
 import java.util.UUID;
 
+import fr.emmuliette.rune.exception.NotEnoughManaException;
+import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
+import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.AI.castAI.CastAI;
 import fr.emmuliette.rune.mod.spells.AI.moveAI.MoveAI;
@@ -17,12 +21,16 @@ import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class MagicEntity extends Entity {
@@ -37,6 +45,7 @@ public class MagicEntity extends Entity {
 	private TargetAI targetAI = new ClosestEntityAI(false);// TargetAI.DEFAULT;;
 	private CastAI castAI = CastAI.DEFAULT.get();
 	private RenderAI renderAI = RenderAI.DEFAULT.get();
+	private float mana;
 	// private IA brain;
 	// Used to define comportment, aka where yo go, when to cast spell, how long
 	// survive
@@ -54,6 +63,7 @@ public class MagicEntity extends Entity {
 	public MagicEntity(SpellContext context, MagicEntityComponent<?> component, World world, BlockPos position) {
 		this(ModEntities.MAGIC_ENTITY.get(), world);
 		this.setPos(position.getX() + 0.5, position.getY() + 1., position.getZ() + 0.5);
+		this.mana = 0;
 		this.context = context;
 		this.startingPosition = position;
 		this.lookAt(Type.FEET, context.getCaster().getPosition(0));
@@ -84,6 +94,32 @@ public class MagicEntity extends Entity {
 	public void setTarget(LivingEntity target) {
 		context.setTarget(target);
 	}
+	
+	
+	
+	@Override
+	public ActionResultType interact(PlayerEntity player, Hand hand) {
+		// TODO chargeable Magic Entity
+		if(true) { // TODO changer par this.isChargeable()
+			player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(new NonNullConsumer<ICaster>() {
+				@Override
+				public void accept(ICaster cap) {
+					System.out.println("GIVING ONE MANA");
+					if(cap.getMana() >= 1f) {
+						try {
+							cap.delMana(1f);
+							addMana(1f);
+							System.out.println("MANA GIVETH");
+							player.startUsingItem(hand);
+						} catch (NotEnoughManaException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+		}
+		return super.interact(player, hand);
+	}
 
 	@Override
 	protected void defineSynchedData() {
@@ -108,7 +144,7 @@ public class MagicEntity extends Entity {
 	public void tick() {
 		super.tick();
 		if (this.level.isClientSide) {
-			renderAI.render(this, this.random);
+			renderAI.render(this);
 		} else {
 			if (getContext() == null || !castAI.isAlive(getContext(), this)) {
 				this.remove();
@@ -136,87 +172,22 @@ public class MagicEntity extends Entity {
 		}
 	}
 
-//	@Nullable
-//	public LivingEntity getOwner() {
-//		if (this.owner == null && this.ownerUUID != null && this.level instanceof ServerWorld) {
-//			Entity entity = ((ServerWorld) this.level).getEntity(this.ownerUUID);
-//			if (entity instanceof LivingEntity) {
-//				this.owner = (LivingEntity) entity;
-//			}
-//		}
-//
-//		return this.owner;
-//	}
-
 	@Override
 	protected void readAdditionalSaveData(CompoundNBT nbt) {
 		this.tickCount = nbt.getInt("Age");
-		/*
-		 * this.duration = nbt.getInt("Duration"); this.waitTime =
-		 * nbt.getInt("WaitTime"); this.reapplicationDelay =
-		 * nbt.getInt("ReapplicationDelay"); this.durationOnUse =
-		 * nbt.getInt("DurationOnUse"); this.radiusOnUse = nbt.getFloat("RadiusOnUse");
-		 * this.radiusPerTick = nbt.getFloat("RadiusPerTick");
-		 * this.setRadius(nbt.getFloat("Radius"));
-		 */
+		this.mana = nbt.getFloat("Mana");
 		if (nbt.hasUUID("Owner")) {
 			this.ownerUUID = nbt.getUUID("Owner");
 		}
-
-		/*
-		 * if (nbt.contains("Particle", 8)) { try {
-		 * this.setParticle(ParticleArgument.readParticle(new
-		 * StringReader(nbt.getString("Particle")))); } catch (CommandSyntaxException
-		 * commandsyntaxexception) { LOGGER.warn("Couldn't load custom particle {}",
-		 * nbt.getString("Particle"), commandsyntaxexception); } }
-		 * 
-		 * if (nbt.contains("Color", 99)) { this.setFixedColor(nbt.getInt("Color")); }
-		 */
-
-		/*
-		 * if (p_70037_1_.contains("Potion", 8)) {
-		 * this.setPotion(PotionUtils.getPotion(p_70037_1_)); }
-		 */
-
-		/*
-		 * if (nbt.contains("Effects", 9)) { ListNBT listnbt = nbt.getList("Effects",
-		 * 10); this.effects.clear();
-		 * 
-		 * for (int i = 0; i < listnbt.size(); ++i) { EffectInstance effectinstance =
-		 * EffectInstance.load(listnbt.getCompound(i)); if (effectinstance != null) {
-		 * this.addEffect(effectinstance); } } }
-		 */
-
 	}
 
 	@Override
 	protected void addAdditionalSaveData(CompoundNBT nbt) {
 		nbt.putInt("Age", this.tickCount);
-		/*
-		 * nbt.putInt("Duration", this.duration); nbt.putInt("WaitTime", this.waitTime);
-		 * nbt.putInt("ReapplicationDelay", this.reapplicationDelay);
-		 * nbt.putInt("DurationOnUse", this.durationOnUse); nbt.putFloat("RadiusOnUse",
-		 * this.radiusOnUse); nbt.putFloat("RadiusPerTick", this.radiusPerTick);
-		 * nbt.putFloat("Radius", this.getRadius()); nbt.putString("Particle",
-		 * this.getParticle().writeToString());
-		 */
+		nbt.putFloat("Mana", this.mana);
 		if (this.ownerUUID != null) {
 			nbt.putUUID("Owner", this.ownerUUID);
 		}
-
-//		if (this.fixedColor) {
-//			nbt.putInt("Color", this.getColor());
-//		}
-
-//		if (!this.effects.isEmpty()) {
-//			ListNBT listnbt = new ListNBT();
-//
-//			for (EffectInstance effectinstance : this.effects) {
-//				listnbt.add(effectinstance.save(new CompoundNBT()));
-//			}
-//
-//			nbt.put("Effects", listnbt);
-//		}
 	}
 
 	@Override
@@ -232,7 +203,6 @@ public class MagicEntity extends Entity {
 	@Override
 	public IPacket<?> getAddEntityPacket() {
 		return NetworkHooks.getEntitySpawningPacket(this);
-		// return new SSpawnObjectPacket(this);
 	}
 
 	@Override
@@ -246,10 +216,6 @@ public class MagicEntity extends Entity {
 		super.onSyncedDataUpdated(p_184206_1_);
 	}
 
-	/*public Entity getCaster() {
-		return caster;
-	}*/
-
 	public RenderAI getRenderAI() {
 		return renderAI;
 	}
@@ -260,5 +226,13 @@ public class MagicEntity extends Entity {
 	
 	public BlockPos getStartingPosition() {
 		return startingPosition;
+	}
+	
+	public void addMana(float mana) {
+		this.mana += mana;
+	}
+	
+	public Random getRandom() {
+		return this.random;
 	}
 }
