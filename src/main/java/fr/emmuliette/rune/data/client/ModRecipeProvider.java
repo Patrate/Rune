@@ -5,8 +5,8 @@ import java.util.function.Consumer;
 import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeBuilder;
 import fr.emmuliette.rune.setup.Registration;
-import net.minecraft.data.CustomRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
@@ -40,6 +40,7 @@ public class ModRecipeProvider extends RecipeProvider {
 			e.printStackTrace();
 		}
 
-		CustomRecipeBuilder.special(Registration.SPELL_RECIPE.get()).save(consumer, "spell_recipe");
+		SpellBindingRecipeBuilder.build(Registration.SPELL_RECIPE.get()).save(consumer, "spellbinding_spell_recipe");
+		//CustomRecipeBuilder.special(Registration.CRAFTING_SPELL_RECIPE.get()).save(consumer, "crafting_spell_recipe");
 	}
 }

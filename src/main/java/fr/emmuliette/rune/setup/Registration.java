@@ -1,9 +1,12 @@
 package fr.emmuliette.rune.setup;
 
+import java.util.function.Function;
+
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
+import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeSerializer;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingScreen;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.effects.ModEffects;
@@ -18,9 +21,9 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.potion.Effect;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -49,11 +52,26 @@ public class Registration {
 	public static final DeferredRegister<IRecipeSerializer<?>> RECIPE = DeferredRegister
 			.create(ForgeRegistries.RECIPE_SERIALIZERS, RuneMain.MOD_ID);
 
-	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> SPELL_RECIPE = Registration.RECIPE
-			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<>(SpellRecipe::new));
-
 	public static final IRecipeType<SpellBindingRecipe> SPELLBINDING_RECIPE = IRecipeType
 			.register("spellbinding_recipe");
+	
+	public static final RegistryObject<SpellBindingRecipeSerializer<SpellRecipe>> SPELL_RECIPE = Registration.RECIPE
+			.register("crafting_special_spell", () -> new SpellBindingRecipeSerializer<SpellRecipe>(new Function<ResourceLocation, SpellRecipe>() {
+				@Override
+				public SpellRecipe apply(ResourceLocation t) {
+					return new SpellRecipe(t);
+				}
+			}));
+	
+//	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> CRAFTING_SPELL_RECIPE = Registration.RECIPE
+//			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<SpellRecipe>(new Function<ResourceLocation, SpellRecipe>() {
+//				@Override
+//				public SpellRecipe apply(ResourceLocation t) {
+//					return new SpellRecipe(t);
+//				}
+//			}));
+	
+	
 
 	public static void register() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

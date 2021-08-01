@@ -25,7 +25,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInventory> {
-	private final SpellBindingInventory craftSlots = new SpellBindingInventory(this);
+	private final SpellBindingInventory craftSlots = new SpellBindingInventory(this, 3, 3);
 	private final CraftResultInventory resultSlots = new CraftResultInventory();
 	private final IWorldPosCallable access;
 	private final PlayerEntity player;
@@ -42,14 +42,14 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		this.addSlot(new SpellBindingResultSlot(playerInventory.player, this.craftSlots, this.resultSlots, 0, 124, 35));
 
 		// Crafting slots
-		for(int i = 0; i < 6; ++i) {
-			this.addSlot(new Slot(this.craftSlots, i, 30 + i * 18, 25));
-		}
-		/*for (int i = 0; i < 3; ++i) {
+//		for(int i = 0; i < 6; ++i) {
+//			this.addSlot(new Slot(this.craftSlots, i, 30 + i * 18, 25));
+//		}
+		for (int i = 0; i < 3; ++i) {
 			for (int j = 0; j < 3; ++j) {
-				this.addSlot(new Slot(this.craftSlots, j + i * 3, 30 + j * 18, 17 + i * 18));
+				this.addSlot(new SpellBindingRuneSlot(this.craftSlots, j + i * 3, 30 + j * 18, 17 + i * 18));
 			}
-		}*/
+		}
 
 		// Inventory
 		for (int k = 0; k < 3; ++k) {

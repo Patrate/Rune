@@ -11,20 +11,21 @@ import net.minecraft.util.NonNullList;
 
 public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator {
 	private final NonNullList<ItemStack> items;
-	// Should be tree, not grid
+	private final int width;
+	private final int height;
 	private final Container menu;
 
-	public SpellBindingInventory(Container container) {
-		this.items = NonNullList.withSize(1, ItemStack.EMPTY);
+	public SpellBindingInventory(Container container, int width, int height) {
+		this.items = NonNullList.withSize(width * height, ItemStack.EMPTY);
 		this.menu = container;
+		this.width = width;
+		this.height = height;
 	}
 
-	@Override
 	public int getContainerSize() {
 		return this.items.size();
 	}
 
-	@Override
 	public boolean isEmpty() {
 		for (ItemStack itemstack : this.items) {
 			if (!itemstack.isEmpty()) {
@@ -35,19 +36,16 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 		return true;
 	}
 
-	@Override
-	public ItemStack getItem(int containerId) {
-		return containerId >= this.getContainerSize() ? ItemStack.EMPTY : this.items.get(containerId);
+	public ItemStack getItem(int p_70301_1_) {
+		return p_70301_1_ >= this.getContainerSize() ? ItemStack.EMPTY : this.items.get(p_70301_1_);
 	}
 
-	@Override
 	public ItemStack removeItemNoUpdate(int p_70304_1_) {
 		return ItemStackHelper.takeItem(this.items, p_70304_1_);
 	}
 
-	@Override
-	public ItemStack removeItem(int containerId, int p_70298_2_) {
-		ItemStack itemstack = ItemStackHelper.removeItem(this.items, containerId, p_70298_2_);
+	public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
+		ItemStack itemstack = ItemStackHelper.removeItem(this.items, p_70298_1_, p_70298_2_);
 		if (!itemstack.isEmpty()) {
 			this.menu.slotsChanged(this);
 		}
@@ -55,38 +53,30 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 		return itemstack;
 	}
 
-	@Override
-	public void setItem(int index, ItemStack iStack) {
-		while(index >= this.items.size()) {
-			this.items.add(ItemStack.EMPTY);
-		}
-		this.items.set(index, iStack);
+	public void setItem(int p_70299_1_, ItemStack p_70299_2_) {
+		this.items.set(p_70299_1_, p_70299_2_);
 		this.menu.slotsChanged(this);
 	}
 
-	@Override
 	public void setChanged() {
 	}
 
-	@Override
 	public boolean stillValid(PlayerEntity p_70300_1_) {
 		return true;
 	}
 
-	@Override
 	public void clearContent() {
 		this.items.clear();
 	}
 
 	public int getHeight() {
-		return 1;
+		return this.height;
 	}
 
 	public int getWidth() {
-		return this.items.size();
+		return this.width;
 	}
 
-	@Override
 	public void fillStackedContents(RecipeItemHelper p_194018_1_) {
 		for (ItemStack itemstack : this.items) {
 			p_194018_1_.accountSimpleStack(itemstack);
