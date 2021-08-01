@@ -16,14 +16,18 @@ import net.minecraft.util.text.ITextComponent;
 public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> implements IRecipeShownListener {
 	protected static final ResourceLocation SPELLBINDER_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/spellbinder.png");
-	/*private static final ResourceLocation RECIPE_BUTTON_LOCATION = new ResourceLocation(
-			"textures/gui/recipe_button.png");*/
+	/*
+	 * private static final ResourceLocation RECIPE_BUTTON_LOCATION = new
+	 * ResourceLocation( "textures/gui/recipe_button.png");
+	 */
 	private final RecipeBookGui recipeBookComponent = new RecipeBookGui();
 	private boolean widthTooNarrow;
+	private SpellBindingContainer container;
 
 	public SpellBindingScreen(SpellBindingContainer container, PlayerInventory playerInventory,
 			ITextComponent textComp) {
 		super(container, playerInventory, textComp);
+		this.container = container;
 	}
 
 	protected void init() {
@@ -33,15 +37,16 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 		this.leftPos = this.recipeBookComponent.updateScreenPosition(this.widthTooNarrow, this.width, this.imageWidth);
 		this.children.add(this.recipeBookComponent);
 		this.setInitialFocus(this.recipeBookComponent);
-		/*this.addButton(new ImageButton(this.leftPos + 5, this.height / 2 - 49, 20, 18, 0, 0, 19, RECIPE_BUTTON_LOCATION,
-				(p_214076_1_) -> {
-					this.recipeBookComponent.initVisuals(this.widthTooNarrow);
-					this.recipeBookComponent.toggleVisibility();
-					this.leftPos = this.recipeBookComponent.updateScreenPosition(this.widthTooNarrow, this.width,
-							this.imageWidth);
-					((ImageButton) p_214076_1_).setPosition(this.leftPos + 5, this.height / 2 - 49);
-				}));
-		this.titleLabelX = 29;*/
+		/*
+		 * this.addButton(new ImageButton(this.leftPos + 5, this.height / 2 - 49, 20,
+		 * 18, 0, 0, 19, RECIPE_BUTTON_LOCATION, (p_214076_1_) -> {
+		 * this.recipeBookComponent.initVisuals(this.widthTooNarrow);
+		 * this.recipeBookComponent.toggleVisibility(); this.leftPos =
+		 * this.recipeBookComponent.updateScreenPosition(this.widthTooNarrow,
+		 * this.width, this.imageWidth); ((ImageButton)
+		 * p_214076_1_).setPosition(this.leftPos + 5, this.height / 2 - 49); }));
+		 * this.titleLabelX = 29;
+		 */
 	}
 
 	public void tick() {
@@ -65,12 +70,19 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 	}
 
 	@SuppressWarnings("deprecation")
-	protected void renderBg(MatrixStack p_230450_1_, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+	protected void renderBg(MatrixStack mStack, float useless3, int useless2, int useless) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.minecraft.getTextureManager().bind(SPELLBINDER_LOCATION);
 		int i = this.leftPos;
 		int j = (this.height - this.imageHeight) / 2;
-		this.blit(p_230450_1_, i, j, 0, 0, this.imageWidth, this.imageHeight);
+		this.blit(mStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+		for (Slot slot : container.slots) {
+			this.renderCase(mStack, i + slot.x, j + slot.y);
+		}
+	}
+
+	private void renderCase(MatrixStack mStack, int x, int y) {
+		this.blit(mStack, x - 1, y - 1, 0, this.imageHeight, 18, this.imageHeight + 18);
 	}
 
 	protected boolean isHovering(int p_195359_1_, int p_195359_2_, int p_195359_3_, int p_195359_4_, double p_195359_5_,
@@ -98,9 +110,22 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 				this.imageWidth, this.imageHeight, p_195361_7_) && flag;
 	}
 
-	protected void slotClicked(Slot p_184098_1_, int p_184098_2_, int p_184098_3_, ClickType p_184098_4_) {
-		super.slotClicked(p_184098_1_, p_184098_2_, p_184098_3_, p_184098_4_);
-		this.recipeBookComponent.slotClicked(p_184098_1_);
+	private SpellBindingRuneSlot current = null;
+
+	protected void slotClicked(Slot slot, int p_184098_2_, int p_184098_3_, ClickType clickType) {
+		if (slot instanceof SpellBindingRuneSlot && !((SpellBindingRuneSlot) slot).equals(current)) {
+			System.out.println("CLIC TYPE IS " + clickType);
+			current = (SpellBindingRuneSlot) slot;
+			selectSlot((SpellBindingRuneSlot) slot);
+		} else {
+			super.slotClicked(slot, p_184098_2_, p_184098_3_, clickType);
+			this.recipeBookComponent.slotClicked(slot);
+		}
+	}
+
+	public void selectSlot(SpellBindingRuneSlot sSlot) {
+		// TODO
+		System.out.println("Selecting slot " + sSlot.index + " at " + sSlot.x + "/" + sSlot.y + " : " + sSlot);
 	}
 
 	public void recipesUpdated() {

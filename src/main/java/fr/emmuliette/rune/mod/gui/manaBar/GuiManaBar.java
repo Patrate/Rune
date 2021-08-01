@@ -7,8 +7,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.exception.CasterCapabilityException;
-import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.effects.ModEffects;
@@ -28,6 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -47,14 +46,15 @@ public class GuiManaBar {
 		}
 		Minecraft minecraft = Minecraft.getInstance();
 		PlayerEntity player = (PlayerEntity) minecraft.getCameraEntity();
+		if (player.isAlive())
+			player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(new NonNullConsumer<ICaster>() {
 
-		try {
-			ICaster cap = player.getCapability(CasterCapability.CASTER_CAPABILITY)
-					.orElseThrow(new CasterCapabilityExceptionSupplier(player));
-			render(event, minecraft, player, cap);
-		} catch (CasterCapabilityException e) {
-			e.printStackTrace();
-		}
+				@Override
+				public void accept(ICaster cap) {
+					render(event, minecraft, player, cap);
+				}
+
+			});
 
 	}
 
@@ -121,11 +121,11 @@ public class GuiManaBar {
 		// Change when effect silenced is implemented
 		final int BACKGROUND = (silenced) ? 9 * STEP : 0;
 
-		int x = left - 8 * (int)Math.max(1, (Math.floor(Math.log10(mana))));
+		int x = left - 8 * (int) Math.max(1, (Math.floor(Math.log10(mana))));
 		int y = top;
-		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x+1, y+2, Color.BLUE.getRGB());
-		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x, y+1, Color.WHITE.getRGB());
-		
+		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x + 1, y + 2, Color.BLUE.getRGB());
+		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x, y + 1, Color.WHITE.getRGB());
+
 		bind(GUI_ICONS_LOCATION);
 
 		// minecraft.getProfiler().push("mana");
@@ -135,7 +135,7 @@ public class GuiManaBar {
 			int manaTmp = (mana - 1) % 20 + 1;
 			x = left + i % 10 * 8;
 			y = top;
-			
+
 			if (mana <= 4 || overpriced)
 				y += random.nextInt(2);
 

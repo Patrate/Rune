@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.blocks.spellBinding;
 
+import fr.emmuliette.rune.mod.items.RuneItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,7 @@ public class SpellBindingRuneSlot extends Slot {
 	}
 
 	public boolean mayPlace(ItemStack iStack) {
-		// TODO renvoyer true seulement si c'est une rune et qu'elle est du bon type
-		return super.mayPlace(iStack);
+		// TODO faire un mayPlacec en fonction de si le component peut être placé
+		return iStack.getItem() instanceof RuneItem;
 	}
 }

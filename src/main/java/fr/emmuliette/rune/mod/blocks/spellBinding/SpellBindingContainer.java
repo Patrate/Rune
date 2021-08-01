@@ -14,6 +14,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.RecipeBookContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
@@ -25,7 +26,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInventory> {
-	private final SpellBindingInventory craftSlots = new SpellBindingInventory(this, 3, 3);
+	private final int WIDTH = 5;
+	private final int HEIGHT = 3;
+	private final SpellBindingInventory craftSlots = new SpellBindingInventory(this, WIDTH, HEIGHT);
+
 	private final CraftResultInventory resultSlots = new CraftResultInventory();
 	private final IWorldPosCallable access;
 	private final PlayerEntity player;
@@ -39,15 +43,23 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		super(ModContainers.SPELLBINDING.get(), containerId);
 		this.access = postCall;
 		this.player = playerInventory.player;
-		this.addSlot(new SpellBindingResultSlot(playerInventory.player, this.craftSlots, this.resultSlots, 0, 124, 35));
+		// Result slot
+		this.addSlot(
+				new SpellBindingResultSlot(playerInventory.player, this.getCraftSlots(), this.resultSlots, 0, 138, 31));
+
+		// Book or parchment slot
+		this.addSlot(new Slot(this.craftSlots, 1, 138, 62) {
+			@Override
+			public boolean mayPlace(ItemStack iStack) {
+				return iStack.getItem() == Items.BOOK || iStack.getItem() == Items.PAPER;
+			}
+		});
 
 		// Crafting slots
-//		for(int i = 0; i < 6; ++i) {
-//			this.addSlot(new Slot(this.craftSlots, i, 30 + i * 18, 25));
-//		}
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				this.addSlot(new SpellBindingRuneSlot(this.craftSlots, j + i * 3, 30 + j * 18, 17 + i * 18));
+
+		for (int i = 0; i < HEIGHT; ++i) {
+			for (int j = 0; j < WIDTH; ++j) {
+				this.addSlot(new SpellBindingRuneSlot(this.craftSlots, 2 + j + i * WIDTH, 11 + j * 19, 16 + i * 19));
 			}
 		}
 
@@ -62,7 +74,20 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		for (int l = 0; l < 9; ++l) {
 			this.addSlot(new Slot(playerInventory, l, 8 + l * 18, 142));
 		}
+	}
 
+	protected void removeSlot(int index) {
+		this.slots.remove(index);
+	}
+
+	private void reduce() {
+		this.removeSlot(this.slots.size() - 1);
+	}
+
+	private void add(int index) {
+		int i = index / 3;
+		int j = index % 3;
+		this.addSlot(new SpellBindingRuneSlot(this.craftSlots, index, 27 + j * 20, 15 + i * 20));
 	}
 
 	protected static void slotChangedCraftingGrid(int containerId, World world, PlayerEntity player,
@@ -87,27 +112,27 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 
 	public void slotsChanged(IInventory slot) {
 		this.access.execute((world, p_217069_2_) -> {
-			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
+			slotChangedCraftingGrid(this.containerId, world, this.player, this.getCraftSlots(), this.resultSlots);
 		});
 	}
 
 	public void fillCraftSlotsStackedContents(RecipeItemHelper recipe) {
-		this.craftSlots.fillStackedContents(recipe);
+		this.getCraftSlots().fillStackedContents(recipe);
 	}
 
 	public void clearCraftingContent() {
-		this.craftSlots.clearContent();
+		this.getCraftSlots().clearContent();
 		this.resultSlots.clearContent();
 	}
 
 	public boolean recipeMatches(IRecipe<? super SpellBindingInventory> recipe) {
-		return recipe.matches(this.craftSlots, this.player.level);
+		return recipe.matches(this.getCraftSlots(), this.player.level);
 	}
 
 	public void removed(PlayerEntity player) {
 		super.removed(player);
 		this.access.execute((p_217068_2_, p_217068_3_) -> {
-			this.clearContainer(player, p_217068_2_, this.craftSlots);
+			this.clearContainer(player, p_217068_2_, this.getCraftSlots());
 		});
 	}
 
@@ -121,31 +146,38 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	}
 
 	public ItemStack quickMoveStack(PlayerEntity player, int slotId) {
+		// Inventory = 10 to 46 I guess
+		// rune = 2 to 2 + WIDTH * HEIGHT
+		// book = 1
+		// result = 0
+		int bookSlot = 1, runeSlotMin = bookSlot + 1, runeSlotMax = runeSlotMin - 1 + WIDTH * HEIGHT,
+				inventoryMin = runeSlotMax + 1, inventoryMax = inventoryMin + 36, shortcutsMin = inventoryMax - 9;
 		ItemStack itemstack = ItemStack.EMPTY;
 		Slot slot = this.slots.get(slotId);
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (slotId == 0) {
+			if (slotId == getResultSlotIndex()) { // RESULT SLOT ?
 				this.access.execute((p_217067_2_, p_217067_3_) -> {
 					itemstack1.getItem().onCraftedBy(itemstack1, p_217067_2_, player);
 				});
-				if (!this.moveItemStackTo(itemstack1, 10, 46, true)) {
+				// Put it in the inventory
+				if (!this.moveItemStackTo(itemstack1, inventoryMin, inventoryMax, true)) {
 					return ItemStack.EMPTY;
 				}
 
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (slotId >= 10 && slotId < 46) {
-				if (!this.moveItemStackTo(itemstack1, 1, 10, false)) {
-					if (slotId < 37) {
-						if (!this.moveItemStackTo(itemstack1, 37, 46, false)) {
+			} else if (slotId >= inventoryMin && slotId < inventoryMax) { // IN INVENTORY
+				if (!this.moveItemStackTo(itemstack1, 1, inventoryMin, false)) {
+					if (slotId < shortcutsMin) { //
+						if (!this.moveItemStackTo(itemstack1, shortcutsMin, inventoryMax, false)) {
 							return ItemStack.EMPTY;
 						}
-					} else if (!this.moveItemStackTo(itemstack1, 10, 37, false)) {
+					} else if (!this.moveItemStackTo(itemstack1, inventoryMin, shortcutsMin, false)) {
 						return ItemStack.EMPTY;
 					}
 				}
-			} else if (!this.moveItemStackTo(itemstack1, 10, 46, false)) {
+			} else if (!this.moveItemStackTo(itemstack1, inventoryMin, inventoryMax, false)) {
 				return ItemStack.EMPTY;
 			}
 
@@ -177,21 +209,25 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	}
 
 	public int getGridWidth() {
-		return this.craftSlots.getWidth();
+		return WIDTH;
 	}
 
 	public int getGridHeight() {
-		return this.craftSlots.getHeight();
+		return HEIGHT;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public int getSize() {
-		return 10;
+		return getGridWidth() * getGridHeight();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public RecipeBookCategory getRecipeBookType() {
 		return RecipeBookCategory.CRAFTING;
 		// TODO changer reciupeBook !
+	}
+
+	public SpellBindingInventory getCraftSlots() {
+		return craftSlots;
 	}
 }

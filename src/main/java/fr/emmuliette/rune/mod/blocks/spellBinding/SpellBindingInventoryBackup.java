@@ -1,8 +1,5 @@
 package fr.emmuliette.rune.mod.blocks.spellBinding;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IRecipeHelperPopulator;
@@ -10,16 +7,19 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.util.NonNullList;
 
-public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator {
-	private final List<ItemStack> items;
+public class SpellBindingInventoryBackup implements IInventory, IRecipeHelperPopulator {
+	private final NonNullList<ItemStack> items;
+	private final int width;
+	private final int height;
 	private final Container menu;
 
-	public SpellBindingInventory(Container container, int width, int height) {
-		this.items = new ArrayList<ItemStack>(width * height);
-		for(int i = 0; i < width * height; ++i)
-			this.items.add(ItemStack.EMPTY);
+	public SpellBindingInventoryBackup(Container container, int width, int height) {
+		this.items = NonNullList.withSize(width * height, ItemStack.EMPTY);
 		this.menu = container;
+		this.width = width;
+		this.height = height;
 	}
 
 	public int getContainerSize() {
@@ -36,12 +36,12 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 		return true;
 	}
 
-	public ItemStack getItem(int index) {
-		return index >= this.getContainerSize() ? ItemStack.EMPTY : this.items.get(index);
+	public ItemStack getItem(int p_70301_1_) {
+		return p_70301_1_ >= this.getContainerSize() ? ItemStack.EMPTY : this.items.get(p_70301_1_);
 	}
 
-	public ItemStack removeItemNoUpdate(int index) {
-		return ItemStackHelper.takeItem(this.items, index);
+	public ItemStack removeItemNoUpdate(int p_70304_1_) {
+		return ItemStackHelper.takeItem(this.items, p_70304_1_);
 	}
 
 	public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
@@ -53,11 +53,8 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 		return itemstack;
 	}
 
-	public void setItem(int index, ItemStack itemStack) {
-		while(index >= this.items.size()) {
-			this.items.add(ItemStack.EMPTY);
-		}
-		this.items.set(index, itemStack);
+	public void setItem(int p_70299_1_, ItemStack p_70299_2_) {
+		this.items.set(p_70299_1_, p_70299_2_);
 		this.menu.slotsChanged(this);
 	}
 
@@ -70,6 +67,14 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 
 	public void clearContent() {
 		this.items.clear();
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public int getWidth() {
+		return this.width;
 	}
 
 	public void fillStackedContents(RecipeItemHelper p_194018_1_) {
