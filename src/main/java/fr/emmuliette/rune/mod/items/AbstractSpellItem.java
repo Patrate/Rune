@@ -10,6 +10,7 @@ import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.circle.CircleEntity;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.spells.Spell;
@@ -155,6 +156,11 @@ public abstract class AbstractSpellItem extends Item {
 				caster.startUsingItem(hand);
 				return ActionResult.pass(itemStack);
 			}
+//			if(retour.resultType == ActionResultType.SUCCESS) {
+//				System.out.println("Creating a circle !");
+//				CircleEntity me = new CircleEntity(caster, world);
+//		        world.addFreshEntity(me);
+//			}
 			return retour.result;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();

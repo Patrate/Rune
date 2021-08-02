@@ -7,5 +7,6 @@ public class ModRenderer {
 
 	public static void register() {
 		RenderingRegistry.registerEntityRenderingHandler(ModEntities.MAGIC_ENTITY.get(), MagicEntityRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(ModEntities.CIRCLE_ENTITY.get(), CircleEntityRenderer::new);
 	}
 }
