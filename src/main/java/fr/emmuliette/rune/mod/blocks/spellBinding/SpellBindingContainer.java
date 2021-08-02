@@ -2,6 +2,8 @@ package fr.emmuliette.rune.mod.blocks.spellBinding;
 
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.containers.ModContainers;
@@ -21,6 +23,7 @@ import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,6 +32,7 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	private final int WIDTH = 5;
 	private final int HEIGHT = 3;
 	private final SpellBindingInventory craftSlots = new SpellBindingInventory(this, WIDTH, HEIGHT);
+	private String spellName;
 
 	private final CraftResultInventory resultSlots = new CraftResultInventory();
 	private final IWorldPosCallable access;
@@ -41,6 +45,7 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 
 	public SpellBindingContainer(int containerId, PlayerInventory playerInventory, IWorldPosCallable postCall) {
 		super(ModContainers.SPELLBINDING.get(), containerId);
+		this.spellName = "";
 		this.access = postCall;
 		this.player = playerInventory.player;
 		// Result slot
@@ -80,44 +85,91 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		this.slots.remove(index);
 	}
 
-	private void reduce() {
-		this.removeSlot(this.slots.size() - 1);
-	}
-
-	private void add(int index) {
-		int i = index / 3;
-		int j = index % 3;
-		this.addSlot(new SpellBindingRuneSlot(this.craftSlots, index, 27 + j * 20, 15 + i * 20));
-	}
+//	private void reduce() {
+//		this.removeSlot(this.slots.size() - 1);
+//	}
+//
+//	private void add(int index) {
+//		int i = index / 3;
+//		int j = index % 3;
+//		this.addSlot(new SpellBindingRuneSlot(this.craftSlots, index, 27 + j * 20, 15 + i * 20));
+//	}
 
 	protected static void slotChangedCraftingGrid(int containerId, World world, PlayerEntity player,
-			SpellBindingInventory SpellBindingInventory, CraftResultInventory craftingResultInventory) {
+			SpellBindingInventory spellBindingInventory, CraftResultInventory craftingResultInventory) {
 		if (!world.isClientSide) {
 			ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) player;
 			ItemStack itemstack = ItemStack.EMPTY;
 			Optional<SpellBindingRecipe> optional = world.getServer().getRecipeManager()
-					.getRecipeFor(Registration.SPELLBINDING_RECIPE, SpellBindingInventory, world);
+					.getRecipeFor(Registration.SPELLBINDING_RECIPE, spellBindingInventory, world);
 			if (optional.isPresent()) {
 				SpellBindingRecipe icraftingrecipe = optional.get();
 				if (craftingResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
-					itemstack = icraftingrecipe.assemble(SpellBindingInventory);
+					itemstack = icraftingrecipe.assemble(spellBindingInventory);
 				}
 			}
 
+			ItemStack itemstack1 = craftingResultInventory.getItem(0).copy();
+			itemstack.setHoverName(new StringTextComponent(itemstack1.getHoverName().getString()));
 			craftingResultInventory.setItem(0, itemstack);
-			// return NetworkHooks.getEntitySpawningPacket(this);
 			serverplayerentity.connection.send(new SSetSlotPacket(containerId, 0, itemstack));
 		}
 	}
 
 	public void slotsChanged(IInventory slot) {
-		this.access.execute((world, p_217069_2_) -> {
-			slotChangedCraftingGrid(this.containerId, world, this.player, this.getCraftSlots(), this.resultSlots);
+		// super.slotsChanged(slot);
+		if (slot == this.resultSlots) {
+			this.createResult();
+		}
+		this.access.execute((world, blockPos) -> {
+			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
 		});
 	}
 
+	protected static void nameChangedCraftingGrid(int containerId, World world, PlayerEntity player,
+			SpellBindingInventory spellBindingInventory, CraftResultInventory craftingResultInventory) {
+		if (!world.isClientSide) {
+			System.out.println("NAME CHANGED AND NAME IS " + spellBindingInventory.getSpellName());
+			ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) player;
+			ItemStack itemstack = ItemStack.EMPTY;
+			Optional<SpellBindingRecipe> optional = world.getServer().getRecipeManager()
+					.getRecipeFor(Registration.SPELLBINDING_RECIPE, spellBindingInventory, world);
+			if (optional.isPresent()) {
+				SpellBindingRecipe icraftingrecipe = optional.get();
+				if (craftingResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
+					itemstack = icraftingrecipe.assemble(spellBindingInventory);
+				}
+			}
+
+			craftingResultInventory.setItem(0, itemstack);
+			serverplayerentity.connection.send(new SSetSlotPacket(containerId, 0, itemstack));
+		} else {
+			System.out.println("We client, not updating");
+		}
+	}
+
+	public void nameChanged() {
+		System.out.println("HERE IT DOESN'T WORK FFS MAÏTE");
+		this.broadcastChanges();
+		// nameChangedCraftingGrid(this.containerId, this.player.level, this.player,
+		// this.getCraftSlots(), this.resultSlots);
+
+//		nameChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftSlots, this.resultSlots);
+		// this.access.execute((world, p_217069_2_) -> {
+//			nameChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
+		// });
+		/*
+		 * if (StringUtils.isBlank(this.spellName)) { if
+		 * (this.resultSlots.getItem(0).hasCustomHoverName()) {
+		 * this.resultSlots.getItem(0).resetHoverName(); } } else if
+		 * (!this.spellName.equals(this.resultSlots.getItem(0).getHoverName().getString(
+		 * ))) { this.resultSlots.getItem(0).setHoverName(new
+		 * StringTextComponent(this.spellName)); }
+		 */
+	}
+
 	public void fillCraftSlotsStackedContents(RecipeItemHelper recipe) {
-		this.getCraftSlots().fillStackedContents(recipe);
+		// this.getCraftSlots().fillStackedContents(recipe);
 	}
 
 	public void clearCraftingContent() {
@@ -125,7 +177,11 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		this.resultSlots.clearContent();
 	}
 
+	@Override
 	public boolean recipeMatches(IRecipe<? super SpellBindingInventory> recipe) {
+		System.out.println("CHECKING SPELL NAME IS " + getSpellName());
+		if (StringUtils.isBlank(this.getSpellName()))
+			return false;
 		return recipe.matches(this.getCraftSlots(), this.player.level);
 	}
 
@@ -229,5 +285,42 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 
 	public SpellBindingInventory getCraftSlots() {
 		return craftSlots;
+	}
+
+	public String getSpellName() {
+		return this.resultSlots.getItem(0).getHoverName().getString();
+	}
+
+	public void setSpellName(String name) {
+		this.spellName = name;
+		if (this.getSlot(0).hasItem()) {
+			ItemStack itemstack = this.resultSlots.getItem(0);
+			if (StringUtils.isBlank(name)) {
+				itemstack.resetHoverName();
+			} else {
+				itemstack.setHoverName(new StringTextComponent(this.spellName));
+			}
+		}
+
+		this.createResult();
+		nameChanged();
+	}
+
+	public void createResult() {
+		ItemStack itemstack = this.resultSlots.getItem(0);
+		if (itemstack.isEmpty()) {
+			this.resultSlots.setItem(0, ItemStack.EMPTY);
+		} else {
+			ItemStack itemstack1 = itemstack.copy();
+			if (StringUtils.isBlank(this.spellName)) {
+				if (itemstack.hasCustomHoverName()) {
+					itemstack1.resetHoverName();
+				}
+			} else if (!this.spellName.equals(itemstack.getHoverName().getString())) {
+				itemstack1.setHoverName(new StringTextComponent(this.spellName));
+			}
+			this.resultSlots.setItem(0, itemstack1);
+			this.broadcastChanges();
+		}
 	}
 }

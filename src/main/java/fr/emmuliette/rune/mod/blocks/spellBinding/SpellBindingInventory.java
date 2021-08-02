@@ -5,19 +5,16 @@ import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.IRecipeHelperPopulator;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeItemHelper;
 
-public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator {
+public class SpellBindingInventory implements IInventory {
 	private final List<ItemStack> items;
-	private final Container menu;
+	private final SpellBindingContainer menu;
 
-	public SpellBindingInventory(Container container, int width, int height) {
+	public SpellBindingInventory(SpellBindingContainer container, int width, int height) {
 		this.items = new ArrayList<ItemStack>(width * height);
-		for(int i = 0; i < width * height; ++i)
+		for (int i = 0; i < width * height; ++i)
 			this.items.add(ItemStack.EMPTY);
 		this.menu = container;
 	}
@@ -32,7 +29,6 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 				return false;
 			}
 		}
-
 		return true;
 	}
 
@@ -44,6 +40,7 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 		return ItemStackHelper.takeItem(this.items, index);
 	}
 
+	@Override
 	public ItemStack removeItem(int p_70298_1_, int p_70298_2_) {
 		ItemStack itemstack = ItemStackHelper.removeItem(this.items, p_70298_1_, p_70298_2_);
 		if (!itemstack.isEmpty()) {
@@ -53,14 +50,16 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 		return itemstack;
 	}
 
+	@Override
 	public void setItem(int index, ItemStack itemStack) {
-		while(index >= this.items.size()) {
+		while (index >= this.items.size()) {
 			this.items.add(ItemStack.EMPTY);
 		}
 		this.items.set(index, itemStack);
 		this.menu.slotsChanged(this);
 	}
 
+	@Override
 	public void setChanged() {
 	}
 
@@ -72,10 +71,7 @@ public class SpellBindingInventory implements IInventory, IRecipeHelperPopulator
 		this.items.clear();
 	}
 
-	public void fillStackedContents(RecipeItemHelper p_194018_1_) {
-		for (ItemStack itemstack : this.items) {
-			p_194018_1_.accountSimpleStack(itemstack);
-		}
-
+	public String getSpellName() {
+		return menu.getSpellName();
 	}
 }

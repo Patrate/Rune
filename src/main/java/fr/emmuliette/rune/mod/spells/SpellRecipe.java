@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import fr.emmuliette.rune.RandomNameUtils;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingInventory;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
@@ -41,12 +40,12 @@ public class SpellRecipe extends SpellBindingRecipe {//implements IRecipe<SpellB
 		return Registration.SPELLBINDING_RECIPE;
 	}
 
-	public boolean matches(SpellBindingInventory SpellBindingInventory, World world) {
+	public boolean matches(SpellBindingInventory spellBindingInventory, World world) {
 		List<ItemStack> list = Lists.newArrayList();
 		boolean hasPaper = false, hasBook = false, hasSocket = false;
 
-		for (int i = 0; i < SpellBindingInventory.getContainerSize(); ++i) {
-			ItemStack itemstack = SpellBindingInventory.getItem(i);
+		for (int i = 0; i < spellBindingInventory.getContainerSize(); ++i) {
+			ItemStack itemstack = spellBindingInventory.getItem(i);
 			if (!itemstack.isEmpty()) {
 				if (itemstack.getItem() instanceof BookItem) {
 					if (hasPaper || hasBook || hasSocket) {
@@ -71,16 +70,15 @@ public class SpellRecipe extends SpellBindingRecipe {//implements IRecipe<SpellB
 				list.add(itemstack);
 			}
 		}
-
 		return list.size() >= 2 && (hasPaper ^ hasBook ^ hasSocket);
 	}
 
-	public ItemStack assemble(SpellBindingInventory SpellBindingInventory) {
+	public ItemStack assemble(SpellBindingInventory spellBindingInventory) {
 		List<RuneItem> list = Lists.newArrayList();
 		boolean hasPaper = false, hasBook = false, hasSocket = false;
 
-		for (int i = 0; i < SpellBindingInventory.getContainerSize(); ++i) {
-			ItemStack itemstack = SpellBindingInventory.getItem(i);
+		for (int i = 0; i < spellBindingInventory.getContainerSize(); ++i) {
+			ItemStack itemstack = spellBindingInventory.getItem(i);
 			if (!itemstack.isEmpty()) {
 				Item item = itemstack.getItem();
 				if (itemstack.getItem() instanceof BookItem) {
@@ -109,7 +107,7 @@ public class SpellRecipe extends SpellBindingRecipe {//implements IRecipe<SpellB
 
 		try {
 			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpell(list)) {
-				Spell spell = SpellBuilder.runeToSpell(RandomNameUtils.getName(), list);
+				Spell spell = SpellBuilder.runeToSpell(spellBindingInventory.getSpellName(), list);
 				if (hasPaper)
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
 				if (hasBook)

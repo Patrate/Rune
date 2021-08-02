@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 
 public abstract class Cost<T> {
@@ -65,6 +66,8 @@ public abstract class Cost<T> {
 	}
 
 	public boolean canPay(ICaster cap, SpellContext context) {
+		if(cap.getOwner() instanceof PlayerEntity && ((PlayerEntity)cap.getOwner()).abilities.instabuild)
+			return true;
 		for (Class<? extends Cost<?>> clazz : internalCost.keySet()) {
 			if (!(internalCost.get(clazz).internalCanPay(cap, context)))
 				return false;
@@ -73,6 +76,8 @@ public abstract class Cost<T> {
 	}
 
 	public boolean payCost(ICaster cap, SpellContext context) {
+		if(cap.getOwner() instanceof PlayerEntity && ((PlayerEntity)cap.getOwner()).abilities.instabuild)
+			return true;
 		for (Class<? extends Cost<?>> clazz : internalCost.keySet()) {
 			if (!(internalCost.get(clazz).internalPayCost(cap, context)))
 				return false;

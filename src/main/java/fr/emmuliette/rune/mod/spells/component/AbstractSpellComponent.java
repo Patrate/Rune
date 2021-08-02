@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.component;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Collection;
 
 import fr.emmuliette.rune.RuneMain;
@@ -9,18 +10,20 @@ import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
-import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public abstract class AbstractSpellComponent {
@@ -59,7 +62,7 @@ public abstract class AbstractSpellComponent {
 		this.properties = propFactory.build();
 	}
 
-	protected RuneProperties getProperties() {
+	public RuneProperties getProperties() {
 		return properties;
 	}
 
@@ -211,5 +214,13 @@ public abstract class AbstractSpellComponent {
 			}
 		}
 		return boostCost;
+	}
+
+	public Collection<? extends ITextComponent> getTooltips() {
+		return Arrays.asList(new ITextComponent[] { new StringTextComponent("### TODO REMPLACE MOI ###"),
+				new StringTextComponent(this.getClass().getSimpleName()),
+				new StringTextComponent("### TODO REMPLACE MOI ###") });
+		// return new ITextComponent[] { new StringTextComponent("### TODO REMPLACE MOI
+		// ###")};
 	}
 }
