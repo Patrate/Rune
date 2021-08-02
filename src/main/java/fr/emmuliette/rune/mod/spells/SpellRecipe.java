@@ -107,7 +107,7 @@ public class SpellRecipe extends SpellBindingRecipe {//implements IRecipe<SpellB
 
 		try {
 			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpell(list)) {
-				Spell spell = SpellBuilder.runeToSpell(spellBindingInventory.getSpellName(), list);
+				Spell spell = SpellBuilder.runeToSpell("Sortilège", list); //TODO spellBindingInventory.getSpellName(), list);
 				if (hasPaper)
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
 				if (hasBook)
