@@ -38,17 +38,17 @@ public class SpellItem extends AbstractSpellItem {
 			}
 			ItemStack itemStack = new ItemStack(spellitem);
 			CompoundNBT tags = itemStack.getOrCreateTag();
-			if(!tags.contains("display")) {
+			if (!tags.contains("display")) {
 				tags.put("display", new CompoundNBT());
 			}
 			CompoundNBT displayTag = tags.getCompound("display");
-			if(!displayTag.contains("Lore")) {
+			if (!displayTag.contains("Lore")) {
 				displayTag.put("Lore", new ListNBT());
 			}
 			ListNBT lore = (ListNBT) displayTag.get("Lore");
 			displayTag.put("Name", StringNBT.valueOf("TOTO"));
-			lore.add(StringNBT.valueOf(" BONJOUR JE SUIS LE LORENT" ));
-			
+			lore.add(StringNBT.valueOf(" BONJOUR JE SUIS LE LORENT"));
+
 			// itemStack.setHoverName(new StringTextComponent(spell.getName()));
 			ISpell ispell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY)
 					.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
@@ -64,6 +64,7 @@ public class SpellItem extends AbstractSpellItem {
 		super(properties);
 	}
 
+	@Override
 	public boolean isFoil(ItemStack itemStack) {
 		return true;
 	}

@@ -1,7 +1,6 @@
 package fr.emmuliette.rune.mod.items;
 
 import javax.annotation.Nonnull;
-
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotAnItemException;
@@ -10,7 +9,6 @@ import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
 import fr.emmuliette.rune.mod.caster.capability.ICaster;
-import fr.emmuliette.rune.mod.circle.CircleEntity;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.spells.Spell;

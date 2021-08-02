@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BuildTag extends Tag {
-	public static BuildTag MANA_MOD = new BuildTag();
 	public static BuildTag CAST_MOD = new BuildTag();
 	public static BuildTag CAST = new BuildTag();
 	public static BuildTag EFFECT = new BuildTag();
@@ -20,8 +19,7 @@ public class BuildTag extends Tag {
 	}
 	
 	static void init() {
-		MANA_MOD.init(MANA_MOD, CAST_MOD, CAST);
-		CAST_MOD.init(CAST_MOD, CAST);
+		CAST_MOD.init(CAST);
 		CAST.init(EFFECT, MAGIC_ENTITY);
 		EFFECT.init(EFFECT, MAGIC_ENTITY);
 		MAGIC_ENTITY.init(ENTITY_AI, CAST);

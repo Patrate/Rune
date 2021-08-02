@@ -208,7 +208,7 @@ public class CasterImpl implements ICaster {
 	public float getPower() {
 		return power;
 	}
-	
+
 	@Override
 	public void setPower(float power) {
 		this.power = power;
