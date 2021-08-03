@@ -31,10 +31,11 @@ public class ComponentPage {
 //	private IRecipe<?> lastClickedRecipe;
 //	private RecipeList lastClickedRecipeCollection;
 	private AbstractSpellComponent currentComponent;
-	
+
 	public ComponentPage() {
 		currentComponent = null;
 	}
+
 	private int propertyX = 0;
 	private int propertyY = 0;
 
@@ -57,7 +58,7 @@ public class ComponentPage {
 	public void setComponent(AbstractSpellComponent comp) {
 		this.buttons.clear();
 		currentComponent = comp;
-		if(comp == null)
+		if (comp == null)
 			return;
 		// TODO Grade modulable !!!
 		// TODO move it dans le component somehow ?
@@ -65,15 +66,14 @@ public class ComponentPage {
 		int j = this.propertyY + 34;
 		int height = 27;
 		int k = 0;
-		for(Property<?> property:comp.getProperties().getProperties(Grade.WOOD)) {
-			this.buttons.add(new PropertyWidget(property, currentComponent, i, j + k*height, 88, height));
+		for (Property<?> property : comp.getProperties().getProperties(Grade.WOOD)) {
+			this.buttons.add(new PropertyWidget(property, currentComponent, i, j + k * height, 88, height));
 			++k;
 		}
-		
-		
-		/*for (int i = 0; i < 20; ++i) {
-			this.buttons.add(new PropertyWidget(comp));
-		}*/
+
+		/*
+		 * for (int i = 0; i < 20; ++i) { this.buttons.add(new PropertyWidget(comp)); }
+		 */
 	}
 
 	public void updateCollections(List<RecipeList> recipeList, boolean p_194192_2_) {
@@ -114,8 +114,7 @@ public class ComponentPage {
 		if (this.totalPages > 1) {
 			String s = this.currentPage + 1 + "/" + this.totalPages;
 			int i = this.minecraft.font.width(s);
-			this.minecraft.font.draw(mStack, s, (float) (p_238927_2_ - i / 2 + 73), (float) (p_238927_3_ + 141),
-					-1);
+			this.minecraft.font.draw(mStack, s, (float) (p_238927_2_ - i / 2 + 73), (float) (p_238927_3_ + 141), -1);
 		}
 
 		this.hoveredButton = null;

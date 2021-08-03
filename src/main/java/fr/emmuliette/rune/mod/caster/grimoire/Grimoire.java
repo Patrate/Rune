@@ -32,8 +32,10 @@ public class Grimoire {
 		return spellList.get(id);
 	}
 	
+	public List<ISpell> getSpells(){
+		return spellList;
+	}
 	
-
 	private void removeSpellInternal(int id) {
 		spellList.remove(id);
 	}

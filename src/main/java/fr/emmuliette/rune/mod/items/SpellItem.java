@@ -17,7 +17,7 @@ import net.minecraft.nbt.StringNBT;
 
 public class SpellItem extends AbstractSpellItem {
 	public static enum ItemType {
-		PARCHMENT, GRIMOIRE, SOCKET;
+		PARCHMENT, GRIMOIRE, SOCKET, SPELL;
 	}
 	// private static final Map<Long, Spell> spellCache = new HashMap<Long,
 
@@ -30,6 +30,9 @@ public class SpellItem extends AbstractSpellItem {
 				break;
 			case SOCKET:
 				spellitem = (SpellItem) ModObjects.SOCKET.getModItem();
+				break;
+			case SPELL:
+				spellitem = (SpellItem) ModObjects.SPELL.getModItem();
 				break;
 			case PARCHMENT:
 			default:

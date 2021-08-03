@@ -83,7 +83,7 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		this.searchBox.setTextColor(16777215);
 		this.searchBox.setValue(s);
 		this.componentPage.init(this.minecraft, i, j);
-		// this.componentPage.addListener(this);
+//		this.componentPage.addListener(this);
 //		this.filterButton = new ToggleWidget(i + 110, j + 12, 26, 16, this.book.isFiltering(this.menu));
 //		this.initFilterButtonTextures();
 		// this.tabButtons.clear();

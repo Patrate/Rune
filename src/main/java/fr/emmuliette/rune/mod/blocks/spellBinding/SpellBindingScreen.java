@@ -17,7 +17,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
 public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {// implements IRecipeShownListener {
-	protected static final ResourceLocation SPELLBINDER_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
+	public static final ResourceLocation SPELLBINDER_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/spellbinder.png");
 
 	private static final ITextComponent SPELL_NAME_HINT = (new TranslationTextComponent(
@@ -119,9 +119,9 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 
 	private void renderCase(MatrixStack mStack, int x, int y, boolean isSelected) {
 		if (isSelected)
-			this.blit(mStack, x - 1, y - 1, 18, this.imageHeight + 18, 36, this.imageHeight + 36);
+			this.blit(mStack, x - 1, y - 1, 18, this.imageHeight + 18, 18, 18);
 		else
-			this.blit(mStack, x - 1, y - 1, 0, this.imageHeight, 18, this.imageHeight + 18);
+			this.blit(mStack, x - 1, y - 1, 0, this.imageHeight, 18, 18);
 	}
 
 	@Override
