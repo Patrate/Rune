@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.capability;
+package fr.emmuliette.rune.mod.capabilities.spell;
 
 import java.lang.reflect.InvocationTargetException;
 

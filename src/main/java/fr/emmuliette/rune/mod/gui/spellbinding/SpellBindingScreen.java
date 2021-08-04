@@ -1,10 +1,10 @@
-package fr.emmuliette.rune.mod.blocks.spellBinding;
+package fr.emmuliette.rune.mod.gui.spellbinding;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.blocks.spellBinding.componentScreen.ComponentGui;
+import fr.emmuliette.rune.mod.gui.spellbinding.componentScreen.ComponentGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
@@ -98,7 +98,6 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 
 		this.renderTooltip(mStack, p_230430_2_, p_230430_3_);
 		this.componentGui.renderTooltip(mStack, this.leftPos, this.topPos, p_230430_2_, p_230430_3_);
-
 	}
 
 	@SuppressWarnings("deprecation")
@@ -119,7 +118,7 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 
 	private void renderCase(MatrixStack mStack, int x, int y, boolean isSelected) {
 		if (isSelected)
-			this.blit(mStack, x - 1, y - 1, 18, this.imageHeight + 18, 18, 18);
+			this.blit(mStack, x - 1, y - 1, 18, this.imageHeight, 18, 18);
 		else
 			this.blit(mStack, x - 1, y - 1, 0, this.imageHeight, 18, 18);
 	}

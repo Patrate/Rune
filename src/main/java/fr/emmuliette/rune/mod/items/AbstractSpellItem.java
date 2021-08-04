@@ -1,20 +1,23 @@
 package fr.emmuliette.rune.mod.items;
 
 import javax.annotation.Nonnull;
+
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
+import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
+import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.spells.Spell;
-import fr.emmuliette.rune.mod.spells.capability.ISpell;
-import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
+import fr.emmuliette.rune.setup.Configuration;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -31,27 +34,28 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 public abstract class AbstractSpellItem extends Item {
+	public static final String SPELL_NAME = "spell_id";
+
 	public AbstractSpellItem(Properties p_i48487_1_) {
 		super(p_i48487_1_);
 	}
-	
+
 	@Override
 	public ITextComponent getName(ItemStack iStack) {
+		if (iStack.hasTag() && iStack.getTag().contains(SPELL_NAME))
+			return new StringTextComponent(iStack.getTag().getString(SPELL_NAME));
 		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if(iSpell != null && iSpell.getSpell() != null)
+		if (iSpell != null && iSpell.getSpell() != null)
 			return new StringTextComponent(iSpell.getSpell().getName());
 		return super.getName(iStack);
 	}
-	
-	/*@Override
-	public Set<ToolType> getToolTypes(ItemStack iStack) {
-		Set<ToolType> retour = super.getToolTypes(iStack);
-		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if(iSpell != null) {
-			retour.add(ToolType.get("bite"));
-		}
-		return retour;
-	}*/
+
+	/*
+	 * @Override public Set<ToolType> getToolTypes(ItemStack iStack) { Set<ToolType>
+	 * retour = super.getToolTypes(iStack); ISpell iSpell =
+	 * iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
+	 * if(iSpell != null) { retour.add(ToolType.get("bite")); } return retour; }
+	 */
 
 	protected static class Result {
 		ActionResult<ItemStack> result;
@@ -128,18 +132,43 @@ public abstract class AbstractSpellItem extends Item {
 			Hand hand) {
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			spell.setCacheTarget(target);
-			Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null, hand);
-			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
-					&& retour.resultType == ActionResultType.SUCCESS) {
-				caster.startUsingItem(hand);
-				return ActionResultType.PASS;
+
+			try {
+				if (itemStack.getItem() == ModObjects.GRIMOIRE.getModItem() && Configuration.Server.learnFromGrimoire) {
+					if (learnGrimoire(itemStack, caster))
+						return ActionResultType.CONSUME;
+				} else {
+					spell.setCacheTarget(target);
+					Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null,
+							hand);
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						caster.startUsingItem(hand);
+						return ActionResultType.PASS;
+					}
+					return retour.resultType;
+
+				}
+			} catch (NotAnItemException e) {
+				e.printStackTrace();
 			}
-			return retour.resultType;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
 		}
 		return ActionResultType.PASS;
+	}
+
+	private boolean learnGrimoire(ItemStack itemStack, Entity caster) {
+		ICaster icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
+		ISpell grimoireSpell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
+		if (icaster == null || grimoireSpell == null)
+			return false;
+		if (!caster.level.isClientSide) {
+			icaster.getGrimoire().addSpell(grimoireSpell);
+			icaster.sync();
+		}
+		itemStack.shrink(1);
+		return true;
 	}
 
 	// On clic droit air
@@ -148,18 +177,23 @@ public abstract class AbstractSpellItem extends Item {
 		ItemStack itemStack = caster.getItemInHand(hand);
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null, hand);
-			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
-					&& retour.resultType == ActionResultType.SUCCESS) {
-				caster.startUsingItem(hand);
-				return ActionResult.pass(itemStack);
+			try {
+				if (itemStack.getItem() == ModObjects.GRIMOIRE.getModItem() && Configuration.Server.learnFromGrimoire) {
+					if (learnGrimoire(itemStack, caster))
+						return ActionResult.consume(itemStack);
+				} else {
+					Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null,
+							hand);
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						caster.startUsingItem(hand);
+						return ActionResult.pass(itemStack);
+					}
+					return retour.result;
+				}
+			} catch (NotAnItemException e) {
+				e.printStackTrace();
 			}
-//			if(retour.resultType == ActionResultType.SUCCESS) {
-//				System.out.println("Creating a circle !");
-//				CircleEntity me = new CircleEntity(caster, world);
-//		        world.addFreshEntity(me);
-//			}
-			return retour.result;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
 		}
@@ -173,15 +207,24 @@ public abstract class AbstractSpellItem extends Item {
 
 		try {
 			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-			spell.setCacheBlock(itemUseContext.getClickedPos());
-			Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null, itemUseContext.getPlayer(), null,
-					itemUseContext, itemUseContext.getHand());
-			if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING) || spell.hasTag(SpellTag.CHANNELING))
-					&& retour.resultType == ActionResultType.SUCCESS) {
-				itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
-				return ActionResultType.PASS;
+			try {
+				if (itemStack.getItem() == ModObjects.GRIMOIRE.getModItem() && Configuration.Server.learnFromGrimoire) {
+					if (learnGrimoire(itemStack, itemUseContext.getPlayer()))
+						return ActionResultType.CONSUME;
+				} else {
+					spell.setCacheBlock(itemUseContext.getClickedPos());
+					Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
+							itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
+						return ActionResultType.PASS;
+					}
+					return retour.resultType;
+				}
+			} catch (NotAnItemException e) {
+				e.printStackTrace();
 			}
-			return retour.resultType;
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
 		}
@@ -191,7 +234,7 @@ public abstract class AbstractSpellItem extends Item {
 	// On release using
 	@Override
 	public void releaseUsing(ItemStack itemStack, World world, LivingEntity caster, int tick) {
-		if(caster.level.isClientSide()) {
+		if (caster.level.isClientSide()) {
 			return;
 		}
 		int chargeTime = this.getUseDuration(itemStack) - tick;
@@ -215,8 +258,9 @@ public abstract class AbstractSpellItem extends Item {
 		return internalcastSpell(spell, power, itemStack, target, world, caster, block, itemUseContext, hand);
 	}
 
-	protected final Result internalcastSpell(Spell spell, float power, @Nonnull ItemStack itemStack, LivingEntity target,
-			World world, @Nonnull LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, Hand hand) {
+	protected final Result internalcastSpell(Spell spell, float power, @Nonnull ItemStack itemStack,
+			LivingEntity target, World world, @Nonnull LivingEntity caster, BlockPos block,
+			ItemUseContext itemUseContext, Hand hand) {
 		final Result retour = new Result(itemStack);
 		if (spell == null || caster.hasEffect(ModEffects.SILENCED.get())) {
 			return retour;
@@ -264,7 +308,7 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.PASS;
 			}
 		}
-		if (retour.consume) {
+		if (retour.consume && !(caster instanceof PlayerEntity && ((PlayerEntity) caster).abilities.instabuild)) {
 			itemStack.shrink(1);
 		}
 		return retour;
@@ -307,7 +351,7 @@ public abstract class AbstractSpellItem extends Item {
 				.orElseThrow(new SpellCapabilityExceptionSupplier(iStack));
 		return cap.getSpell();
 	}
-	
+
 	protected Spell getSpell(ItemStack iStack, LivingEntity owner) throws SpellCapabilityException {
 		return getSpell(iStack);
 	}
@@ -325,18 +369,18 @@ public abstract class AbstractSpellItem extends Item {
 	public UseAction getUseAnimation(ItemStack iStack) {
 		try {
 			Spell spell = getSpell(iStack);
-			if(spell.hasTag(SpellTag.CHANNELING)) {
+			if (spell.hasTag(SpellTag.CHANNELING)) {
 				return UseAction.DRINK;
-			} else if(spell.hasTag(SpellTag.CHARGING)) {
+			} else if (spell.hasTag(SpellTag.CHARGING)) {
 				return UseAction.BLOCK;
-			} else if(spell.hasTag(SpellTag.LOADING)) {
+			} else if (spell.hasTag(SpellTag.LOADING)) {
 				return UseAction.BOW;
 			}
 		} catch (SpellCapabilityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return UseAction.BOW;
 	}
 
@@ -344,13 +388,13 @@ public abstract class AbstractSpellItem extends Item {
 	public int getUseDuration(ItemStack iStack) {
 		return 72000;
 	}
-	
+
 	private float getPower(LivingEntity caster) {
 		try {
 			ICaster cap = caster.getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(caster));
 			return cap.getPower();
-		} catch(CasterCapabilityException e) {
+		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
 			return 1f;
 		}

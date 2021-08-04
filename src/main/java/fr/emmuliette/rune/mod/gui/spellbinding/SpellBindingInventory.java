@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.blocks.spellBinding;
+package fr.emmuliette.rune.mod.gui.spellbinding;
 
 import java.util.ArrayList;
 import java.util.List;

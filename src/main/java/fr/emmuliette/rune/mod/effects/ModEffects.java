@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import fr.emmuliette.rune.exception.NotEnoughManaException;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

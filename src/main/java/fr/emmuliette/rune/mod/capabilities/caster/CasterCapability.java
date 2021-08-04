@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.caster.capability;
+package fr.emmuliette.rune.mod.capabilities.caster;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -21,10 +20,6 @@ public class CasterCapability implements ICapabilitySerializable<CompoundNBT> {
 
 	public CasterCapability(Entity owner) {
 		this.instance.ifPresent(c -> c.setOwner(owner));
-	}
-
-	public static void register() {
-		CapabilityManager.INSTANCE.register(ICaster.class, new CasterStorage(), CasterImpl::new);
 	}
 
 	@Nonnull

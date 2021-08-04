@@ -1,22 +1,23 @@
-package fr.emmuliette.rune.mod.spells.capability;
+package fr.emmuliette.rune.mod.capabilities.spell;
 
-import fr.emmuliette.rune.mod.caster.grimoire.Grimoire;
+import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.StringNBT;
 
 public class GrimoireSpellImpl extends SpellImpl {
 	private Grimoire grimoire;
-	private int id;
+	private String name;
+//	private Entity owner;
 
 	public void setGrimoire(Grimoire grimoire) {
 		this.grimoire = grimoire;
 	}
 
 	private ISpell getGrimoireSpell() {
-		return grimoire.getSpell(id);
+		return grimoire.getSpell(name);
 	}
 
 	@Override
@@ -44,12 +45,12 @@ public class GrimoireSpellImpl extends SpellImpl {
 		return getGrimoireSpell().getCooldown();
 	}
 
-	private static final String SPELL_ID_KEY = "spell_id";
+	private static final String SPELL_NAME_KEY = "spell_name"; // , OWNER_KEY = "owner";
 
 	@Override
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = new CompoundNBT();
-		retour.put(SPELL_ID_KEY, IntNBT.valueOf(id));
+		retour.put(SPELL_NAME_KEY, StringNBT.valueOf(name));
 		return retour;
 	}
 
@@ -57,25 +58,29 @@ public class GrimoireSpellImpl extends SpellImpl {
 	public void fromNBT(INBT nbt) {
 		if (nbt instanceof CompoundNBT) {
 			CompoundNBT cnbt = (CompoundNBT) nbt;
-			// COOLDOWN
-			if (cnbt.contains(SPELL_ID_KEY)) {
-				this.id = cnbt.getInt(SPELL_ID_KEY);
+			if (cnbt.contains(SPELL_NAME_KEY)) {
+				this.name = cnbt.getString(SPELL_NAME_KEY);
 			}
 		}
 	}
 
 	@Override
-	public void sync(ItemStack itemstack) {
-		// TODO Auto-generated method stub
+	public void sync(ItemStack item) {
+		System.out.println("186: Syncing !");
+		item.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(c -> this.sync(c));
 	}
 
 	@Override
-	public void sync(ISpell ispell) {
-		// TODO Auto-generated method stub
+	public void sync(ISpell spell) {
+		System.out.println("192: Syncing the spells internal !");
+		this.name = spell.getSpell().getName();
 	}
 
 	@Override
 	public void sync() {
-		// TODO Auto-generated method stub
+//		if (owner instanceof ServerPlayerEntity) {
+//			System.out.println("SENDING");
+//			CapabilitySyncHandler.sendTo(new CasterPacket(this.toNBT()), (ServerPlayerEntity) owner);
+//		}
 	}
 }

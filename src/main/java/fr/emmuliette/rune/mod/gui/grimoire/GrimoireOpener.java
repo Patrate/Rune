@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.gui.grimoire;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.containers.ModContainers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.Widget;
@@ -22,8 +23,12 @@ public class GrimoireOpener {
 	private static final ResourceLocation GRIMOIRE_BUTTON_LOCATION = new ResourceLocation(
 			"textures/gui/recipe_button.png");
 	private static final Widget button = new ImageButton(0, 0, 20, 18, 0, 0, 19, GRIMOIRE_BUTTON_LOCATION, (button) -> {
+//		NetworkHooks.openopenGui(null, null);
+
 		Minecraft minecraft = Minecraft.getInstance();
-		minecraft.setScreen(new GrimoireScreen(new GrimoireContainer(0, minecraft.player.inventory),
+		minecraft.setScreen(new GrimoireScreen(ModContainers.GRIMOIRE.get().create(0, minecraft.player.inventory), // new
+																													// GrimoireContainer(0,
+																													// minecraft.player.inventory),
 				minecraft.player.inventory, CONTAINER_TITLE));
 	});
 

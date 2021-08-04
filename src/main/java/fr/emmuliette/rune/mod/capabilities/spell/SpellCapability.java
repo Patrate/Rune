@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.capability;
+package fr.emmuliette.rune.mod.capabilities.spell;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -18,11 +17,6 @@ public class SpellCapability implements ICapabilitySerializable<CompoundNBT> {
 	public static final Capability<ISpell> SPELL_CAPABILITY = null;
 	private LazyOptional<ISpell> instance = LazyOptional.of(SPELL_CAPABILITY::getDefaultInstance);
 
-	public static void register()
-    {
-        CapabilityManager.INSTANCE.register(ISpell.class, new SpellStorage(), SpellImpl::new);
-    }
-	
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {

@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.blocks.spellBinding;
+package fr.emmuliette.rune.mod.gui.spellbinding;
 
 import fr.emmuliette.rune.mod.items.RuneItem;
 import net.minecraft.inventory.IInventory;

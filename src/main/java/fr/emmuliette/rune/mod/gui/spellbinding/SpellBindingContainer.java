@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.blocks.spellBinding;
+package fr.emmuliette.rune.mod.gui.spellbinding;
 
 import java.util.Optional;
 
@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fr.emmuliette.rune.exception.NotABlockException;
 import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.entity.player.PlayerEntity;

@@ -4,12 +4,12 @@ import java.util.function.Function;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeSerializer;
-import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingScreen;
+import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.effects.ModEffects;
+import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import fr.emmuliette.rune.mod.spells.SpellRecipe;
 import fr.emmuliette.rune.mod.spells.entities.ModEntities;
 import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
@@ -85,7 +85,7 @@ public class Registration {
 
 		ModEffects.register();
 		ModObjects.register();
-		SyncHandler.register();
+		CapabilitySyncHandler.register();
 		ModContainers.register();
 		ModEntities.register();
 

@@ -124,8 +124,10 @@ public class Spell {
 		String name = data.getString(NBT_NAME);
 		ListNBT componentsNBT = (ListNBT) data.get(NBT_COMPONENTS);
 		List<AbstractSpellComponent> components = new ArrayList<AbstractSpellComponent>();
-		for (int i = 0; i < componentsNBT.size(); i++) {
-			components.add(AbstractSpellComponent.fromNBT(componentsNBT.getCompound(i)));
+		if(componentsNBT != null) {
+			for (int i = 0; i < componentsNBT.size(); i++) {
+				components.add(AbstractSpellComponent.fromNBT(componentsNBT.getCompound(i)));
+			}
 		}
 		return SpellBuilder.buildSpell(name, components);
 	}

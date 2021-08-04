@@ -3,7 +3,7 @@ package fr.emmuliette.rune.mod.spells.cost;
 import java.util.Map;
 
 import fr.emmuliette.rune.exception.NotEnoughManaException;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 
 public class ManaCost extends Cost<Float> {

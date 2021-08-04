@@ -3,7 +3,7 @@ package fr.emmuliette.rune.mod.gui.grimoire;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingScreen;
+import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -16,6 +16,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 
 	private final GrimoireGui grimoireGui = new GrimoireGui();
 	private GrimoireContainer container;
+	private GrimoireListener listener;
 
 	public GrimoireScreen(GrimoireContainer container, PlayerInventory playerInventory, ITextComponent textComp) {
 		super(container, playerInventory, textComp);
@@ -29,6 +30,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 		this.grimoireGui.init(this.width, this.height, this.minecraft, this.menu);
 		this.leftPos = this.grimoireGui.updateScreenPosition(this.width, this.imageWidth);
 		this.children.add(this.grimoireGui);
+		this.minecraft.player.inventoryMenu.removeSlotListener(this.listener);
+		this.listener = new GrimoireListener(this.minecraft);
+		this.minecraft.player.inventoryMenu.addSlotListener(this.listener);
 		this.setInitialFocus(this.grimoireGui);
 		initGrimoireGui();
 		/*
@@ -64,12 +68,13 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 		this.grimoireGui.renderTooltip(mStack, this.leftPos, this.topPos, p_230430_2_, p_230430_3_);
 
 	}
-	
+
 	@SuppressWarnings("deprecation")
-	protected void renderBg(MatrixStack mStack, float useless3, int useless2, int useless) {
+	protected void renderBg(MatrixStack mStack, float p_230430_4_, int mouseX, int mouseY) {
 		int i = this.leftPos;
-		int j = (this.height - this.imageHeight) / 2;
-		int k = this.imageWidth/2;
+//		int j = (this.height - this.imageHeight) / 2;
+		int j = this.topPos;
+		int k = this.imageWidth / 2;
 		this.minecraft.getTextureManager().bind(GRIMOIRE_LOCATION);
 		mStack.pushPose();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -82,18 +87,28 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 		mStack.pushPose();
 		this.minecraft.getTextureManager().bind(SpellBindingScreen.SPELLBINDER_LOCATION);
 		for (Slot slot : container.slots) {
-			this.renderCase(mStack, i + slot.x, j + slot.y);
+			if (slot instanceof GrimoireSpellSlot) {
+				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 166, 18, 18);
+//				this.font.draw(mStack, slot.getItem().getDisplayName(), i + slot.x, j + slot.y, 4210752);
+			} else {
+				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 166, 18, 18);
+			}
+
 		}
 		mStack.popPose();
+		this.renderSpellPage(mStack, mouseX, mouseY, p_230430_4_);
+	}
+
+	protected void renderSpellPage(MatrixStack mStack, int mouseX, int mouseY, float useless) {
+		if (this.menu.getSelectedSpell() == null)
+			return;
+		this.font.draw(mStack, this.menu.getSelectedSpell().getSpell().getName(), this.width / 2, 8, 4210752);
+
 	}
 
 	@Override
 	protected void renderLabels(MatrixStack mStack, int x, int y) {
 		this.font.draw(mStack, this.title, (float) this.titleLabelX, (float) this.titleLabelY, 4210752);
-	}
-
-	private void renderCase(MatrixStack mStack, int x, int y) {
-		this.blit(mStack, x - 1, y - 1, 0, 166, 18, 18);
 	}
 
 	@Override
@@ -123,8 +138,8 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 	}
 
 	@Override
-	protected void slotClicked(Slot slot, int p_184098_2_, int p_184098_3_, ClickType clickType) {
-		super.slotClicked(slot, p_184098_2_, p_184098_3_, clickType);
+	protected void slotClicked(Slot slot, int mouseX, int mouseY, ClickType clickType) {
+		super.slotClicked(slot, mouseX, mouseY, clickType);
 //		if (slot == null || !(slot instanceof SpellBindingRuneSlot)) {
 //			return;
 //		}
@@ -145,6 +160,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 	}
 
 	public void removed() {
+		if (this.minecraft.player != null && this.minecraft.player.inventory != null) {
+			this.minecraft.player.inventoryMenu.removeSlotListener(this.listener);
+		}
 		this.grimoireGui.removed();
 		super.removed();
 	}

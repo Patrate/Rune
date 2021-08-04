@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;

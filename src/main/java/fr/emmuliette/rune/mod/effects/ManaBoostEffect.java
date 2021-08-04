@@ -1,7 +1,7 @@
 package fr.emmuliette.rune.mod.effects;
 
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.potion.Effect;

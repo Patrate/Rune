@@ -81,6 +81,8 @@ public final class Configuration {
 		public static final ForgeConfigSpec SPEC;
 
 		public static Set<String> inactiveItem;
+		public static boolean learnFromGrimoire;
+		
 		static {
 			final Pair<ConfigImpl, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ConfigImpl::new);
 			SPEC = specPair.getRight();
@@ -89,16 +91,20 @@ public final class Configuration {
 
 		public static void bake() {
 			inactiveItem = new HashSet<String>(INSTANCE.inactiveItem.get());
+			learnFromGrimoire = INSTANCE.learnFromGrimoire.get();
 			ConfigHelper.performServerConnectionStatusValidation();
 		}
 
 		static class ConfigImpl {
+			final BooleanValue learnFromGrimoire;
 			final ConfigValue<List<String>> inactiveItem;
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			private ConfigImpl(final ForgeConfigSpec.Builder builder) {
 				inactiveItem = ((ConfigValue) builder.defineList("inactiveItem", ConfigHelper::getDefaultInactiveItem,
 						String.class::isInstance));
+				learnFromGrimoire = builder.comment("Spell must be learnt before being castable  [false/true | default true]")
+						.translation(RuneMain.MOD_ID + ".config.learnFromGrimoire").define("learnFromGrimoire", false);
 			}
 
 		}

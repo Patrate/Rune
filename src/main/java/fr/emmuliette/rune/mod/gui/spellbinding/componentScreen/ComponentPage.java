@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.blocks.spellBinding.componentScreen;
+package fr.emmuliette.rune.mod.gui.spellbinding.componentScreen;
 
 import java.util.List;
 

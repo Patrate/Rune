@@ -7,11 +7,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
+import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
+import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.effects.ModEffects;
-import fr.emmuliette.rune.mod.spells.capability.ISpell;
-import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerEntity;

@@ -1,9 +1,8 @@
-package fr.emmuliette.rune.mod.spells.capability.sync;
+package fr.emmuliette.rune.mod.capabilities.spell;
 
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.spells.capability.SpellCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;

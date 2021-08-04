@@ -2,8 +2,8 @@ package fr.emmuliette.rune.mod.containers;
 
 import java.util.function.Supplier;
 
-import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingContainer;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireContainer;
+import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingContainer;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;

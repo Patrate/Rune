@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.blocks.spellBinding;
+package fr.emmuliette.rune.mod.gui.spellbinding;
 
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.entity.player.PlayerEntity;

@@ -1,12 +1,13 @@
-package fr.emmuliette.rune.mod;
+package fr.emmuliette.rune.mod.capabilities;
 
 import java.util.List;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
-import fr.emmuliette.rune.mod.caster.capability.sync.CasterPacket;
-import fr.emmuliette.rune.mod.spells.capability.sync.SpellPacket;
+import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
+import fr.emmuliette.rune.mod.capabilities.caster.CasterPacket;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
+import fr.emmuliette.rune.mod.capabilities.spell.SpellPacket;
+import fr.emmuliette.rune.mod.gui.grimoire.GrimoirePacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +24,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class SyncHandler {
+public class CapabilitySyncHandler {
 	// PLAYER SERVER SYNC
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
@@ -37,6 +38,8 @@ public class SyncHandler {
 				SpellPacket.Handler::handle);
 		HANDLER.registerMessage(disc++, CasterPacket.class, CasterPacket::encode, CasterPacket::decode,
 				CasterPacket.Handler::handle);
+		HANDLER.registerMessage(disc++, GrimoirePacket.class, GrimoirePacket::encode, GrimoirePacket::decode,
+				GrimoirePacket.Handler::handle);
 	}
 
 	/**
@@ -70,7 +73,6 @@ public class SyncHandler {
 	// PLAYER SYNC EVENTS
 	@SubscribeEvent
 	public static void onPlayerClone(PlayerEvent.Clone event) {
-
 		LazyOptional<ICaster> oldCap = event.getOriginal().getCapability(CasterCapability.CASTER_CAPABILITY, null);
 		LazyOptional<ICaster> newCap = event.getPlayer().getCapability(CasterCapability.CASTER_CAPABILITY, null);
 		ICaster oldPlayer = oldCap.orElse(null);
@@ -99,6 +101,7 @@ public class SyncHandler {
 	@SubscribeEvent
 	public static void onPlayerConnect(PlayerLoggedInEvent event) {
 		ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
-		player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(c -> c.sync(player));
+		if (!player.level.isClientSide)
+			player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(c -> c.sync(player));
 	}
 }

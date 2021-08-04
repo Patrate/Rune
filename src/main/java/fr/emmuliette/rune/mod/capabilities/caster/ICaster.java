@@ -1,7 +1,6 @@
-package fr.emmuliette.rune.mod.caster.capability;
+package fr.emmuliette.rune.mod.capabilities.caster;
 
 import fr.emmuliette.rune.exception.NotEnoughManaException;
-import fr.emmuliette.rune.mod.caster.grimoire.Grimoire;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,7 +19,7 @@ public interface ICaster {
 	public float getMaxMana();
 	public int getManaRegenTick();
 	public void setManaCooldown(int cd);
-	public void setManaMaxCooldown(int newCooldown);
+	public void setManaRegen(int newCooldown);
 	public int getManaRegen();
 	public void setMana(float mana);
 	public void setMaxMana(float maxMana);

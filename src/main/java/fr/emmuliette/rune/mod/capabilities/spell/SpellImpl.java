@@ -1,13 +1,15 @@
-package fr.emmuliette.rune.mod.spells.capability;
+package fr.emmuliette.rune.mod.capabilities.spell;
 
 import java.lang.reflect.InvocationTargetException;
 
 import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class SpellImpl implements ISpell {
 	private Spell spell;
@@ -46,7 +48,7 @@ public class SpellImpl implements ISpell {
 
 	@Override
 	public CompoundNBT toNBT() {
-		if(spell == null) {
+		if (spell == null) {
 			return null;
 		}
 		CompoundNBT retour = new CompoundNBT();
@@ -92,7 +94,7 @@ public class SpellImpl implements ISpell {
 
 	@Override
 	public void sync(ItemStack container) {
-		container.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(c -> this.sync(c));
+		container.getCapability(SpellCapability.SPELL_CAPABILITY).ifPresent(c -> this.sync());
 	}
 
 	@Override
@@ -103,10 +105,6 @@ public class SpellImpl implements ISpell {
 
 	@Override
 	public void sync() {
-		// TODO
-		/*
-		 * if (owner instanceof ServerPlayerEntity) { PlayerHandler.sendTo(new
-		 * PlayerPacket(this.toNBT()), (ServerPlayerEntity) owner); }
-		 */
+		CapabilitySyncHandler.sendToAllPlayers(new SpellPacket(this.toNBT()), ServerLifecycleHooks.getCurrentServer());
 	}
 }

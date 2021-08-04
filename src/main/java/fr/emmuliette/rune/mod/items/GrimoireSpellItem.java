@@ -7,17 +7,17 @@ import javax.annotation.Nonnull;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.mod.ModObjects;
-import fr.emmuliette.rune.mod.caster.capability.CasterCapability;
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
-import fr.emmuliette.rune.mod.caster.grimoire.Grimoire;
+import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
+import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
+import fr.emmuliette.rune.mod.capabilities.spell.GrimoireSpellException;
 import fr.emmuliette.rune.mod.spells.Spell;
-import fr.emmuliette.rune.mod.spells.capability.GrimoireSpellException;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,16 +29,13 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE)
 public class GrimoireSpellItem extends AbstractSpellItem {
-	private static final String SPELL_ID = "spell_id";
 
-	public static ItemStack getGrimoireSpell(Grimoire source, int id) {
+	public static ItemStack getGrimoireSpell(Grimoire source, String name) {
 		GrimoireSpellItem spellitem;
 		try {
 			spellitem = (GrimoireSpellItem) ModObjects.SPELL.getModItem();
 			ItemStack itemStack = new ItemStack(spellitem);
-			itemStack.addTagElement(SPELL_ID, IntNBT.valueOf(id));
-			// Mettre tous les paramètres du spellItem ici ptet
-			// itemStack.setHoverName(new StringTextComponent(spell.getName()));
+			itemStack.addTagElement(SPELL_NAME, StringNBT.valueOf(name));
 			return itemStack;
 		} catch (NotAnItemException e) {
 			e.printStackTrace();
@@ -54,8 +51,8 @@ public class GrimoireSpellItem extends AbstractSpellItem {
 	public Spell getSpell(ItemStack itemStack, LivingEntity owner) throws GrimoireSpellException {
 		ICaster caster = owner.getCapability(CasterCapability.CASTER_CAPABILITY)
 				.orElseThrow(GrimoireSpellException::new);
-		if (itemStack.getTag().contains(SPELL_ID))
-			return caster.getGrimoire().getSpell(itemStack.getTag().getInt(SPELL_ID)).getSpell();
+		if (itemStack.hasTag() && itemStack.getTag().contains(SPELL_NAME))
+			return caster.getGrimoire().getSpell(itemStack.getTag().getString(SPELL_NAME)).getSpell();
 		throw new GrimoireSpellException(itemStack);
 	}
 

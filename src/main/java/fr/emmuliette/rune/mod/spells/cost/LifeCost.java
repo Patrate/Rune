@@ -2,7 +2,7 @@ package fr.emmuliette.rune.mod.spells.cost;
 
 import java.util.Map;
 
-import fr.emmuliette.rune.mod.caster.capability.ICaster;
+import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import net.minecraft.entity.LivingEntity;
 

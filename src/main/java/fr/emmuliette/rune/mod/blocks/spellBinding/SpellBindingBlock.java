@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.blocks.spellBinding;
 
+import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingContainer;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

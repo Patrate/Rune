@@ -44,8 +44,8 @@ public class GrimoireGui extends AbstractGui implements IRenderable, IGuiEventLi
 		this.tabButtons.clear();
 		this.tabButtons.clear();
 
-		for (GrimoireCategories recipebookcategories : this.menu.getGrimoireCategories()) {
-			this.tabButtons.add(new GrimoireTabToggleWidget(recipebookcategories));
+		for (GrimoireCategories grimoireCategories : this.menu.getGrimoireCategories()) {
+			this.tabButtons.add(new GrimoireTabToggleWidget(grimoireCategories));
 		}
 
 		if (this.selectedTab != null) {
@@ -61,11 +61,6 @@ public class GrimoireGui extends AbstractGui implements IRenderable, IGuiEventLi
 		this.selectedTab.setStateTriggered(true);
 		this.updateCollections(false);
 		this.updateTabs();
-	}
-
-	@Override
-	public boolean changeFocus(boolean p_231049_1_) {
-		return false;
 	}
 
 	public void removed() {
@@ -119,7 +114,6 @@ public class GrimoireGui extends AbstractGui implements IRenderable, IGuiEventLi
 	@Override
 	public void render(MatrixStack mStack, int mouseX, int mouseY, float p_230430_4_) {
 		if (this.isVisible()) {
-			RenderSystem.pushMatrix();
 //			RenderSystem.translatef(0.0F, 0.0F, 100.0F);
 //			this.minecraft.getTextureManager().bind(GrimoireScreen.GRIMOIRE_LOCATION);
 //			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -127,6 +121,7 @@ public class GrimoireGui extends AbstractGui implements IRenderable, IGuiEventLi
 //			int j = (this.height - 166) / 2;
 //			this.blit(mStack, i, j, 1, 1, 147, 166);
 
+			RenderSystem.pushMatrix();
 			for (GrimoireTabToggleWidget grimoireTabToggleWidget : this.tabButtons) {
 				grimoireTabToggleWidget.render(mStack, mouseX, mouseY, p_230430_4_);
 			}
@@ -135,17 +130,16 @@ public class GrimoireGui extends AbstractGui implements IRenderable, IGuiEventLi
 	}
 
 	public void renderTooltip(MatrixStack mStack, int p_238924_2_, int p_238924_3_, int p_238924_4_, int p_238924_5_) {
-
 	}
 
 	@Override
-	public boolean mouseClicked(double p_231044_1_, double p_231044_3_, int p_231044_5_) {
+	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
 		if (this.isVisible() && !this.minecraft.player.isSpectator()) {
-			for (GrimoireTabToggleWidget recipetabtogglewidget : this.tabButtons) {
-				if (recipetabtogglewidget.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_)) {
-					if (this.selectedTab != recipetabtogglewidget) {
+			for (GrimoireTabToggleWidget grimoireTabToggleWidget : this.tabButtons) {
+				if (grimoireTabToggleWidget.mouseClicked(mouseX, mouseY, mouseButton)) {
+					if (this.selectedTab != grimoireTabToggleWidget) {
 						this.selectedTab.setStateTriggered(false);
-						this.selectedTab = recipetabtogglewidget;
+						this.selectedTab = grimoireTabToggleWidget;
 						this.selectedTab.setStateTriggered(true);
 						this.updateCollections(true);
 					}
@@ -189,44 +183,4 @@ public class GrimoireGui extends AbstractGui implements IRenderable, IGuiEventLi
 	public boolean isMouseOver(double p_231047_1_, double p_231047_3_) {
 		return IGuiEventListener.super.isMouseOver(p_231047_1_, p_231047_3_);
 	}
-
-//   @Override
-//   private boolean isOffsetNextToMainGUI() {
-//      return this.xOffset == 86;
-//   }
-
-//   @Override
-//   public void recipesUpdated() {
-//      this.updateTabs();
-//      if (this.isVisible()) {
-//         this.updateCollections(false);
-//      }
-//
-//   }
-
-//   @Override
-//   public void recipesShown(List<IRecipe<?>> p_193001_1_) {
-//      for(IRecipe<?> irecipe : p_193001_1_) {
-//         this.minecraft.player.removeRecipeHighlight(irecipe);
-//      }
-//
-//   }
-
-//   @Override
-//   public void setupGhostRecipe(IRecipe<?> p_193951_1_, List<Slot> p_193951_2_) {
-//      ItemStack itemstack = p_193951_1_.getResultItem();
-//      this.ghostRecipe.setRecipe(p_193951_1_);
-//      this.ghostRecipe.addIngredient(Ingredient.of(itemstack), (p_193951_2_.get(0)).x, (p_193951_2_.get(0)).y);
-//      this.placeRecipe(this.menu.getGridWidth(), this.menu.getGridHeight(), this.menu.getResultSlotIndex(), p_193951_1_, p_193951_1_.getIngredients().iterator(), 0);
-//   }
-
-//   @Override
-//   public void addItemToSlot(Iterator<Ingredient> p_201500_1_, int p_201500_2_, int p_201500_3_, int p_201500_4_, int p_201500_5_) {
-//      Ingredient ingredient = p_201500_1_.next();
-//      if (!ingredient.isEmpty()) {
-//         Slot slot = this.menu.slots.get(p_201500_2_);
-//         this.ghostRecipe.addIngredient(ingredient, slot.x, slot.y);
-//      }
-//
-//   }
 }

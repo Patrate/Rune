@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.caster.capability;
+package fr.emmuliette.rune.mod.capabilities.caster;
 
 import javax.annotation.Nullable;
 
