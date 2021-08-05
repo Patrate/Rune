@@ -1,11 +1,13 @@
 package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.ModEffectInstance;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.entities.AreaEffectCloudEntity;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
@@ -29,36 +31,48 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public abstract class PotionEffectComponent extends AbstractEffectComponent {
-	public static final Predicate<LivingEntity> MAGIC_SENSITIVE = LivingEntity::isSensitiveToWater;
+public abstract class PotionEffectComponent extends AbstractEffectComponent implements ChannelEffect {
+	public static final Predicate<LivingEntity> MAGIC_SENSITIVE = LivingEntity::isSensitiveToWater; // TODO is sensitive
+																									// to magic
 	private List<Effect> effectList;
 	private boolean showIcon;
 	private int secondPerLevel;
-	
-	protected PotionEffectComponent(AbstractSpellComponent parent, Effect effect, int secondPerLevel, boolean showIcon) {
+	private List<ModEffectInstance> activeEffects;
+
+	protected PotionEffectComponent(AbstractSpellComponent parent, Effect effect, int secondPerLevel,
+			boolean showIcon) {
 		super(PROPFACT, parent);
 		this.effectList = new ArrayList<Effect>();
 		this.effectList.add(effect);
 		this.showIcon = showIcon;
 		this.secondPerLevel = secondPerLevel;
+		this.activeEffects = new ArrayList<ModEffectInstance>();
 	}
-	
+
 	protected PotionEffectComponent(AbstractSpellComponent parent, Effect effect, int secondPerLevel) {
 		this(parent, effect, secondPerLevel, true);
 	}
-	
+
 	protected PotionEffectComponent(AbstractSpellComponent parent, Effect effect) {
 		this(parent, effect, 1, true);
 	}
-	
-	public EffectInstance getEffectInstance(Effect effect, float power) {
-		return new EffectInstance(effect, getDuration(power), getAmplifier(power), isAmbient(), isVisible(), isShowIcon());
+
+	public EffectInstance getEffectInstance(Effect effect, float power, boolean isChanneled) {
+		if (isChanneled) {
+			ModEffectInstance mei = new ModEffectInstance(effect, getDuration(power), getAmplifier(power), isAmbient(),
+					isVisible(), isShowIcon(), false);
+			activeEffects.add(mei);
+			return mei;
+		} else {
+			return new ModEffectInstance(effect, getDuration(power), getAmplifier(power), isAmbient(), isVisible(),
+					isShowIcon(), true);
+		}
 	}
-	
+
 	protected int getDuration(float power) {
 		return this.getIntProperty(KEY_POTION_DURATION, power) * (secondPerLevel * 20);
 	}
-	
+
 	protected int getAmplifier(float power) {
 		return this.getIntProperty(KEY_POTION_AMPLIFIER, power);
 	}
@@ -66,7 +80,7 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 	protected boolean isLingering() {
 		return this.getBoolProperty(KEY_POTION_LINGERING);
 	}
-	
+
 	protected boolean isVisible() {
 		return this.getBoolProperty(KEY_POTION_VISIBLE);
 	}
@@ -74,15 +88,16 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 	protected boolean isAmbient() {
 		return this.getBoolProperty(KEY_POTION_AMBIENT);
 	}
-	
+
 	protected boolean isShowIcon() {
 		return showIcon;
 	}
 
 	@Override
 	public boolean applyOnTarget(LivingEntity target, SpellContext context) {
-		for(Effect effect:effectList) {
-			target.addEffect(getEffectInstance(effect, context.getPower()));
+		registerChannelEffect(context);
+		for (Effect effect : effectList) {
+			target.addEffect(getEffectInstance(effect, context.getPower(), context.isChanneling()));
 		}
 		if (this.isLingering()) {
 			this.makeAreaOfEffectCloud(context);
@@ -96,8 +111,9 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 
 	@Override
 	public boolean applyOnPosition(World world, BlockPos position, SpellContext context) {
-		if(world == null || position == null || context == null)
+		if (world == null || position == null || context == null)
 			return false;
+		registerChannelEffect(context);
 		Potion potion = PotionUtils.getPotion(context.getItemStack());
 		List<Effect> list = effectList;
 		boolean flag = potion == Potions.WATER && list.isEmpty();
@@ -116,7 +132,8 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 
 	// PROPERTIES
 
-	//boolean lingering, int duration, int amplifier, boolean ambient, boolean visible, boolean showIcon
+	// boolean lingering, int duration, int amplifier, boolean ambient, boolean
+	// visible, boolean showIcon
 	// Lingering = splash cloud
 	// ambient = ???
 	// visible = ???
@@ -134,14 +151,11 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 				protected void init() {
 					this.addNewProperty(Grade.WOOD,
 							new LevelProperty(KEY_POTION_DURATION, 10, () -> new ManaCost(1), true))
-					.addNewProperty(Grade.WOOD,
-							new LevelProperty(KEY_POTION_AMPLIFIER, 10, () -> new ManaCost(1), true))
-					.addNewProperty(Grade.IRON,
-							new BoolProperty(KEY_POTION_LINGERING, () -> new ManaCost(3)))
-					.addNewProperty(Grade.SECRET,
-							new BoolProperty(KEY_POTION_AMBIENT, () -> new ManaCost(1)))
-					.addNewProperty(Grade.SECRET,
-							new BoolProperty(KEY_POTION_VISIBLE, () -> new ManaCost(1)));
+							.addNewProperty(Grade.WOOD,
+									new LevelProperty(KEY_POTION_AMPLIFIER, 10, () -> new ManaCost(1), true))
+							.addNewProperty(Grade.IRON, new BoolProperty(KEY_POTION_LINGERING, () -> new ManaCost(3)))
+							.addNewProperty(Grade.SECRET, new BoolProperty(KEY_POTION_AMBIENT, () -> new ManaCost(1)))
+							.addNewProperty(Grade.SECRET, new BoolProperty(KEY_POTION_VISIBLE, () -> new ManaCost(1)));
 				}
 			};
 			return retour;
@@ -149,9 +163,10 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 	};
 
 	private void applySplash(SpellContext context) {
-		if(context.getWorld() ==null || context.getBlock() == null || context.getCaster() == null)
+		if (context.getWorld() == null || context.getBlock() == null || context.getCaster() == null)
 			return;
-		//AxisAlignedBB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
+		// AxisAlignedBB axisalignedbb = this.getBoundingBox().inflate(4.0D, 2.0D,
+		// 4.0D);
 		AxisAlignedBB axisalignedbb = context.getCaster().getBoundingBox().inflate(4.0D, 2.0D, 4.0D);
 		List<LivingEntity> list = context.getWorld().getEntitiesOfClass(LivingEntity.class, axisalignedbb);
 		if (list.isEmpty()) {
@@ -177,7 +192,7 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 				} else {
 					int i = (int) (d1 * this.getDuration(getMaxPower()) + 0.5D);
 					if (i > 20) {
-						livingentity.addEffect(getEffectInstance(effect, context.getPower()));
+						livingentity.addEffect(getEffectInstance(effect, context.getPower(), context.isChanneling()));
 					}
 				}
 			}
@@ -185,10 +200,10 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 	}
 
 	private void makeAreaOfEffectCloud(SpellContext context) {
-		
-		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(context.getWorld(), context.getBlock().getX(), context.getBlock().getY(),
-				context.getBlock().getZ());
-		if (context.getCaster()instanceof LivingEntity) {
+
+		AreaEffectCloudEntity areaeffectcloudentity = new AreaEffectCloudEntity(context.getWorld(),
+				context.getBlock().getX(), context.getBlock().getY(), context.getBlock().getZ());
+		if (context.getCaster() instanceof LivingEntity) {
 			areaeffectcloudentity.setOwner((LivingEntity) context.getCaster());
 		}
 
@@ -198,8 +213,8 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 		areaeffectcloudentity
 				.setRadiusPerTick(-areaeffectcloudentity.getRadius() / (float) areaeffectcloudentity.getDuration());
 		List<EffectInstance> eInstanceList = new ArrayList<EffectInstance>();
-		for(Effect effect:effectList) {
-			eInstanceList.add(this.getEffectInstance(effect, context.getPower()));
+		for (Effect effect : effectList) {
+			eInstanceList.add(this.getEffectInstance(effect, context.getPower(), context.isChanneling()));
 		}
 		areaeffectcloudentity.setEffects(eInstanceList);
 
@@ -216,7 +231,7 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 	}
 
 	private void dowseFire(SpellContext context, BlockPos pos, Direction direction) {
-		if(context.getWorld() ==null)
+		if (context.getWorld() == null)
 			return;
 		BlockState blockstate = context.getWorld().getBlockState(pos);
 		if (blockstate.is(BlockTags.FIRE)) {
@@ -227,5 +242,31 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent {
 			context.getWorld().setBlockAndUpdate(pos, blockstate.setValue(CampfireBlock.LIT, Boolean.valueOf(false)));
 		}
 
+	}
+
+	/**
+	 * Is the effect currently started, either canalised or with a timer ?
+	 * 
+	 * @return true if the effect is started
+	 */
+	public boolean isStarted() {
+		return !this.activeEffects.isEmpty();
+	}
+
+	/**
+	 * Stop the effect, wether from a timer or stopping canalisation
+	 * 
+	 * @return true if the effect was running and is now succesfully stopped
+	 */
+	public boolean stop() {
+		if (!isStarted()) {
+			return false;
+		}
+		Iterator<ModEffectInstance> it = this.activeEffects.iterator();
+		while (it.hasNext()) {
+			ModEffectInstance current = it.next();
+			current.stop();
+		}
+		return true;
 	}
 }

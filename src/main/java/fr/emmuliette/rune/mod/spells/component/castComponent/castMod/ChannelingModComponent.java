@@ -20,6 +20,7 @@ import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.Callback;
 import fr.emmuliette.rune.mod.spells.component.castComponent.CallbackMod;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.ChannelEffect;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
@@ -36,13 +37,16 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ChannelingModComponent extends AbstractCastModComponent implements CallbackMod {
 	private static final Set<Callback> listeningCB = new HashSet<Callback>();
+	private final Set<ChannelEffect> channeledEffects;
 
 	public ChannelingModComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PROPFACT, parent);
+		channeledEffects = new HashSet<ChannelEffect>();
 	}
 
 	@Override
 	public Callback castCallback(SpellContext context) {
+		context.setChanneled(this.channeledEffects);
 		return new Callback(this, context, -1, true) {
 			private int tick;
 			private int modulo;
@@ -64,17 +68,20 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 
 			@Override
 			public boolean finalize(boolean result) {
-				if(context.getCaster() instanceof LivingEntity) {
+				if (context.getCaster() instanceof LivingEntity) {
 					if (((LivingEntity) context.getCaster()).isUsingItem())
 						((LivingEntity) context.getCaster()).stopUsingItem();
+				}
+				for (ChannelEffect e : ((ChannelingModComponent) this.getParent()).channeledEffects) {
+					e.stop();
 				}
 				return result;
 			}
 
 			@Override
 			public boolean tick() {
-				if (++tick >= modulo) {
-					tick = 0;
+				if (--tick <= 0) {
+					tick += modulo;
 					try {
 						ICaster cap = context.getCaster().getCapability(CasterCapability.CASTER_CAPABILITY)
 								.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
@@ -123,8 +130,8 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 		List<Callback> cancelledCB = new ArrayList<Callback>();
 		for (Callback cb : listeningCB) {
 			if (cb.getParent() instanceof ChannelingModComponent) {
-				if (cb.getContext().getCaster() == event.getEntityLiving() && !((ChannelingModComponent) cb.getParent())
-						.getBoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE)) {
+				if (cb.getContext().getCaster() == event.getEntityLiving()
+						&& !((ChannelingModComponent) cb.getParent()).getBoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE)) {
 					cancelledCB.add(cb);
 				}
 			}
@@ -148,8 +155,9 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CAST_SPEED, 10, () -> new ManaCost(1))).addNewProperty(Grade.GOLD,
-							new BoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, () -> new ManaCost(10)));
+					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CAST_SPEED, 10, () -> new ManaCost(1)))
+							.addNewProperty(Grade.GOLD,
+									new BoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, () -> new ManaCost(10)));
 				}
 			};
 			return retour;

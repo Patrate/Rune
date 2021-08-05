@@ -69,14 +69,14 @@ public class Spell {
 	}
 
 	public Boolean castable(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
-			BlockPos block, ItemUseContext itemUseContext) {
+			BlockPos block, ItemUseContext itemUseContext, boolean channeling) {
 		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext);
 		Boolean retour = startingComponent.canCast(context);
 		return retour;
 	}
 
 	public Boolean cast(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
-			BlockPos block, ItemUseContext itemUseContext) {
+			BlockPos block, ItemUseContext itemUseContext, boolean channeling) {
 		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext);
 		Boolean canCast = startingComponent.canCast(context);
 		if (canCast == null || canCast == true) {
@@ -89,9 +89,10 @@ public class Spell {
 		components.get(componentId).setPropertyValue(key, value);
 	}
 
-	/*public <T> T getPropertyValue(int componentId, String key, T defaut) {
-		return (T) components.get(componentId).getPropertyValue(key, defaut);
-	}*/
+	/*
+	 * public <T> T getPropertyValue(int componentId, String key, T defaut) { return
+	 * (T) components.get(componentId).getPropertyValue(key, defaut); }
+	 */
 
 	public List<SpellTag> getTags() {
 		return tags;
@@ -124,7 +125,7 @@ public class Spell {
 		String name = data.getString(NBT_NAME);
 		ListNBT componentsNBT = (ListNBT) data.get(NBT_COMPONENTS);
 		List<AbstractSpellComponent> components = new ArrayList<AbstractSpellComponent>();
-		if(componentsNBT != null) {
+		if (componentsNBT != null) {
 			for (int i = 0; i < componentsNBT.size(); i++) {
 				components.add(AbstractSpellComponent.fromNBT(componentsNBT.getCompound(i)));
 			}
@@ -160,12 +161,12 @@ public class Spell {
 	public void setCacheBlock(BlockPos cacheBlock) {
 		this.cacheBlock = cacheBlock;
 	}
-	
+
 	public float getMaxPower() {
 		// TODO
 		return 1f;
 	}
-	
+
 	public Cost<?> getTickCost() {
 		// TODO
 		return this.getCost();

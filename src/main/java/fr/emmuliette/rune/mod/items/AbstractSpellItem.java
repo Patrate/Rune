@@ -126,8 +126,7 @@ public abstract class AbstractSpellItem extends Item {
 			Hand hand) {
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			if (itemStack.getItem() == ModItems.GRIMOIRE.getItem() && Configuration.Server.learnFromGrimoire) {
-				if (learnGrimoire(itemStack, caster))
+			if (learnSpell(itemStack, caster)) {
 					return ActionResultType.CONSUME;
 			} else {
 				spell.setCacheTarget(target);
@@ -146,27 +145,13 @@ public abstract class AbstractSpellItem extends Item {
 		return ActionResultType.PASS;
 	}
 
-	private boolean learnGrimoire(ItemStack itemStack, Entity caster) {
-		ICaster icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
-		ISpell grimoireSpell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
-		if (icaster == null || grimoireSpell == null)
-			return false;
-		if (!caster.level.isClientSide) {
-			icaster.getGrimoire().addSpell(grimoireSpell);
-			icaster.sync();
-		}
-		itemStack.shrink(1);
-		return true;
-	}
-
 	// On clic droit air
 	@Override
 	public ActionResult<ItemStack> use(World world, PlayerEntity caster, Hand hand) {
 		ItemStack itemStack = caster.getItemInHand(hand);
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			if (itemStack.getItem() == ModItems.GRIMOIRE.getItem() && Configuration.Server.learnFromGrimoire) {
-				if (learnGrimoire(itemStack, caster))
+			if (learnSpell(itemStack, caster)) {
 					return ActionResult.consume(itemStack);
 			} else {
 				Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null, hand);
@@ -190,8 +175,7 @@ public abstract class AbstractSpellItem extends Item {
 
 		try {
 			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-			if (itemStack.getItem() == ModItems.GRIMOIRE.getItem() && Configuration.Server.learnFromGrimoire) {
-				if (learnGrimoire(itemStack, itemUseContext.getPlayer()))
+			if (learnSpell(itemStack, itemUseContext.getPlayer())) {
 					return ActionResultType.CONSUME;
 			} else {
 				spell.setCacheBlock(itemUseContext.getClickedPos());
@@ -208,6 +192,25 @@ public abstract class AbstractSpellItem extends Item {
 			e.printStackTrace();
 		}
 		return ActionResultType.PASS;
+	}
+	
+	protected boolean learnSpell(ItemStack item, Entity caster) {
+		if(Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.getItem())
+			return learnFromGrimoire(item, caster);
+		return false;
+	}
+
+	private boolean learnFromGrimoire(ItemStack itemStack, Entity caster) {
+		ICaster icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
+		ISpell grimoireSpell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
+		if (icaster == null || grimoireSpell == null)
+			return false;
+		if (!caster.level.isClientSide) {
+			icaster.getGrimoire().addSpell(grimoireSpell);
+			icaster.sync();
+		}
+		itemStack.shrink(1);
+		return true;
 	}
 
 	// On release using
@@ -245,7 +248,7 @@ public abstract class AbstractSpellItem extends Item {
 			return retour;
 		}
 		if (!caster.level.isClientSide) {
-			Boolean cont = spell.cast(power, itemStack, target, world, caster, block, itemUseContext);
+			Boolean cont = spell.cast(power, itemStack, target, world, caster, block, itemUseContext, spell.hasTag(SpellTag.CHANNELING));
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
@@ -262,7 +265,7 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.PASS;
 			}
 		} else {
-			Boolean cont = spell.castable(power, itemStack, target, world, caster, block, itemUseContext);
+			Boolean cont = spell.castable(power, itemStack, target, world, caster, block, itemUseContext, spell.hasTag(SpellTag.CHANNELING));
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);

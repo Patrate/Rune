@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import fr.emmuliette.rune.mod.RuneItemGroup;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.setup.AutoUpdater;
 import fr.emmuliette.rune.setup.Configuration;
 import fr.emmuliette.rune.setup.ModCapabilities;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,9 +33,24 @@ public class RuneMain {
 
 	public static final String MOD_ID = "rune";
 
-	public static final RuneItemGroup RUNE_GROUP = new RuneItemGroup("rune_items");
-	public static final RuneItemGroup RUNE_EFFECT_GROUP = new RuneItemGroup("rune_effects");
-	public static final RuneItemGroup RUNE_OTHER_GROUP = new RuneItemGroup("rune_other");
+	public static final ItemGroup RUNE_GROUP = new ItemGroup("rune_items") {
+		@Override
+		public ItemStack makeIcon() {
+			return ModItems.BLANK_RUNE.getItem().getDefaultInstance();
+		}
+	};
+	public static final ItemGroup RUNE_EFFECT_GROUP = new ItemGroup("rune_effects") {
+		@Override
+		public ItemStack makeIcon() {
+			return ModItems.FIRE_RUNE.getItem().getDefaultInstance();
+		}
+	};
+	public static final ItemGroup RUNE_OTHER_GROUP = new ItemGroup("rune_other") {
+		@Override
+		public ItemStack makeIcon() {
+			return ModItems.PROJECTILE_RUNE.getItem().getDefaultInstance();
+		}
+	};
 
 	public static final String VERSION = "0.0.1";
 

@@ -1,5 +1,8 @@
 package fr.emmuliette.rune.mod.spells;
 
+import java.util.Set;
+
+import fr.emmuliette.rune.mod.spells.component.effectComponent.ChannelEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -21,6 +24,7 @@ public class SpellContext {
 	private ItemUseContext itemUseContext;
 	private float power;
 	private BlockPos block;
+	private Set<ChannelEffect> channeled;
 
 	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
 			ItemUseContext itemUseContext) {
@@ -43,7 +47,7 @@ public class SpellContext {
 		if (block != null) {
 			this.block = block;
 		}
-		if(this.getOriginalCaster() == null) {
+		if (this.getOriginalCaster() == null) {
 			this.originalCaster = this.currentCaster;
 		}
 	}
@@ -107,7 +111,7 @@ public class SpellContext {
 	public ItemUseContext getItemUseContext() {
 		return itemUseContext;
 	}
-	
+
 	public void setPower(float power) {
 		this.power = power;
 	}
@@ -119,12 +123,29 @@ public class SpellContext {
 	public void setBlock(BlockPos block) {
 		this.block = block;
 	}
-	
+
 	public void setCurrentCaster(Entity caster) {
 		this.currentCaster = caster;
 	}
 
 	public Entity getOriginalCaster() {
 		return originalCaster;
+	}
+
+	public boolean isChanneling() {
+		return channeled != null;
+	}
+
+	public void setChanneled(Set<ChannelEffect> effects) {
+		this.channeled = effects;
+	}
+
+	public void addChanneledEffect(ChannelEffect effect) {
+		if (isChanneling())
+			this.channeled.add(effect);
+	}
+
+	public Set<ChannelEffect> getChanneledEffects() {
+		return this.channeled;
 	}
 }
