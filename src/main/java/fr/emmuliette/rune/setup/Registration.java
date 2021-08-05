@@ -3,13 +3,14 @@ package fr.emmuliette.rune.setup;
 import java.util.function.Function;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeSerializer;
 import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.SpellRecipe;
 import fr.emmuliette.rune.mod.spells.entities.ModEntities;
 import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
@@ -54,15 +55,16 @@ public class Registration {
 
 	public static final IRecipeType<SpellBindingRecipe> SPELLBINDING_RECIPE = IRecipeType
 			.register("spellbinding_recipe");
-	
+
 	public static final RegistryObject<SpellBindingRecipeSerializer<SpellRecipe>> SPELL_RECIPE = Registration.RECIPE
-			.register("crafting_special_spell", () -> new SpellBindingRecipeSerializer<SpellRecipe>(new Function<ResourceLocation, SpellRecipe>() {
-				@Override
-				public SpellRecipe apply(ResourceLocation t) {
-					return new SpellRecipe(t);
-				}
-			}));
-	
+			.register("crafting_special_spell",
+					() -> new SpellBindingRecipeSerializer<SpellRecipe>(new Function<ResourceLocation, SpellRecipe>() {
+						@Override
+						public SpellRecipe apply(ResourceLocation t) {
+							return new SpellRecipe(t);
+						}
+					}));
+
 //	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> CRAFTING_SPELL_RECIPE = Registration.RECIPE
 //			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<SpellRecipe>(new Function<ResourceLocation, SpellRecipe>() {
 //				@Override
@@ -70,8 +72,6 @@ public class Registration {
 //					return new SpellRecipe(t);
 //				}
 //			}));
-	
-	
 
 	public static void register() {
 		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -84,7 +84,8 @@ public class Registration {
 		CONTAINER.register(modEventBus);
 
 		ModEffects.register();
-		ModObjects.register();
+		ModBlocks.register();
+		ModItems.register();
 		CapabilitySyncHandler.register();
 		ModContainers.register();
 		ModEntities.register();

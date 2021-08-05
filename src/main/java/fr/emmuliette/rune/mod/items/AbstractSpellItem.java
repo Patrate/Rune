@@ -4,10 +4,8 @@ import javax.annotation.Nonnull;
 
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
-import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
@@ -77,11 +75,7 @@ public abstract class AbstractSpellItem extends Item {
 				Spell spell = getSpell(itemStack, caster);
 				if (spell != null) {
 					if (spell.castSpecial(getPower(caster), itemStack, target, caster.level, caster, null)) {
-						try {
-							retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
-						} catch (NotAnItemException e) {
-							e.printStackTrace();
-						}
+						retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.getItem());
 						if (retour.consume) {
 							retour.resultType = ActionResultType.CONSUME;
 							retour.result = ActionResult.consume(itemStack);
@@ -132,25 +126,19 @@ public abstract class AbstractSpellItem extends Item {
 			Hand hand) {
 		try {
 			Spell spell = getSpell(itemStack, caster);
-
-			try {
-				if (itemStack.getItem() == ModObjects.GRIMOIRE.getModItem() && Configuration.Server.learnFromGrimoire) {
-					if (learnGrimoire(itemStack, caster))
-						return ActionResultType.CONSUME;
-				} else {
-					spell.setCacheTarget(target);
-					Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null,
-							hand);
-					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-						caster.startUsingItem(hand);
-						return ActionResultType.PASS;
-					}
-					return retour.resultType;
-
+			if (itemStack.getItem() == ModItems.GRIMOIRE.getItem() && Configuration.Server.learnFromGrimoire) {
+				if (learnGrimoire(itemStack, caster))
+					return ActionResultType.CONSUME;
+			} else {
+				spell.setCacheTarget(target);
+				Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null, hand);
+				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+					caster.startUsingItem(hand);
+					return ActionResultType.PASS;
 				}
-			} catch (NotAnItemException e) {
-				e.printStackTrace();
+				return retour.resultType;
+
 			}
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -177,22 +165,17 @@ public abstract class AbstractSpellItem extends Item {
 		ItemStack itemStack = caster.getItemInHand(hand);
 		try {
 			Spell spell = getSpell(itemStack, caster);
-			try {
-				if (itemStack.getItem() == ModObjects.GRIMOIRE.getModItem() && Configuration.Server.learnFromGrimoire) {
-					if (learnGrimoire(itemStack, caster))
-						return ActionResult.consume(itemStack);
-				} else {
-					Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null,
-							hand);
-					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-						caster.startUsingItem(hand);
-						return ActionResult.pass(itemStack);
-					}
-					return retour.result;
+			if (itemStack.getItem() == ModItems.GRIMOIRE.getItem() && Configuration.Server.learnFromGrimoire) {
+				if (learnGrimoire(itemStack, caster))
+					return ActionResult.consume(itemStack);
+			} else {
+				Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null, hand);
+				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+					caster.startUsingItem(hand);
+					return ActionResult.pass(itemStack);
 				}
-			} catch (NotAnItemException e) {
-				e.printStackTrace();
+				return retour.result;
 			}
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -207,23 +190,19 @@ public abstract class AbstractSpellItem extends Item {
 
 		try {
 			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-			try {
-				if (itemStack.getItem() == ModObjects.GRIMOIRE.getModItem() && Configuration.Server.learnFromGrimoire) {
-					if (learnGrimoire(itemStack, itemUseContext.getPlayer()))
-						return ActionResultType.CONSUME;
-				} else {
-					spell.setCacheBlock(itemUseContext.getClickedPos());
-					Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
-							itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
-					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-						itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
-						return ActionResultType.PASS;
-					}
-					return retour.resultType;
+			if (itemStack.getItem() == ModItems.GRIMOIRE.getItem() && Configuration.Server.learnFromGrimoire) {
+				if (learnGrimoire(itemStack, itemUseContext.getPlayer()))
+					return ActionResultType.CONSUME;
+			} else {
+				spell.setCacheBlock(itemUseContext.getClickedPos());
+				Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
+						itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
+				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+					itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
+					return ActionResultType.PASS;
 				}
-			} catch (NotAnItemException e) {
-				e.printStackTrace();
+				return retour.resultType;
 			}
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -271,11 +250,7 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
 			} else if (cont) {
-				try {
-					retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
-				} catch (NotAnItemException e) {
-					e.printStackTrace();
-				}
+				retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.getItem());
 				if (retour.consume) {
 					retour.resultType = ActionResultType.CONSUME;
 					retour.result = ActionResult.consume(itemStack);
@@ -292,11 +267,7 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
 			} else if (cont) {
-				try {
-					retour.consume = (itemStack.getItem() == ModObjects.PARCHMENT.getModItem());
-				} catch (NotAnItemException e) {
-					e.printStackTrace();
-				}
+				retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.getItem());
 				if (retour.consume) {
 					retour.resultType = ActionResultType.CONSUME;
 					retour.result = ActionResult.consume(itemStack);

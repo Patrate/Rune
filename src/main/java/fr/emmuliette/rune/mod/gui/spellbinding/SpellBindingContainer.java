@@ -4,8 +4,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fr.emmuliette.rune.exception.NotABlockException;
-import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.setup.Registration;
@@ -194,12 +193,7 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	}
 
 	public boolean stillValid(PlayerEntity player) {
-		try {
-			return stillValid(this.access, player, ModObjects.SPELLBINDING_BLOCK.getModBlock());
-		} catch (NotABlockException e) {
-			e.printStackTrace();
-		}
-		return false;
+		return stillValid(this.access, player, ModBlocks.SPELLBINDING_BLOCK.getBlock());
 	}
 
 	public ItemStack quickMoveStack(PlayerEntity player, int slotId) {

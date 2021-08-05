@@ -2,10 +2,9 @@ package fr.emmuliette.rune.data.client;
 
 import java.util.function.Consumer;
 
-import fr.emmuliette.rune.exception.NotABlockException;
-import fr.emmuliette.rune.exception.NotAnItemException;
-import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeBuilder;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
@@ -22,25 +21,17 @@ public class ModRecipeProvider extends RecipeProvider {
 
 	@Override
 	protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
-		try {
-			ShapedRecipeBuilder.shaped(ModObjects.CASTER_BLOCK.getModBlock())
-					.define('A', ModObjects.BLANK_RUNE.getModItem()).define('B', ItemTags.LOGS).pattern("BBB")
-					.pattern("BAB").pattern("BBB").unlockedBy("has_item", has(ModObjects.BLANK_RUNE.getModItem()))
-					.unlockedBy("has_log", has(ItemTags.LOGS)).save(consumer);
-			;
-		} catch (NotABlockException | NotAnItemException e) {
-			e.printStackTrace();
-		}
+		ShapedRecipeBuilder.shaped(ModBlocks.CASTER_BLOCK.getBlock()).define('A', ModItems.BLANK_RUNE.getItem())
+				.define('B', ItemTags.LOGS).pattern("BBB").pattern("BAB").pattern("BBB")
+				.unlockedBy("has_item", has(ModItems.BLANK_RUNE.getItem())).unlockedBy("has_log", has(ItemTags.LOGS))
+				.save(consumer);
+		;
 
-		try {
-			ShapelessRecipeBuilder.shapeless(ModObjects.BLANK_RUNE.getModItem()).requires(Items.FLINT)
-					.requires(Items.STONE).unlockedBy("has_flint", has(Items.FLINT))
-					.unlockedBy("has_stone", has(Items.STONE)).save(consumer);
-		} catch (NotAnItemException e) {
-			e.printStackTrace();
-		}
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_RUNE.getItem()).requires(Items.FLINT).requires(Items.STONE)
+				.unlockedBy("has_flint", has(Items.FLINT)).unlockedBy("has_stone", has(Items.STONE)).save(consumer);
 
 		SpellBindingRecipeBuilder.build(Registration.SPELL_RECIPE.get()).save(consumer, "spellbinding_spell_recipe");
-		//CustomRecipeBuilder.special(Registration.CRAFTING_SPELL_RECIPE.get()).save(consumer, "crafting_spell_recipe");
+		// CustomRecipeBuilder.special(Registration.CRAFTING_SPELL_RECIPE.get()).save(consumer,
+		// "crafting_spell_recipe");
 	}
 }

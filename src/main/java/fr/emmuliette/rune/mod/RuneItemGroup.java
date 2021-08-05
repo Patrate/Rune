@@ -1,6 +1,6 @@
 package fr.emmuliette.rune.mod;
 
-import fr.emmuliette.rune.exception.NotAnItemException;
+import fr.emmuliette.rune.mod.items.ModItems;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 
@@ -12,11 +12,7 @@ public class RuneItemGroup extends ItemGroup {
 
 	@Override
 	public ItemStack makeIcon() {
-		try {
-			return ModObjects.BLANK_RUNE.getModItem().getDefaultInstance();
-		} catch (NotAnItemException e) {
-		}
-		return null;
+		return ModItems.PROJECTILE_RUNE.getItem().getDefaultInstance();
 	}
 
 }

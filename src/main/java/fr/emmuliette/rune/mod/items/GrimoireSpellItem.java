@@ -5,8 +5,6 @@ import java.util.Iterator;
 import javax.annotation.Nonnull;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.exception.NotAnItemException;
-import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
@@ -32,15 +30,10 @@ public class GrimoireSpellItem extends AbstractSpellItem {
 
 	public static ItemStack getGrimoireSpell(Grimoire source, String name) {
 		GrimoireSpellItem spellitem;
-		try {
-			spellitem = (GrimoireSpellItem) ModObjects.SPELL.getModItem();
-			ItemStack itemStack = new ItemStack(spellitem);
-			itemStack.addTagElement(SPELL_NAME, StringNBT.valueOf(name));
-			return itemStack;
-		} catch (NotAnItemException e) {
-			e.printStackTrace();
-		}
-		return ItemStack.EMPTY;
+		spellitem = (GrimoireSpellItem) ModItems.SPELL.getItem();
+		ItemStack itemStack = new ItemStack(spellitem);
+		itemStack.addTagElement(SPELL_NAME, StringNBT.valueOf(name));
+		return itemStack;
 	}
 
 	public GrimoireSpellItem(Item.Properties properties) {

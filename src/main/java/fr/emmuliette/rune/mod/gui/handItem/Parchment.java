@@ -4,8 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.exception.NotAnItemException;
-import fr.emmuliette.rune.mod.ModObjects;
+import fr.emmuliette.rune.mod.items.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -36,32 +35,27 @@ public class Parchment {
 	@SuppressWarnings("resource")
 	@SubscribeEvent
 	public static void renderHandParchment(RenderHandEvent event) {
-		try {
-			ItemStack is = event.getItemStack();
-			if (is.getItem() != ModObjects.PARCHMENT.getModItem() && is.getItem() != ModObjects.SPELL.getModItem()) {
-				return;
-			}
-			renderArmWithItem(Minecraft.getInstance().player, event.getHand(), event.getItemStack(),
-					event.getMatrixStack(), event.getBuffers(), 0, 0, event.getLight());
-			event.setCanceled(true);
-		} catch (NotAnItemException e) {
-			e.printStackTrace();
+		ItemStack is = event.getItemStack();
+		if (is.getItem() != ModItems.PARCHMENT.getItem() && is.getItem() != ModItems.SPELL.getItem()) {
+			return;
 		}
+		renderArmWithItem(Minecraft.getInstance().player, event.getHand(), event.getItemStack(), event.getMatrixStack(),
+				event.getBuffers(), 0, 0, event.getLight());
+		event.setCanceled(true);
 	}
 
 	private static void renderArmWithItem(AbstractClientPlayerEntity player, Hand hand, ItemStack itemStack,
-			MatrixStack mStack, IRenderTypeBuffer renderBuffer, float prems, float dems, int light)
-			throws NotAnItemException {
+			MatrixStack mStack, IRenderTypeBuffer renderBuffer, float prems, float dems, int light) {
 		boolean flag = hand == Hand.MAIN_HAND;
 		HandSide handside = flag ? player.getMainArm() : player.getMainArm().getOpposite();
 		mStack.pushPose();
 		if (!itemStack.isEmpty()) {
-			if (itemStack.getItem() == ModObjects.PARCHMENT.getModItem()) {
+			if (itemStack.getItem() == ModItems.PARCHMENT.getItem()) {
 				if (flag && !player.isInvisible()) {
 					renderPlayerArm(mStack, renderBuffer, light, dems, prems, handside);
 				}
 				renderParchment(mStack, renderBuffer, light, dems, handside, dems, itemStack);
-			} else if (itemStack.getItem() == ModObjects.SPELL.getModItem()) {
+			} else if (itemStack.getItem() == ModItems.SPELL.getItem()) {
 				renderSpell();
 			}
 		}

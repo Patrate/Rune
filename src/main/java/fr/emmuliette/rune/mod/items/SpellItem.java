@@ -2,10 +2,8 @@ package fr.emmuliette.rune.mod.items;
 
 import javax.annotation.Nullable;
 
-import fr.emmuliette.rune.exception.NotAnItemException;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.ModObjects;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.spells.Spell;
@@ -26,17 +24,17 @@ public class SpellItem extends AbstractSpellItem {
 		try {
 			switch (type) {
 			case GRIMOIRE:
-				spellitem = (SpellItem) ModObjects.GRIMOIRE.getModItem();
+				spellitem = (SpellItem) ModItems.GRIMOIRE.getItem();
 				break;
 			case SOCKET:
-				spellitem = (SpellItem) ModObjects.SOCKET.getModItem();
+				spellitem = (SpellItem) ModItems.SOCKET.getItem();
 				break;
 			case SPELL:
-				spellitem = (SpellItem) ModObjects.SPELL.getModItem();
+				spellitem = (SpellItem) ModItems.SPELL.getItem();
 				break;
 			case PARCHMENT:
 			default:
-				spellitem = (SpellItem) ModObjects.PARCHMENT.getModItem();
+				spellitem = (SpellItem) ModItems.PARCHMENT.getItem();
 				break;
 			}
 			ItemStack itemStack = new ItemStack(spellitem);
@@ -57,7 +55,7 @@ public class SpellItem extends AbstractSpellItem {
 					.orElseThrow(new SpellCapabilityExceptionSupplier(itemStack));
 			ispell.setSpell(spell);
 			return itemStack;
-		} catch (NotAnItemException | SpellCapabilityException e) {
+		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
 		}
 		return ItemStack.EMPTY;
