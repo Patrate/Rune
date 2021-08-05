@@ -3,9 +3,9 @@ package fr.emmuliette.rune.mod.items;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.items.magicItems.WandItem;
 import fr.emmuliette.rune.mod.items.spellItems.GrimoireSpellItem;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
-import fr.emmuliette.rune.mod.items.wand.WandItem;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.ProjectileComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.SelfComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.TouchComponent;
@@ -45,13 +45,13 @@ public enum ModItems {
 	WANDA(new AdvancedModItem("wand_a", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new WandItem((WandItem.WandProperties) new WandItem.WandProperties().maxMana(5)
+			return () -> new WandItem((WandItem.MagicItemProperties) new WandItem.MagicItemProperties().maxMana(5)
 					.chargeSpeed(200).tab(getGroup()).stacksTo(1));
 		}
 	}), WANDB(new AdvancedModItem("wand_b", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new WandItem((WandItem.WandProperties) new WandItem.WandProperties().maxMana(40)
+			return () -> new WandItem((WandItem.MagicItemProperties) new WandItem.MagicItemProperties().maxMana(40)
 					.chargeSpeed(20).tab(getGroup()).stacksTo(1));
 		}
 	}),

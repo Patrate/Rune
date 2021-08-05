@@ -23,7 +23,7 @@ public class Grimoire {
 		spellList = new TreeMap<String, ISpell>();
 		initInventory();
 	}
-	
+
 	public void initInventory() {
 		inventory = new GrimoireInventory();
 		inventory.init(this);
@@ -88,17 +88,11 @@ public class Grimoire {
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException, RunePropertiesException {
 		Grimoire retour = new Grimoire();
-		System.out.println("[G] from nbt");
 		if (inbt != null && inbt instanceof CompoundNBT) {
-			System.out.println("[G] CompoundNBT found");
 			if (((CompoundNBT) inbt).contains(SPELL_LIST_KEY)) {
-				System.out.println("[G] CompoundNBT contains SPELL_LIST_KEY");
 				ListNBT sList = (ListNBT) ((CompoundNBT) inbt).get(SPELL_LIST_KEY);
-				System.out.println("[G] list is of size " + sList.size());
 				for (INBT spellNBT : sList) {
-					System.out.println("[G] Got spell nbt: " + spellNBT.getAsString());
 					if (spellNBT instanceof CompoundNBT) {
-						System.out.println("[G] Spell is compound, creating ISpell and puting it in grimoire");
 						ISpell spell = new SpellImpl();
 						spell.fromNBT((CompoundNBT) spellNBT);
 						retour.addSpellInternal(spell);
@@ -111,13 +105,9 @@ public class Grimoire {
 	}
 
 	public void sync(Grimoire other) {
-		System.out.println(
-				"Syncing. our: " + this.spellList.size() + " spells, other: " + other.spellList.size() + " spells.");
 		spellList.clear();
 		for (String spellName : other.spellList.keySet()) {
-			System.out.println("We got spell " + spellName);
 			if (!spellList.containsKey(spellName)) {
-				System.out.println("Adding " + spellName + " to the grimoire");
 				spellList.put(spellName, other.spellList.get(spellName));
 			}
 		}

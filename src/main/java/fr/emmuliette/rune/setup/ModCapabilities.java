@@ -31,7 +31,7 @@ public class ModCapabilities {
 	}
 
 	@SubscribeEvent
-	public static void attachCapabilitiesEntity(final AttachCapabilitiesEvent<ItemStack> event) {
+	public static void attachCapabilitiesItem(final AttachCapabilitiesEvent<ItemStack> event) {
 		if (event.getObject().getItem() instanceof SpellItem) {
 			event.addCapability(new ResourceLocation(RuneMain.MOD_ID, SpellCapability.SPELL_CAPABILITY_NAME),
 					new SpellCapability());

@@ -19,4 +19,8 @@ public class NotEnoughManaException extends Exception{
 	public NotEnoughManaException(ItemStack spell, float manaCost, PlayerEntity player, ICaster cap) {
 		super("Player " + player.getName().getString() + " trying to cast " + spell.getDisplayName().getString() + " costing " + manaCost + " but has only " + cap.getMana());
 	}
+
+	public NotEnoughManaException(float mana, float cost) {
+		super("Not enough mana " + mana + "/" + cost);
+	}
 }

@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.items.wand;
+package fr.emmuliette.rune.mod.items.magicItems;
 
 import net.minecraft.item.ItemStack;
 

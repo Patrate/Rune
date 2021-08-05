@@ -5,7 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
-import fr.emmuliette.rune.mod.items.wand.ManaSource;
+import fr.emmuliette.rune.mod.items.magicItems.ManaSource;
+import fr.emmuliette.rune.mod.items.magicItems.PowerSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -66,6 +67,23 @@ public class CasterImpl implements ICaster {
 	}
 
 	@Override
+	public float getPower() {
+		float equipmentPower = 0f;
+		for (ItemStack item : owner.getAllSlots()) {
+			if (item == ItemStack.EMPTY)
+				continue;
+			if (item.getItem() instanceof PowerSource)
+				equipmentPower += ((PowerSource) item.getItem()).getPower(item);
+		}
+		return power + equipmentPower;
+	}
+
+	@Override
+	public void setPower(float power) {
+		this.power = power;
+	}
+
+	@Override
 	public float getMana() {
 		float equipmentMana = 0f;
 		for (ItemStack item : owner.getAllSlots()) {
@@ -103,6 +121,29 @@ public class CasterImpl implements ICaster {
 			this.maxMana = maxMana;
 			sync();
 		}
+	}
+
+	@Override
+	public void delMana(float cost) throws NotEnoughManaException {
+		System.out.println("Paying cost of " + cost + " mana");
+		float remainder = cost;
+		for (ItemStack item : owner.getAllSlots()) {
+			if (item == ItemStack.EMPTY)
+				continue;
+			if (item.getItem() instanceof ManaSource) {
+				ManaSource manaSource = (ManaSource) item.getItem();
+				float equipmentMana = manaSource.getMana(item);
+				if (remainder > equipmentMana) {
+					remainder -= equipmentMana;
+					manaSource.useMana(item, equipmentMana);
+				} else {
+					manaSource.useMana(item, equipmentMana - remainder);
+					remainder = 0f;
+				}
+			}
+		}
+		if (remainder > 0f)
+			delManaInternal(remainder);
 	}
 
 	@Override
@@ -190,7 +231,7 @@ public class CasterImpl implements ICaster {
 
 	@Override
 	public void fromNBT(INBT nbt) {
-		System.out.println("From nbt:\n\tOLD\n" + this.toNBT().getAsString() + "\n\n\tNEW\n" + nbt.getAsString());
+//		System.out.println("From nbt:\n\tOLD\n" + this.toNBT().getAsString() + "\n\n\tNEW\n" + nbt.getAsString());
 		if (nbt instanceof CompoundNBT) {
 			CompoundNBT cnbt = (CompoundNBT) nbt;
 
@@ -210,7 +251,7 @@ public class CasterImpl implements ICaster {
 
 			// GRIMOIRE
 			if (cnbt.contains(GRIMOIRE_KEY)) {
-				System.out.println("We got a grimoire");
+//				System.out.println("We got a grimoire");
 				try {
 					this.grimoire.sync(Grimoire.fromNBT(cnbt.get(GRIMOIRE_KEY)));
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -255,36 +296,5 @@ public class CasterImpl implements ICaster {
 		if (owner instanceof ServerPlayerEntity) {
 			CapabilitySyncHandler.sendTo(new CasterPacket(this.toNBT()), (ServerPlayerEntity) owner);
 		}
-	}
-
-	@Override
-	public float getPower() {
-		return power;
-	}
-
-	@Override
-	public void setPower(float power) {
-		this.power = power;
-	}
-
-	@Override
-	public void delMana(float cost) throws NotEnoughManaException {
-		float remainder = cost;
-		for (ItemStack item : owner.getAllSlots()) {
-			if (item == ItemStack.EMPTY)
-				continue;
-			if (item.getItem() instanceof ManaSource) {
-				float equipmentMana = ((ManaSource) item.getItem()).getMana(item);
-				if (remainder > equipmentMana) {
-					remainder -= equipmentMana;
-					((ManaSource) item.getItem()).useMana(item, equipmentMana);
-				} else {
-					remainder = 0f;
-					((ManaSource) item.getItem()).useMana(item, equipmentMana - remainder);
-				}
-			}
-		}
-		if (remainder > 0f)
-			delManaInternal(remainder);
 	}
 }
