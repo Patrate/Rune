@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.items;
+package fr.emmuliette.rune.mod.items.spellItems;
 
 import java.util.Iterator;
 
@@ -9,6 +9,7 @@ import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.GrimoireSpellException;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;

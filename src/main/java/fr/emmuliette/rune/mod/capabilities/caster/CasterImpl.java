@@ -2,10 +2,13 @@ package fr.emmuliette.rune.mod.capabilities.caster;
 
 import java.lang.reflect.InvocationTargetException;
 
+import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
+import fr.emmuliette.rune.mod.items.wand.ManaSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.FloatNBT;
 import net.minecraft.nbt.INBT;
@@ -64,20 +67,34 @@ public class CasterImpl implements ICaster {
 
 	@Override
 	public float getMana() {
-		return this.currentMana;
+		float equipmentMana = 0f;
+		for (ItemStack item : owner.getAllSlots()) {
+			if (item == ItemStack.EMPTY)
+				continue;
+			if (item.getItem() instanceof ManaSource)
+				equipmentMana += ((ManaSource) item.getItem()).getMana(item);
+		}
+		return this.currentMana + equipmentMana;
 	}
 
 	@Override
 	public void setMana(float mana) {
 		if (mana != currentMana) {
-			this.currentMana = mana;
+			this.currentMana = Math.min(mana, getMaxMana());
 			sync();
 		}
 	}
 
 	@Override
 	public float getMaxMana() {
-		return this.maxMana;
+		float equipmentMana = 0f;
+		for (ItemStack item : owner.getAllSlots()) {
+			if (item == ItemStack.EMPTY)
+				continue;
+			if (item.getItem() instanceof ManaSource)
+				equipmentMana += ((ManaSource) item.getItem()).getMaxMana(item);
+		}
+		return this.maxMana + equipmentMana;
 	}
 
 	@Override
@@ -86,6 +103,21 @@ public class CasterImpl implements ICaster {
 			this.maxMana = maxMana;
 			sync();
 		}
+	}
+
+	@Override
+	public float getManaInternal() {
+		return this.currentMana;
+	}
+
+	@Override
+	public float getMaxManaInternal() {
+		return this.maxMana;
+	}
+
+	@Override
+	public float getPowerInternal() {
+		return this.power;
 	}
 
 	@Override
@@ -142,11 +174,11 @@ public class CasterImpl implements ICaster {
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = new CompoundNBT();
 //		retour.put(OWNER_KEY, StringNBT.valueOf(owner.getStringUUID()));
-		retour.put(POWER_KEY, FloatNBT.valueOf(getPower()));
-		retour.put(MANA_KEY, FloatNBT.valueOf(getMana()));
-		retour.put(MAXMANA_KEY, FloatNBT.valueOf(getMaxMana()));
-		retour.put(MANA_REGEN_KEY, IntNBT.valueOf(getManaRegen()));
-		retour.put(COOLDOWN_KEY, IntNBT.valueOf(getCooldown()));
+		retour.put(POWER_KEY, FloatNBT.valueOf(this.power));
+		retour.put(MANA_KEY, FloatNBT.valueOf(this.currentMana));
+		retour.put(MAXMANA_KEY, FloatNBT.valueOf(this.maxMana));
+		retour.put(MANA_REGEN_KEY, IntNBT.valueOf(this.manaRegen));
+		retour.put(COOLDOWN_KEY, IntNBT.valueOf(this.cooldown));
 
 		// GRIMOIRE
 		if (this.grimoire != null) {
@@ -187,34 +219,40 @@ public class CasterImpl implements ICaster {
 					e.printStackTrace();
 				}
 			}
-		} else {
-			System.out.println("THIS ISNT A COMPOUNDNBT ??????");
 		}
 	}
 
 	@Override
 	public void sync(ServerPlayerEntity player) {
-		System.out.println("186: Syncing !");
 		player.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(c -> c.sync());
 	}
 
 	@Override
 	public void sync(ICaster caster) {
-		System.out.println("192: Syncing internal !");
-		System.out.println(this.toNBT().getAsString());
-		System.out.println(caster.toNBT().getAsString());
-		this.power = caster.getPower();
-		this.currentMana = caster.getMana();
-		this.maxMana = caster.getMaxMana();
-		this.manaRegen = caster.getManaRegen();
-		this.currentManaCd = caster.getManaRegenTick();
-		this.grimoire = caster.getGrimoire();
+		if (caster instanceof CasterImpl) {
+			syncInternal((CasterImpl) caster);
+		} else {
+			this.power = caster.getPower();
+			this.currentMana = caster.getMana();
+			this.maxMana = caster.getMaxMana();
+			this.manaRegen = caster.getManaRegen();
+			this.currentManaCd = caster.getManaRegenTick();
+			this.grimoire = caster.getGrimoire();
+		}
+	}
+
+	private void syncInternal(CasterImpl caster) {
+		this.power = caster.power;
+		this.currentMana = caster.currentMana;
+		this.maxMana = caster.maxMana;
+		this.manaRegen = caster.manaRegen;
+		this.currentManaCd = caster.currentManaCd;
+		this.grimoire = caster.grimoire;
 	}
 
 	@Override
 	public void sync() {
 		if (owner instanceof ServerPlayerEntity) {
-			System.out.println("SENDING");
 			CapabilitySyncHandler.sendTo(new CasterPacket(this.toNBT()), (ServerPlayerEntity) owner);
 		}
 	}
@@ -227,5 +265,26 @@ public class CasterImpl implements ICaster {
 	@Override
 	public void setPower(float power) {
 		this.power = power;
+	}
+
+	@Override
+	public void delMana(float cost) throws NotEnoughManaException {
+		float remainder = cost;
+		for (ItemStack item : owner.getAllSlots()) {
+			if (item == ItemStack.EMPTY)
+				continue;
+			if (item.getItem() instanceof ManaSource) {
+				float equipmentMana = ((ManaSource) item.getItem()).getMana(item);
+				if (remainder > equipmentMana) {
+					remainder -= equipmentMana;
+					((ManaSource) item.getItem()).useMana(item, equipmentMana);
+				} else {
+					remainder = 0f;
+					((ManaSource) item.getItem()).useMana(item, equipmentMana - remainder);
+				}
+			}
+		}
+		if (remainder > 0f)
+			delManaInternal(remainder);
 	}
 }

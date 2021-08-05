@@ -9,7 +9,7 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireInventory;
-import fr.emmuliette.rune.mod.items.GrimoireSpellItem;
+import fr.emmuliette.rune.mod.items.spellItems.GrimoireSpellItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;

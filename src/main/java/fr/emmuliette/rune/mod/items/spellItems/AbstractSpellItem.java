@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.items;
+package fr.emmuliette.rune.mod.items.spellItems;
 
 import javax.annotation.Nonnull;
 
@@ -12,6 +12,7 @@ import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import fr.emmuliette.rune.setup.Configuration;

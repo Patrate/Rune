@@ -3,6 +3,9 @@ package fr.emmuliette.rune.mod.items;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.items.spellItems.GrimoireSpellItem;
+import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
+import fr.emmuliette.rune.mod.items.wand.WandItem;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.ProjectileComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.SelfComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.TouchComponent;
@@ -39,6 +42,20 @@ import fr.emmuliette.rune.mod.spells.component.structureComponent.MagicEntityCom
 import net.minecraft.item.Item;
 
 public enum ModItems {
+	WANDA(new AdvancedModItem("wand_a", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new WandItem((WandItem.WandProperties) new WandItem.WandProperties().maxMana(5)
+					.chargeSpeed(200).tab(getGroup()).stacksTo(1));
+		}
+	}), WANDB(new AdvancedModItem("wand_b", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new WandItem((WandItem.WandProperties) new WandItem.WandProperties().maxMana(40)
+					.chargeSpeed(20).tab(getGroup()).stacksTo(1));
+		}
+	}),
+
 	BLANK_RUNE(new ModItem("blank_rune", RuneMain.RUNE_GROUP)),
 	// Cast
 	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_OTHER_GROUP, ProjectileComponent.class)),
@@ -91,10 +108,27 @@ public enum ModItems {
 
 	// Spells
 
-	SPELL(new AdvancedModItem("spell",RuneMain.RUNE_GROUP){@Override protected Supplier<?extends Item>getItemSupplier(){return()->new GrimoireSpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));}}),
-	PARCHMENT(new AdvancedModItem("parchment",RuneMain.RUNE_GROUP){@Override protected Supplier<?extends Item>getItemSupplier(){return()->new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));}}),
-	GRIMOIRE(new AdvancedModItem("grimoire",RuneMain.RUNE_GROUP){@Override protected Supplier<?extends Item>getItemSupplier(){return()->new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));}}),
-	SOCKET(new AdvancedModItem("socket",RuneMain.RUNE_GROUP){@Override protected Supplier<?extends Item>getItemSupplier(){return()->new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));}});
+	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new GrimoireSpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	}), PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));
+		}
+	}), GRIMOIRE(new AdvancedModItem("grimoire", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	}), SOCKET(new AdvancedModItem("socket", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));
+		}
+	});
 
 	private ModItem entity;
 

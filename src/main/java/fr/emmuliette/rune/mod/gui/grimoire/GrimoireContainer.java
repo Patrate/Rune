@@ -10,7 +10,7 @@ import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.containers.ModContainers;
-import fr.emmuliette.rune.mod.items.GrimoireSpellItem;
+import fr.emmuliette.rune.mod.items.spellItems.GrimoireSpellItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;

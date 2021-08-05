@@ -9,7 +9,7 @@ import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellStorage;
-import fr.emmuliette.rune.mod.items.SpellItem;
+import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

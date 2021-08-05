@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.items;
+package fr.emmuliette.rune.mod.items.spellItems;
 
 import javax.annotation.Nullable;
 
@@ -6,6 +6,7 @@ import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

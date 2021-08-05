@@ -18,9 +18,7 @@ public class ManaBoostEffect extends Effect {
 		entity.getCapability(CasterCapability.CASTER_CAPABILITY).ifPresent(new NonNullConsumer<ICaster>() {
 			@Override
 			public void accept(ICaster cap) {
-				if (cap.getMana() > cap.getMaxMana()) {
-					cap.setMana(cap.getMaxMana());
-				}
+				cap.addMana(0);
 			}
 		});
 	}

@@ -8,7 +8,7 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingInventory;
 import fr.emmuliette.rune.mod.items.RuneItem;
-import fr.emmuliette.rune.mod.items.SpellItem;
+import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.item.BookItem;
 import net.minecraft.item.Item;

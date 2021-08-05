@@ -9,42 +9,71 @@ import net.minecraft.nbt.INBT;
 public interface ICaster {
 
 	public Entity getOwner();
+
 	public void setOwner(Entity owner);
+
 	public Grimoire getGrimoire();
+
 	public void setGrimoire(Grimoire grimoire);
 
 	public float getPower();
+
 	public void setPower(float power);
+
 	public float getMana();
+
 	public float getMaxMana();
+
 	public int getManaRegenTick();
+
 	public void setManaCooldown(int cd);
+
 	public void setManaRegen(int newCooldown);
+
 	public int getManaRegen();
-	public void setMana(float mana);
-	public void setMaxMana(float maxMana);
+
+	void setMana(float mana);
+
+	void setMaxMana(float maxMana);
+
 	public boolean isCooldown();
+
 	public void setCooldown(int cd);
+
 	public int getCooldown();
+
+	float getManaInternal();
+
+	float getMaxManaInternal();
+
+	float getPowerInternal();
+
 	public default void tickCooldown() {
-		if(isCooldown()) {
+		if (isCooldown()) {
 			setCooldown(getCooldown() - 1);
 		}
 	}
-	
+
+	public void delMana(float cost) throws NotEnoughManaException;
+
 	public default void addMana(float mana) {
-		setMana(Math.max(0, Math.min(getMana() + mana, getMaxMana())));
+		setMana(Math.max(0, Math.min(getManaInternal() + mana, getMaxManaInternal())));
 	}
-	public default void delMana(float mana) throws NotEnoughManaException {
-		if(mana > getMana()) {
-			throw new NotEnoughManaException(getOwner(), mana, getMana());
+
+	public default void delManaInternal(float cost) throws NotEnoughManaException {
+		if (cost > getManaInternal()) {
+			throw new NotEnoughManaException(getOwner(), cost, getManaInternal());
 		}
-		addMana(-mana);
+		addMana(-cost);
 	}
-	
+
 	public CompoundNBT toNBT();
+
 	public void fromNBT(INBT nbt);
+
 	public void sync(ServerPlayerEntity player);
+
 	public void sync(ICaster player);
+
 	public void sync();
 }
