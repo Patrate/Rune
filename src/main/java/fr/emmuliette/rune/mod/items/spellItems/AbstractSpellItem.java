@@ -41,11 +41,24 @@ public abstract class AbstractSpellItem extends Item {
 
 	@Override
 	public ITextComponent getName(ItemStack iStack) {
-		if (iStack.hasTag() && iStack.getTag().contains(SPELL_NAME))
-			return new StringTextComponent(iStack.getTag().getString(SPELL_NAME));
+		String base;
+		if (iStack.getItem() == ModItems.PARCHMENT.getItem()) {
+			// TODO translation
+			base = "Parchemin de ";
+		} else if (iStack.getItem() == ModItems.GRIMOIRE.getItem()) {
+			// TODO translation
+			base = "Grimoire de ";
+		} else if (iStack.getItem() == ModItems.SOCKET.getItem()) {
+			// TODO translation
+			base = "Socket de ";
+		} else {
+			base = "";
+		}
+//		if (iStack.hasTag() && iStack.getTag().contains(SPELL_NAME))
+//			return new StringTextComponent(iStack.getTag().getString(SPELL_NAME));
 		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
 		if (iSpell != null && iSpell.getSpell() != null)
-			return new StringTextComponent(iSpell.getSpell().getName());
+			return new StringTextComponent(base + iSpell.getSpell().getName());
 		return super.getName(iStack);
 	}
 
@@ -128,7 +141,7 @@ public abstract class AbstractSpellItem extends Item {
 		try {
 			Spell spell = getSpell(itemStack, caster);
 			if (learnSpell(itemStack, caster)) {
-					return ActionResultType.CONSUME;
+				return ActionResultType.CONSUME;
 			} else {
 				spell.setCacheTarget(target);
 				Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null, hand);
@@ -153,7 +166,7 @@ public abstract class AbstractSpellItem extends Item {
 		try {
 			Spell spell = getSpell(itemStack, caster);
 			if (learnSpell(itemStack, caster)) {
-					return ActionResult.consume(itemStack);
+				return ActionResult.consume(itemStack);
 			} else {
 				Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null, hand);
 				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
@@ -177,7 +190,7 @@ public abstract class AbstractSpellItem extends Item {
 		try {
 			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
 			if (learnSpell(itemStack, itemUseContext.getPlayer())) {
-					return ActionResultType.CONSUME;
+				return ActionResultType.CONSUME;
 			} else {
 				spell.setCacheBlock(itemUseContext.getClickedPos());
 				Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
@@ -194,9 +207,9 @@ public abstract class AbstractSpellItem extends Item {
 		}
 		return ActionResultType.PASS;
 	}
-	
+
 	protected boolean learnSpell(ItemStack item, Entity caster) {
-		if(Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.getItem())
+		if (Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.getItem())
 			return learnFromGrimoire(item, caster);
 		return false;
 	}
@@ -249,7 +262,8 @@ public abstract class AbstractSpellItem extends Item {
 			return retour;
 		}
 		if (!caster.level.isClientSide) {
-			Boolean cont = spell.cast(power, itemStack, target, world, caster, block, itemUseContext, spell.hasTag(SpellTag.CHANNELING));
+			Boolean cont = spell.cast(power, itemStack, target, world, caster, block, itemUseContext,
+					spell.hasTag(SpellTag.CHANNELING));
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
@@ -266,7 +280,8 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.PASS;
 			}
 		} else {
-			Boolean cont = spell.castable(power, itemStack, target, world, caster, block, itemUseContext, spell.hasTag(SpellTag.CHANNELING));
+			Boolean cont = spell.castable(power, itemStack, target, world, caster, block, itemUseContext,
+					spell.hasTag(SpellTag.CHANNELING));
 			if (cont == null) {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);

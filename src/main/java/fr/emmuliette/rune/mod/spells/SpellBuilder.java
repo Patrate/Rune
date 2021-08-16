@@ -70,14 +70,16 @@ public class SpellBuilder {
 	}
 
 	public static boolean parseSpell(List<RuneItem> runeList) {
-		if (runeList.size() < 2) {
+		return parseSpellComponents(runeListToComponents(runeList));
+	}
+	
+	public static boolean parseSpellComponents(List<AbstractSpellComponent> componentsList) {
+		if (componentsList.size() < 2) {
 			return false;
 		}
 		boolean requiredCastEffect = false, requiredEffect = false;
-		AbstractSpellComponent current;
 		AbstractSpellComponent previous = null;
-		for (RuneItem runeItem : runeList) {
-			current = runeItem.getSpellComponent();
+		for (AbstractSpellComponent current:componentsList) {
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
 				requiredCastEffect = true;
 			}

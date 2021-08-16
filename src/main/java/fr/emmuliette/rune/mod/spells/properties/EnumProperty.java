@@ -24,7 +24,7 @@ public final class EnumProperty extends Property<String> {
 	@Override
 	public void setValueInternal(String s) {
 		if (tagNCost.containsKey(s))
-			super.setValue(s);
+			super.setValueInternal(s);
 		// TODO throw error here
 	}
 

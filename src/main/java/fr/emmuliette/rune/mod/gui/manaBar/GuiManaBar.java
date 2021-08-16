@@ -236,7 +236,6 @@ public class GuiManaBar {
 	private static void drawString(MatrixStack mStack, FontRenderer font, ITextComponent textCmp, int x, int y,
 			int rgbColor) {
 		ForgeIngameGui.drawString(mStack, font, textCmp, x, y, rgbColor);
-
 	}
 
 	private static void bind(ResourceLocation res) {

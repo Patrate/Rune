@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.capabilities;
+package fr.emmuliette.rune.mod;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import fr.emmuliette.rune.mod.capabilities.caster.CasterPacket;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoirePacket;
+import fr.emmuliette.rune.mod.gui.spellbinding.CSpellBindingSlotPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -24,11 +25,11 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class CapabilitySyncHandler {
+public class SyncHandler {
 	// PLAYER SERVER SYNC
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
-			.named(new ResourceLocation(RuneMain.MOD_ID, "spell_channel"))
+			.named(new ResourceLocation(RuneMain.MOD_ID, "main"))
 			.clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals)
 			.networkProtocolVersion(() -> PROTOCOL_VERSION).simpleChannel();
 
@@ -40,6 +41,9 @@ public class CapabilitySyncHandler {
 				CasterPacket.Handler::handle);
 		HANDLER.registerMessage(disc++, GrimoirePacket.class, GrimoirePacket::encode, GrimoirePacket::decode,
 				GrimoirePacket.Handler::handle);
+		
+		HANDLER.registerMessage(disc++, CSpellBindingSlotPacket.class, CSpellBindingSlotPacket::encode, CSpellBindingSlotPacket::decode,
+				CSpellBindingSlotPacket.Handler::handle);
 	}
 
 	/**

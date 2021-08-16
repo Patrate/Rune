@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.spells;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +19,8 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public class Spell {
@@ -170,5 +173,14 @@ public class Spell {
 	public Cost<?> getTickCost() {
 		// TODO
 		return this.getCost();
+	}
+
+	public Collection<? extends ITextComponent> getTooltips() {
+		List<ITextComponent> toolTip = new ArrayList<ITextComponent>();
+		toolTip.add(new StringTextComponent("" + (int) this.getCost().getManaCost()));
+		for (AbstractSpellComponent component : this.components) {
+			toolTip.addAll(component.getTooltips());
+		}
+		return toolTip;
 	}
 }

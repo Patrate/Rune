@@ -34,7 +34,7 @@ public final class LevelProperty extends Property<Integer> {
 	@Override
 	public void setValueInternal(Integer val) {
 		if(val <= maxLevel && val >= 1)
-			super.setValue(val);
+			super.setValueInternal(val);
 		// TODO throw exception
 	}
 	

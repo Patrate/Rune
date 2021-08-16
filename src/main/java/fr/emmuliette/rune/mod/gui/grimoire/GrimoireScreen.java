@@ -7,16 +7,21 @@ import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// implements IRecipeShownListener {
+public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implements IContainerListener {// implements
+																										// IRecipeShownListener
+																										// {
 	static final ResourceLocation GRIMOIRE_LOCATION = new ResourceLocation("textures/gui/book.png");
 
 	private final GrimoireGui grimoireGui = new GrimoireGui();
 	private GrimoireContainer container;
-	private GrimoireListener listener;
 
 	public GrimoireScreen(GrimoireContainer container, PlayerInventory playerInventory, ITextComponent textComp) {
 		super(container, playerInventory, textComp);
@@ -30,9 +35,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 		this.grimoireGui.init(this.width, this.height, this.minecraft, this.menu);
 		this.leftPos = this.grimoireGui.updateScreenPosition(this.width, this.imageWidth);
 		this.children.add(this.grimoireGui);
-		this.minecraft.player.inventoryMenu.removeSlotListener(this.listener);
-		this.listener = new GrimoireListener(this.minecraft);
-		this.minecraft.player.inventoryMenu.addSlotListener(this.listener);
+//		this.minecraft.player.inventoryMenu.removeSlotListener(this);
+		this.menu.addSlotListener(this);
+		// this.minecraft.player.inventoryMenu.addSlotListener(this.listener);
 		this.setInitialFocus(this.grimoireGui);
 		initGrimoireGui();
 		/*
@@ -161,9 +166,22 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> {// imple
 
 	public void removed() {
 		if (this.minecraft.player != null && this.minecraft.player.inventory != null) {
-			this.minecraft.player.inventoryMenu.removeSlotListener(this.listener);
+			this.minecraft.player.inventoryMenu.removeSlotListener(this);
 		}
 		this.grimoireGui.removed();
 		super.removed();
+	}
+
+	public void refreshContainer(Container p_71110_1_, NonNullList<ItemStack> p_71110_2_) {
+		System.out.println("Refreshing");
+	}
+
+	public void slotChanged(Container container, int slot, ItemStack item) {
+//		  this.minecraft.gameMode.connection.send(new CCreativeInventoryActionPacket(slot, item));
+		System.out.println("SlotChanged");
+	}
+
+	public void setContainerData(Container p_71112_1_, int p_71112_2_, int p_71112_3_) {
+		System.out.println("settingContainerData");
 	}
 }

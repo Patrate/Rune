@@ -10,10 +10,10 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
-import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.ProjectileItemEntity;
@@ -24,15 +24,16 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class ProjectileComponent extends AbstractCastEffectComponent implements TargetAir, TargetBlock, TargetLivingEntity {
+public class ProjectileComponent extends AbstractCastEffectComponent
+		implements TargetAir, TargetBlock, TargetLivingEntity {
 	public ProjectileComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PROPFACT, parent);
 	}
 
 	@Override
 	public boolean internalCast(SpellContext context) {
-		ProjectileItemEntity projectile = new ProjectileItemEntity(EntityType.EGG, context.getCaster().getX(), context.getCaster().getEyeY(), context.getCaster().getZ(),
-				context.getWorld()) {
+		ProjectileItemEntity projectile = new ProjectileItemEntity(EntityType.EGG, context.getCaster().getX(),
+				context.getCaster().getEyeY(), context.getCaster().getZ(), context.getWorld()) {
 			@Override
 			protected Item getDefaultItem() {
 				return Items.SNOWBALL;
@@ -59,7 +60,8 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 		projectile.setNoGravity(this.getBoolProperty(KEY_GRAVITY));
 
 		Vector3d lookAngle = context.getCaster().getLookAngle();
-		projectile.shoot(lookAngle.x, lookAngle.y, lookAngle.z, (this.getIntProperty(KEY_SPEED, context.getPower()) + 2 ) * 4f * 0.1f, 0F);
+		projectile.shoot(lookAngle.x, lookAngle.y, lookAngle.z,
+				(this.getIntProperty(KEY_SPEED, context.getPower()) + 2) * 4f * 0.1f, 0F);
 		context.getWorld().addFreshEntity(projectile);
 		context.getWorld().playSound(null, context.getCaster().getX(), context.getCaster().getY(),
 				context.getCaster().getZ(), ModSounds.PROJECTILE_LAUNCH, SoundCategory.AMBIENT, 1.0f, 0.4f);
@@ -74,8 +76,11 @@ public class ProjectileComponent extends AbstractCastEffectComponent implements 
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_SPEED, 6, () -> new ManaCost(1), true))
-					.addNewProperty(Grade.IRON,	new BoolProperty(KEY_GRAVITY, () -> new ManaCost(10)));
+					this.addNewProperty(Grade.WOOD,
+							new LevelProperty(KEY_SPEED, 6, () -> new ManaCost(1), true)
+									.setDescription("Vitesse du projectile"))
+							.addNewProperty(Grade.IRON, new BoolProperty(KEY_GRAVITY, () -> new ManaCost(10))
+									.setDescription("Gravité affecte le projectile"));
 				}
 			};
 			return retour;

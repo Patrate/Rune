@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,6 +12,8 @@ import fr.emmuliette.rune.RuneMain;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public abstract class RuneProperties {
 	private HashMap<Grade, Map<String, Property<?>>> properties;
@@ -91,6 +94,14 @@ public abstract class RuneProperties {
 				}
 			}
 			retour.put(grade.getKey(), prop);
+		}
+		return retour;
+	}
+
+	public Collection<? extends ITextComponent> getTooltips(Grade grade) {
+		List<ITextComponent> retour = new ArrayList<ITextComponent>();
+		for (Property<?> prop : getProperties(grade)) {
+			retour.add(new StringTextComponent(prop.getName() + ": " + prop.getValue()));
 		}
 		return retour;
 	}

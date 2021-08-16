@@ -34,9 +34,9 @@ public class Grimoire {
 	}
 
 	public boolean addSpell(ISpell spell) {
-		System.out.println("ADDING THE SPELL TO THE GRIMOIRE CONTAINING " + spellList.size());
+//		System.out.println("ADDING THE SPELL TO THE GRIMOIRE CONTAINING " + spellList.size());
 		addSpellInternal(spell);
-		System.out.println("THERE ARE NOW " + spellList.size() + " SPELLS ");
+//		System.out.println("THERE ARE NOW " + spellList.size() + " SPELLS ");
 		return true;
 	}
 
@@ -66,10 +66,10 @@ public class Grimoire {
 	}
 
 	private void addSpellInternal(ISpell spell) {
-		System.out.println("XXXADDING THE SPELL TO THE GRIMOIRE CONTAINING " + spellList.size());
+//		System.out.println("XXXADDING THE SPELL TO THE GRIMOIRE CONTAINING " + spellList.size());
 		spellList.put(spell.getSpell().getName(), spell);
 		initInventory();
-		System.out.println("XXXTHERE ARE NOW " + spellList.size() + " SPELLS ");
+//		System.out.println("XXXTHERE ARE NOW " + spellList.size() + " SPELLS ");
 	}
 
 	private static final String SPELL_LIST_KEY = "spell_list";

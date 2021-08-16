@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
@@ -20,10 +21,11 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -32,7 +34,6 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	private final int WIDTH = 5;
 	private final int HEIGHT = 3;
 	private final SpellBindingInventory craftSlots = new SpellBindingInventory(this, WIDTH, HEIGHT);
-	private String spellName;
 
 	private final CraftResultInventory resultSlots = new CraftResultInventory();
 	private final IWorldPosCallable access;
@@ -40,17 +41,15 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 
 	public SpellBindingContainer(int containerId, PlayerInventory playerInventory, PacketBuffer data) {
 		this(containerId, playerInventory, IWorldPosCallable.NULL);
-		// TODO do thing with packetBuffer ?
 	}
 
 	public SpellBindingContainer(int containerId, PlayerInventory playerInventory, IWorldPosCallable postCall) {
 		super(ModContainers.SPELLBINDING.get(), containerId);
-		this.spellName = "";
 		this.access = postCall;
 		this.player = playerInventory.player;
 		// Result slot
-		this.addSlot(
-				new SpellBindingResultSlot(playerInventory.player, this.getCraftSlots(), this.resultSlots, 0, 138, 31));
+		this.addSlot(new SpellBindingResultSlot(this, playerInventory.player, this.getCraftSlots(), this.resultSlots, 0,
+				138, 31));
 
 		// Book or parchment slot
 		this.addSlot(new Slot(this.craftSlots, 1, 138, 62) {
@@ -85,91 +84,54 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		this.slots.remove(index);
 	}
 
-//	private void reduce() {
-//		this.removeSlot(this.slots.size() - 1);
-//	}
-//
-//	private void add(int index) {
-//		int i = index / 3;
-//		int j = index % 3;
-//		this.addSlot(new SpellBindingRuneSlot(this.craftSlots, index, 27 + j * 20, 15 + i * 20));
-//	}
-
 	protected static void slotChangedCraftingGrid(int containerId, World world, PlayerEntity player,
 			SpellBindingInventory spellBindingInventory, CraftResultInventory craftingResultInventory) {
 		if (!world.isClientSide) {
+			System.out.println("Slot changed, spell name is " + spellBindingInventory.getSpellName());
 			ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) player;
 			ItemStack itemstack = ItemStack.EMPTY;
-			Optional<SpellBindingRecipe> optional = world.getServer().getRecipeManager()
-					.getRecipeFor(Registration.SPELLBINDING_RECIPE, spellBindingInventory, world);
-			if (optional.isPresent()) {
-				SpellBindingRecipe icraftingrecipe = optional.get();
-				if (craftingResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
-					itemstack = icraftingrecipe.assemble(spellBindingInventory);
+			if (!spellBindingInventory.getSpellName().isEmpty()) {
+				Optional<SpellBindingRecipe> optional = world.getServer().getRecipeManager()
+						.getRecipeFor(Registration.SPELLBINDING_RECIPE, spellBindingInventory, world);
+				if (optional.isPresent()) {
+					SpellBindingRecipe icraftingrecipe = optional.get();
+					if (craftingResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
+						itemstack = icraftingrecipe.assemble(spellBindingInventory);
+					}
 				}
 			}
-
-			ItemStack itemstack1 = craftingResultInventory.getItem(0).copy();
-			itemstack.setHoverName(new StringTextComponent(itemstack1.getHoverName().getString()));
 			craftingResultInventory.setItem(0, itemstack);
 			serverplayerentity.connection.send(new SSetSlotPacket(containerId, 0, itemstack));
 		}
 	}
 
-	public void slotsChanged(IInventory slot) {
-		// super.slotsChanged(slot);
-		if (slot == this.resultSlots) {
-			this.createResult();
-		}
+	public void propertyChanged() {
+		CompoundNBT nbt = new CompoundNBT();
+		// get prop erties nbt()
+		nbt.putInt(CSpellBindingSlotPacket.CONTAINER_ID_NBT, this.containerId);
+		nbt.put(CSpellBindingSlotPacket.PROPERTIES_NBT, this.craftSlots.getProperties());
+		nbt.putString(CSpellBindingSlotPacket.NAME_NBT, this.getSpellName());
+		System.out.println("Sending to server: " + nbt.toString());
+		SyncHandler.sendToServer(new CSpellBindingSlotPacket(nbt));
 		this.access.execute((world, blockPos) -> {
 			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
 		});
 	}
 
-	protected static void nameChangedCraftingGrid(int containerId, World world, PlayerEntity player,
-			SpellBindingInventory spellBindingInventory, CraftResultInventory craftingResultInventory) {
-		if (!world.isClientSide) {
-			System.out.println("NAME CHANGED AND NAME IS " + spellBindingInventory.getSpellName());
-			ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) player;
-			ItemStack itemstack = ItemStack.EMPTY;
-			Optional<SpellBindingRecipe> optional = world.getServer().getRecipeManager()
-					.getRecipeFor(Registration.SPELLBINDING_RECIPE, spellBindingInventory, world);
-			if (optional.isPresent()) {
-				SpellBindingRecipe icraftingrecipe = optional.get();
-				if (craftingResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe)) {
-					itemstack = icraftingrecipe.assemble(spellBindingInventory);
-				}
-			}
-
-			craftingResultInventory.setItem(0, itemstack);
-			serverplayerentity.connection.send(new SSetSlotPacket(containerId, 0, itemstack));
-		} else {
-			System.out.println("We client, not updating");
-		}
+	public void updateProperties(INBT nbt) {
+		this.craftSlots.setProperties(nbt);
+		this.access.execute((world, blockPos) -> {
+			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
+		});
 	}
 
-	public void nameChanged() {
-		System.out.println("HERE IT DOESN'T WORK FFS MAÏTE");
-		this.broadcastChanges();
-		// nameChangedCraftingGrid(this.containerId, this.player.level, this.player,
-		// this.getCraftSlots(), this.resultSlots);
-
-//		nameChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftSlots, this.resultSlots);
-		// this.access.execute((world, p_217069_2_) -> {
-//			nameChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
-		// });
-		/*
-		 * if (StringUtils.isBlank(this.spellName)) { if
-		 * (this.resultSlots.getItem(0).hasCustomHoverName()) {
-		 * this.resultSlots.getItem(0).resetHoverName(); } } else if
-		 * (!this.spellName.equals(this.resultSlots.getItem(0).getHoverName().getString(
-		 * ))) { this.resultSlots.getItem(0).setHoverName(new
-		 * StringTextComponent(this.spellName)); }
-		 */
+	public void slotsChanged(IInventory slot) {
+		this.access.execute((world, blockPos) -> {
+			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
+		});
 	}
 
 	public void fillCraftSlotsStackedContents(RecipeItemHelper recipe) {
-		// this.getCraftSlots().fillStackedContents(recipe);
 	}
 
 	public void clearCraftingContent() {
@@ -179,7 +141,6 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 
 	@Override
 	public boolean recipeMatches(IRecipe<? super SpellBindingInventory> recipe) {
-		System.out.println("CHECKING SPELL NAME IS " + getSpellName());
 		if (StringUtils.isBlank(this.getSpellName()))
 			return false;
 		return recipe.matches(this.getCraftSlots(), this.player.level);
@@ -283,39 +244,16 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	}
 
 	public String getSpellName() {
-		return this.resultSlots.getItem(0).getHoverName().getString();
+		return this.craftSlots.getSpellName();
+	}
+
+	public boolean setSpellNameNoUpdate(String name) {
+		return this.craftSlots.setSpellName(name);
 	}
 
 	public void setSpellName(String name) {
-		this.spellName = name;
-		if (this.getSlot(0).hasItem()) {
-			ItemStack itemstack = this.resultSlots.getItem(0);
-			if (StringUtils.isBlank(name)) {
-				itemstack.resetHoverName();
-			} else {
-				itemstack.setHoverName(new StringTextComponent(this.spellName));
-			}
-		}
-
-		this.createResult();
-		nameChanged();
-	}
-
-	public void createResult() {
-		ItemStack itemstack = this.resultSlots.getItem(0);
-		if (itemstack.isEmpty()) {
-			this.resultSlots.setItem(0, ItemStack.EMPTY);
-		} else {
-			ItemStack itemstack1 = itemstack.copy();
-			if (StringUtils.isBlank(this.spellName)) {
-				if (itemstack.hasCustomHoverName()) {
-					itemstack1.resetHoverName();
-				}
-			} else if (!this.spellName.equals(itemstack.getHoverName().getString())) {
-				itemstack1.setHoverName(new StringTextComponent(this.spellName));
-			}
-			this.resultSlots.setItem(0, itemstack1);
-			this.broadcastChanges();
+		if (setSpellNameNoUpdate(name)) {
+			propertyChanged();
 		}
 	}
 }

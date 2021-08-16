@@ -23,12 +23,8 @@ public class GrimoireOpener {
 	private static final ResourceLocation GRIMOIRE_BUTTON_LOCATION = new ResourceLocation(
 			"textures/gui/recipe_button.png");
 	private static final Widget button = new ImageButton(0, 0, 20, 18, 0, 0, 19, GRIMOIRE_BUTTON_LOCATION, (button) -> {
-//		NetworkHooks.openopenGui(null, null);
-
 		Minecraft minecraft = Minecraft.getInstance();
-		minecraft.setScreen(new GrimoireScreen(ModContainers.GRIMOIRE.get().create(0, minecraft.player.inventory), // new
-																													// GrimoireContainer(0,
-																													// minecraft.player.inventory),
+		minecraft.setScreen(new GrimoireScreen(ModContainers.GRIMOIRE.get().create(0, minecraft.player.inventory),
 				minecraft.player.inventory, CONTAINER_TITLE));
 	});
 

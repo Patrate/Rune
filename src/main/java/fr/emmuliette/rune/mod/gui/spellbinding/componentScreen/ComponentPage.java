@@ -5,11 +5,12 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingContainer;
+import fr.emmuliette.rune.mod.gui.spellbinding.componentScreen.widgets.PropertyWidget;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.recipebook.RecipeList;
 import net.minecraft.client.gui.recipebook.RecipeOverlayGui;
 import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.item.crafting.RecipeBook;
@@ -18,11 +19,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ComponentPage {
-	private final List<PropertyWidget> buttons = Lists.newArrayListWithCapacity(20);
-	private PropertyWidget hoveredButton;
+	private final List<PropertyWidget<?>> buttons = Lists.newArrayListWithCapacity(20);
+	private PropertyWidget<?> hoveredButton;
 	private final RecipeOverlayGui overlay = new RecipeOverlayGui();
 	private Minecraft minecraft;
-	private List<RecipeList> recipeCollections;
 	private ToggleWidget forwardButton;
 	private ToggleWidget backButton;
 	private int totalPages;
@@ -31,6 +31,7 @@ public class ComponentPage {
 //	private IRecipe<?> lastClickedRecipe;
 //	private RecipeList lastClickedRecipeCollection;
 	private AbstractSpellComponent currentComponent;
+	protected SpellBindingContainer menu;
 
 	public ComponentPage() {
 		currentComponent = null;
@@ -67,7 +68,7 @@ public class ComponentPage {
 		int height = 27;
 		int k = 0;
 		for (Property<?> property : comp.getProperties().getProperties(Grade.WOOD)) {
-			this.buttons.add(new PropertyWidget(property, currentComponent, i, j + k * height, 88, height));
+			this.buttons.add(PropertyWidget.buildWidget(this, property, currentComponent, i, j + k * height, 88, height));
 			++k;
 		}
 
@@ -76,28 +77,29 @@ public class ComponentPage {
 		 */
 	}
 
-	public void updateCollections(List<RecipeList> recipeList, boolean p_194192_2_) {
-		this.recipeCollections = recipeList;
-		this.totalPages = (int) Math.ceil((double) recipeList.size() / 20.0D);
-		if (this.totalPages <= this.currentPage || p_194192_2_) {
-			this.currentPage = 0;
-		}
-
-		this.updateButtonsForPage();
-	}
+//	public void updateCollections(List<RecipeList> recipeList, boolean p_194192_2_) {
+//		this.recipeCollections = recipeList;
+//		this.totalPages = (int) Math.ceil((double) recipeList.size() / 20.0D);
+//		if (this.totalPages <= this.currentPage || p_194192_2_) {
+//			this.currentPage = 0;
+//		}
+//
+//		this.updateButtonsForPage();
+//	}
 
 	private void updateButtonsForPage() {
-		int i = 20 * this.currentPage;
+//		int i = 20 * this.currentPage;
 
 		for (int j = 0; j < this.buttons.size(); ++j) {
-			PropertyWidget propertyWidget = this.buttons.get(j);
-			if (i + j < this.recipeCollections.size()) {
-				RecipeList recipelist = this.recipeCollections.get(i + j);
-				propertyWidget.init(recipelist, this);
-				propertyWidget.visible = true;
-			} else {
-				propertyWidget.visible = false;
-			}
+			PropertyWidget<?> propertyWidget = this.buttons.get(j);
+			propertyWidget.visible = true;
+//			if (i + j < this.recipeCollections.size()) {
+//				RecipeList recipelist = this.recipeCollections.get(i + j);
+//				propertyWidget.init(recipelist, this);
+//				propertyWidget.visible = true;
+//			} else {
+//				propertyWidget.visible = false;
+//			}
 		}
 
 		this.updateArrowButtons();
@@ -119,7 +121,7 @@ public class ComponentPage {
 
 		this.hoveredButton = null;
 
-		for (PropertyWidget propertyWidget : this.buttons) {
+		for (PropertyWidget<?> propertyWidget : this.buttons) {
 			propertyWidget.render(mStack, p_238927_4_, p_238927_5_, p_238927_6_);
 			if (propertyWidget.visible && propertyWidget.isHovered()) {
 				this.hoveredButton = propertyWidget;
@@ -175,8 +177,8 @@ public class ComponentPage {
 			this.updateButtonsForPage();
 			return true;
 		} else {
-			for (PropertyWidget recipewidget : this.buttons) {
-				if (recipewidget.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
+			for (PropertyWidget<?> propertyWidget : this.buttons) {
+				if (propertyWidget.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
 //					if (p_198955_5_ == 0) {
 //						this.lastClickedRecipe = recipewidget.getRecipe();
 //						this.lastClickedRecipeCollection = recipewidget.getCollection();
@@ -202,5 +204,9 @@ public class ComponentPage {
 
 	public RecipeBook getRecipeBook() {
 		return this.recipeBook;
+	}
+
+	public SpellBindingContainer getMenu() {
+		return menu;
 	}
 }

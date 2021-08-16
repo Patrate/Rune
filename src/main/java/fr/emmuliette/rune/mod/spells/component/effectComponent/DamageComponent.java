@@ -19,13 +19,12 @@ public class DamageComponent extends AbstractEffectComponent {
 
 	@Override
 	public boolean applyOnTarget(LivingEntity target, SpellContext context) {
-		//target.addEffect(new EffectInstance(Effects.HARM, 1, (int) Math.ceil(Math.pow(1.4f, context.getPower()) - 0.5), false, true));
-		
+		float damages = (float) Math
+				.ceil(Math.pow(1.4f, this.getIntProperty(KEY_DAMAGE_LEVEL, context.getPower())) - 0.5);
 		System.out.println("Damage component level " + this.getIntProperty(KEY_DAMAGE_LEVEL) + " with "
-				+ context.getPower() + " power (total " + this.getIntProperty(KEY_DAMAGE_LEVEL, context.getPower())  + ") = "
-				+ (float) Math.ceil(Math.pow(1.4f, this.getIntProperty(KEY_DAMAGE_LEVEL, context.getPower())) - 0.5)
-				+ " damages");
-		target.hurt(DamageSource.GENERIC, (float) Math.ceil(Math.pow(1.4f, context.getPower()) - 0.5));
+				+ context.getPower() + " power (total " + this.getIntProperty(KEY_DAMAGE_LEVEL, context.getPower())
+				+ ") = " + damages + " damages");
+		target.hurt(DamageSource.MAGIC, damages);
 		return true;
 	}
 
@@ -43,7 +42,8 @@ public class DamageComponent extends AbstractEffectComponent {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_DAMAGE_LEVEL, 10, () -> new ManaCost(1), true));
+					this.addNewProperty(Grade.WOOD,
+							new LevelProperty(KEY_DAMAGE_LEVEL, 10, () -> new ManaCost(1), true));
 				}
 			};
 			return retour;

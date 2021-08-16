@@ -24,11 +24,10 @@ public class CasterPacket {
 
 	public static class Handler {
 		public static void handle(final CasterPacket msg, Supplier<NetworkEvent.Context> ctx) {
-			System.out.println("HANDLING PACKET");
+//			System.out.println("HANDLING PACKET");
 			Minecraft minecraft = Minecraft.getInstance();
 
 			ctx.get().enqueueWork(() -> {
-				System.out.println("The packet contains: " + msg.nbt.getAsString());
 				minecraft.player.getCapability(CasterCapability.CASTER_CAPABILITY)
 						.ifPresent(cap -> cap.fromNBT(msg.nbt));
 

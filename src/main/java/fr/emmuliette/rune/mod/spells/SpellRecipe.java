@@ -9,6 +9,7 @@ import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingInventory;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
+import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.item.BookItem;
 import net.minecraft.item.Item;
@@ -19,14 +20,14 @@ import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class SpellRecipe extends SpellBindingRecipe {//implements IRecipe<SpellBindingInventory> {
-	/*public SpellRecipe(ResourceLocation id, String name, int p_i48162_3_, int p_i48162_4_,
-			NonNullList<Ingredient> ingredients, ItemStack result) {
-		super(id, name, p_i48162_3_, p_i48162_4_, ingredients, result);
-		this.id = id;
-	}*/
+public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<SpellBindingInventory> {
+	/*
+	 * public SpellRecipe(ResourceLocation id, String name, int p_i48162_3_, int
+	 * p_i48162_4_, NonNullList<Ingredient> ingredients, ItemStack result) {
+	 * super(id, name, p_i48162_3_, p_i48162_4_, ingredients, result); this.id = id;
+	 * }
+	 */
 
-	
 	public SpellRecipe(ResourceLocation id) {
 		super(id);
 	}
@@ -73,8 +74,9 @@ public class SpellRecipe extends SpellBindingRecipe {//implements IRecipe<SpellB
 		return list.size() >= 2 && (hasPaper ^ hasBook ^ hasSocket);
 	}
 
+	@Override
 	public ItemStack assemble(SpellBindingInventory spellBindingInventory) {
-		List<RuneItem> list = Lists.newArrayList();
+		List<AbstractSpellComponent> list = Lists.newArrayList();
 		boolean hasPaper = false, hasBook = false, hasSocket = false;
 
 		for (int i = 0; i < spellBindingInventory.getContainerSize(); ++i) {
@@ -100,14 +102,17 @@ public class SpellRecipe extends SpellBindingRecipe {//implements IRecipe<SpellB
 				} else if (!(item instanceof RuneItem)) {
 					return ItemStack.EMPTY;
 				} else {
-					list.add((RuneItem) item);
+					list.add(spellBindingInventory.getComponent(i));
+//					list.add((RuneItem) item);
 				}
 			}
 		}
 
 		try {
-			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpell(list)) {
-				Spell spell = SpellBuilder.runeToSpell("Sortilège", list); //TODO spellBindingInventory.getSpellName(), list);
+			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list)) {
+				Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
+				System.out.println("Building a spellItem named " + spell.getName() + " from inv with spellname "
+						+ spellBindingInventory.getSpellName());
 				if (hasPaper)
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
 				if (hasBook)

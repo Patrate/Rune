@@ -3,12 +3,13 @@ package fr.emmuliette.rune.setup;
 import java.util.function.Function;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeSerializer;
-import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.effects.ModEffects;
+import fr.emmuliette.rune.mod.gui.grimoire.GrimoireScreen;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.SpellRecipe;
@@ -86,7 +87,7 @@ public class Registration {
 		ModEffects.register();
 		ModBlocks.register();
 		ModItems.register();
-		CapabilitySyncHandler.register();
+		SyncHandler.register();
 		ModContainers.register();
 		ModEntities.register();
 
@@ -97,5 +98,6 @@ public class Registration {
 	public static void clientRegister(final FMLClientSetupEvent event) {
 		ModRenderer.register();
 		ScreenManager.register(ModContainers.SPELLBINDING.get(), SpellBindingScreen::new);
+		ScreenManager.register(ModContainers.GRIMOIRE.get(), GrimoireScreen::new);
 	}
 }

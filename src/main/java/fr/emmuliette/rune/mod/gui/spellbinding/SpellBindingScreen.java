@@ -9,14 +9,18 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {// implements IRecipeShownListener {
+public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> implements IContainerListener {
 	public static final ResourceLocation SPELLBINDER_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/spellbinder.png");
 
@@ -28,14 +32,12 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 	 */
 	private final ComponentGui componentGui = new ComponentGui();
 	private boolean widthTooNarrow;
-	private SpellBindingContainer container;
 	private TextFieldWidget spellNameBox;
 	private int textBoxX = 118, textBoxY = 7;
 
 	public SpellBindingScreen(SpellBindingContainer container, PlayerInventory playerInventory,
 			ITextComponent textComp) {
 		super(container, playerInventory, textComp);
-		this.container = container;
 	}
 
 	protected void init() {
@@ -44,6 +46,7 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 		this.componentGui.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this.menu);
 		this.leftPos = this.componentGui.updateScreenPosition(this.widthTooNarrow, this.width, this.imageWidth);
 		this.children.add(this.componentGui);
+		this.menu.addSlotListener(this);
 		this.setInitialFocus(this.componentGui);
 		String s = this.spellNameBox != null ? this.spellNameBox.getValue() : "";
 		this.spellNameBox = new TextFieldWidget(this.minecraft.font, this.leftPos + textBoxX, this.topPos + textBoxY,
@@ -110,7 +113,7 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 		this.blit(mStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 		mStack.popPose();
 		mStack.pushPose();
-		for (Slot slot : container.slots) {
+		for (Slot slot : this.menu.slots) {
 			this.renderCase(mStack, i + slot.x, j + slot.y, slot == this.componentGui.getCurrentSelectedSlot());
 		}
 		mStack.popPose();
@@ -172,7 +175,7 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 	}
 
 	private void updateSpellName() {
-		container.setSpellName(this.spellNameBox.getValue());
+		this.menu.setSpellName(this.spellNameBox.getValue());
 	}
 
 	@Override
@@ -214,16 +217,21 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> {
 		this.componentGui.updateSlotComponent(sSlot);
 	}
 
-//	public void recipesUpdated() {
-//		this.componentGui.recipesUpdated();
-//	}
-
 	public void removed() {
 		this.componentGui.removed();
 		super.removed();
 	}
 
-//	public ComponentGui getRecipeBookComponent() {
-//		return this.componentGui;
-//	}
+	public void refreshContainer(Container p_71110_1_, NonNullList<ItemStack> p_71110_2_) {
+		System.out.println("Refreshing");
+	}
+
+	public void slotChanged(Container container, int slot, ItemStack item) {
+//		  this.minecraft.gameMode.connection.send(new CCreativeInventoryActionPacket(slot, item));
+//		System.out.println("SlotChanged");
+	}
+
+	public void setContainerData(Container p_71112_1_, int p_71112_2_, int p_71112_3_) {
+		System.out.println("settingContainerData");
+	}
 }

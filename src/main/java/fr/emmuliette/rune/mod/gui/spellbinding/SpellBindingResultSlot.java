@@ -12,12 +12,14 @@ public class SpellBindingResultSlot extends Slot {
 	private final SpellBindingInventory craftSlots;
 	private final PlayerEntity player;
 	private int removeCount;
+//	private SpellBindingContainer cnt;
 
-	public SpellBindingResultSlot(PlayerEntity player, SpellBindingInventory craftSlots, IInventory inventaire,
-			int p_i45790_4_, int p_i45790_5_, int p_i45790_6_) {
+	public SpellBindingResultSlot(SpellBindingContainer cnt, PlayerEntity player, SpellBindingInventory craftSlots,
+			IInventory inventaire, int p_i45790_4_, int p_i45790_5_, int p_i45790_6_) {
 		super(inventaire, p_i45790_4_, p_i45790_5_, p_i45790_6_);
 		this.player = player;
 		this.craftSlots = craftSlots;
+//		this.cnt = cnt;
 	}
 
 	public boolean mayPlace(ItemStack p_75214_1_) {
@@ -58,9 +60,11 @@ public class SpellBindingResultSlot extends Slot {
 	public ItemStack onTake(PlayerEntity player, ItemStack iStack) {
 		this.checkTakeAchievements(iStack);
 		net.minecraftforge.common.ForgeHooks.setCraftingPlayer(player);
-		NonNullList<ItemStack> nonnulllist = player.level.getRecipeManager().getRemainingItemsFor(Registration.SPELLBINDING_RECIPE, this.craftSlots, player.level);
+		NonNullList<ItemStack> nonnulllist = player.level.getRecipeManager()
+				.getRemainingItemsFor(Registration.SPELLBINDING_RECIPE, this.craftSlots, player.level);
 		net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
 
+		// Parsing list of ingredients
 		for (int i = 0; i < nonnulllist.size(); ++i) {
 			ItemStack itemstack = this.craftSlots.getItem(i);
 			ItemStack itemstack1 = nonnulllist.get(i);

@@ -22,7 +22,7 @@ public final class BoolProperty extends Property<Boolean> {
 	@Override
 	public void setValueInternal(Boolean val) {
 		if (val != null)
-			super.setValue(val);
+			super.setValueInternal(val);
 		// TODO throw exception
 	}
 

@@ -8,6 +8,8 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingContainer;
+import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingRuneSlot;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import net.minecraft.client.Minecraft;
@@ -17,7 +19,6 @@ import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.recipebook.RecipeList;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.ClientRecipeBook;
-import net.minecraft.inventory.container.RecipeBookContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
@@ -41,7 +42,7 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 	// private final List<RecipeTabToggleWidget> tabButtons = Lists.newArrayList();
 	// private RecipeTabToggleWidget selectedTab;
 	// protected ToggleWidget filterButton;
-	protected RecipeBookContainer<?> menu;
+	protected SpellBindingContainer menu;
 	protected Minecraft minecraft;
 	private TextFieldWidget searchBox;
 	private ClientRecipeBook book;
@@ -50,12 +51,13 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 	private int timesInventoryChanged;
 	// private boolean ignoreTextInput;
 
-	public void init(int width, int height, Minecraft minecraft, boolean initVisuals, RecipeBookContainer<?> menu) {
+	public void init(int width, int height, Minecraft minecraft, boolean initVisuals, SpellBindingContainer menu) {
 		this.minecraft = minecraft;
 		this.width = width;
 		this.height = height;
 		this.menu = menu;
 		minecraft.player.containerMenu = menu;
+		this.componentPage.menu = menu;
 		this.book = minecraft.player.getRecipeBook();
 		this.timesInventoryChanged = minecraft.player.inventory.getTimesChanged();
 		if (this.isVisible()) {
@@ -155,12 +157,12 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		updateSlotComponent(slot);
 	}
 
-	private Slot currentSelectedSlot = null;
+	private SpellBindingRuneSlot currentSelectedSlot = null;
 
 	public void updateSlotComponent(Slot slot) {
-		if (slot != null && slot.index > 1 && slot.index < this.menu.getSize() && this.isVisible()
-				&& slot.getItem().getItem() instanceof RuneItem) {
-			currentSelectedSlot = slot;
+		if (slot instanceof SpellBindingRuneSlot && slot != null && slot.index > 1 && slot.index < this.menu.getSize()
+				&& this.isVisible() && slot.getItem().getItem() instanceof RuneItem) {
+			currentSelectedSlot = (SpellBindingRuneSlot) slot;
 		}
 		updateComponent();
 //		if(slot != null && slot.index < this.menu.getSize()) {
@@ -171,7 +173,7 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 	private void updateComponent() {
 		AbstractSpellComponent component = null;
 		if (getCurrentSelectedSlot() != null && getCurrentSelectedSlot().getItem().getItem() instanceof RuneItem)
-			component = ((RuneItem) getCurrentSelectedSlot().getItem().getItem()).getSpellComponent();
+			component = getCurrentSelectedSlot().getComponent();
 		componentPage.setComponent(component);
 		if (component == null)
 			this.searchBox.setValue("");
@@ -272,8 +274,7 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		}
 	}
 
-	public void renderTooltip(MatrixStack mStack, int p_238924_2_, int p_238924_3_, int p_238924_4_,
-			int p_238924_5_) {
+	public void renderTooltip(MatrixStack mStack, int p_238924_2_, int p_238924_3_, int p_238924_4_, int p_238924_5_) {
 		if (this.isVisible()) {
 			this.componentPage.renderTooltip(mStack, p_238924_4_, p_238924_5_);
 		}
@@ -327,12 +328,12 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 //						return false;
 //					}
 
-					/*
-					 * this.ghostRecipe.clear();
-					 * this.minecraft.gameMode.handlePlaceRecipe(this.minecraft.player.containerMenu
-					 * .containerId, irecipe, Screen.hasShiftDown()); if
-					 * (!this.isOffsetNextToMainGUI()) { this.setVisible(false); }
-					 */
+				/*
+				 * this.ghostRecipe.clear();
+				 * this.minecraft.gameMode.handlePlaceRecipe(this.minecraft.player.containerMenu
+				 * .containerId, irecipe, Screen.hasShiftDown()); if
+				 * (!this.isOffsetNextToMainGUI()) { this.setVisible(false); }
+				 */
 //				}
 
 				return true;
@@ -514,7 +515,7 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 
 	}
 
-	public Slot getCurrentSelectedSlot() {
+	public SpellBindingRuneSlot getCurrentSelectedSlot() {
 		return currentSelectedSlot;
 	}
 }

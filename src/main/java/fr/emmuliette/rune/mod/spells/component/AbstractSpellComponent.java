@@ -1,7 +1,6 @@
 package fr.emmuliette.rune.mod.spells.component;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 
 import fr.emmuliette.rune.RuneMain;
@@ -23,7 +22,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public abstract class AbstractSpellComponent {
@@ -217,10 +215,6 @@ public abstract class AbstractSpellComponent {
 	}
 
 	public Collection<? extends ITextComponent> getTooltips() {
-		return Arrays.asList(new ITextComponent[] { new StringTextComponent("### TODO REMPLACE MOI ###"),
-				new StringTextComponent(this.getClass().getSimpleName()),
-				new StringTextComponent("### TODO REMPLACE MOI ###") });
-		// return new ITextComponent[] { new StringTextComponent("### TODO REMPLACE MOI
-		// ###")};
+		return this.properties.getTooltips(Grade.WOOD);
 	}
 }

@@ -2,8 +2,8 @@ package fr.emmuliette.rune.mod.capabilities.spell;
 
 import java.lang.reflect.InvocationTargetException;
 
+import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -105,6 +105,6 @@ public class SpellImpl implements ISpell {
 
 	@Override
 	public void sync() {
-		CapabilitySyncHandler.sendToAllPlayers(new SpellPacket(this.toNBT()), ServerLifecycleHooks.getCurrentServer());
+		SyncHandler.sendToAllPlayers(new SpellPacket(this.toNBT()), ServerLifecycleHooks.getCurrentServer());
 	}
 }

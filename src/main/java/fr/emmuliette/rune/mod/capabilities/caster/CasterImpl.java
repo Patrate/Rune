@@ -3,8 +3,8 @@ package fr.emmuliette.rune.mod.capabilities.caster;
 import java.lang.reflect.InvocationTargetException;
 
 import fr.emmuliette.rune.exception.NotEnoughManaException;
+import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.RunePropertiesException;
-import fr.emmuliette.rune.mod.capabilities.CapabilitySyncHandler;
 import fr.emmuliette.rune.mod.items.magicItems.ManaSource;
 import fr.emmuliette.rune.mod.items.magicItems.PowerSource;
 import net.minecraft.entity.Entity;
@@ -294,7 +294,7 @@ public class CasterImpl implements ICaster {
 	@Override
 	public void sync() {
 		if (owner instanceof ServerPlayerEntity) {
-			CapabilitySyncHandler.sendTo(new CasterPacket(this.toNBT()), (ServerPlayerEntity) owner);
+			SyncHandler.sendTo(new CasterPacket(this.toNBT()), (ServerPlayerEntity) owner);
 		}
 	}
 }
