@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.properties;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
@@ -41,5 +42,9 @@ public final class EnumProperty extends Property<String> {
 	@Override
 	public String nBTtoValue(INBT inbt) {
 		return ((StringNBT) inbt).getAsString();
+	}
+	
+	public Set<String> getValues() {
+		return tagNCost.keySet();
 	}
 }
