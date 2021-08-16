@@ -1,5 +1,8 @@
 package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
@@ -52,7 +55,13 @@ public class FireComponent extends AbstractEffectComponent {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_DURATION, 10, () -> new ManaCost(1), true));
+					Map<Grade, Integer> durationLevels = new HashMap<Grade, Integer>();
+					durationLevels.put(Grade.WOOD, 2);
+					durationLevels.put(Grade.IRON, 3);
+					durationLevels.put(Grade.REDSTONE, 5);
+					durationLevels.put(Grade.NETHERITE, 7);
+					
+					this.addNewProperty(new LevelProperty(KEY_DURATION, durationLevels, () -> new ManaCost(1), true));
 				}
 			};
 			return retour;

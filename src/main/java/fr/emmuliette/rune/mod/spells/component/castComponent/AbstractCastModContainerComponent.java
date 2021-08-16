@@ -92,4 +92,8 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 		boolean result = super.addNextPart(other);
 		return result;
 	}
+	
+	public void clearChildrens() {
+		this.children = null;
+	}
 }

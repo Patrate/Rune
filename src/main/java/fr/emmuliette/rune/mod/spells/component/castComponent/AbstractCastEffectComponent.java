@@ -36,4 +36,8 @@ public abstract class AbstractCastEffectComponent extends AbstractCastComponent<
 	public boolean canAddChildren(AbstractSpellComponent children) {
 		return (children instanceof AbstractEffectComponent);
 	}
+	
+	public void clearChildrens() {
+		this.children.clear();
+	}
 }

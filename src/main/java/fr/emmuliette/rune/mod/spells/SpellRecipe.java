@@ -111,8 +111,10 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 		try {
 			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list)) {
 				Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
-				System.out.println("Building a spellItem named " + spell.getName() + " from inv with spellname "
-						+ spellBindingInventory.getSpellName());
+				if(spell == null) {
+					System.out.println("Error! buildSpell returned null");
+					return ItemStack.EMPTY;
+				}
 				if (hasPaper)
 					return SpellItem.buildSpellItem(spell, SpellItem.ItemType.PARCHMENT);
 				if (hasBook)

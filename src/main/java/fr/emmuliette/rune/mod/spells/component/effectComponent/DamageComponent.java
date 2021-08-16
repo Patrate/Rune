@@ -1,5 +1,8 @@
 package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
@@ -42,8 +45,13 @@ public class DamageComponent extends AbstractEffectComponent {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD,
-							new LevelProperty(KEY_DAMAGE_LEVEL, 10, () -> new ManaCost(1), true));
+					Map<Grade, Integer> damageLevels = new HashMap<Grade, Integer>();
+					damageLevels.put(Grade.WOOD, 2);
+					damageLevels.put(Grade.IRON, 3);
+					damageLevels.put(Grade.REDSTONE, 5);
+					damageLevels.put(Grade.NETHERITE, 7);
+					
+					this.addNewProperty(new LevelProperty(KEY_DAMAGE_LEVEL, damageLevels, () -> new ManaCost(1), true));
 				}
 			};
 			return retour;

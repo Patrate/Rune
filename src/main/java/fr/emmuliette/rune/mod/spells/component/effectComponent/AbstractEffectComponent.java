@@ -15,4 +15,7 @@ public abstract class AbstractEffectComponent extends AbstractSpellComponent {
 		}
 		return getParent().addNextPart(other);
 	}
+	
+	@Override
+	public void clear() {}
 }

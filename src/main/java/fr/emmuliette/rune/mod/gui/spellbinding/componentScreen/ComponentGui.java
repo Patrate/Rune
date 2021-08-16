@@ -8,48 +8,41 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingContainer;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingRuneSlot;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.recipebook.RecipeList;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.ClientRecipeBook;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.play.client.CUpdateRecipeBookStatusPacket;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventListener {// , IRecipeUpdateListener,
-																							// IRecipePlacer<Ingredient>
-																							// {
-	protected static final ResourceLocation RECIPE_BOOK_LOCATION = new ResourceLocation("textures/gui/recipe_book.png");
-//	private static final ITextComponent SEARCH_HINT = (new TranslationTextComponent("gui.recipebook.search_hint"))
-//			.withStyle(TextFormatting.ITALIC).withStyle(TextFormatting.GRAY);
+public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventListener {
+	public static final ResourceLocation COMPONENT_PAGE_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
+			"textures/gui/component_page.png");
 	private int xOffset;
 	private int width;
 	private int height;
-	// protected final GhostRecipe ghostRecipe = new GhostRecipe();
-	// private final List<RecipeTabToggleWidget> tabButtons = Lists.newArrayList();
-	// private RecipeTabToggleWidget selectedTab;
-	// protected ToggleWidget filterButton;
 	protected SpellBindingContainer menu;
 	protected Minecraft minecraft;
-	private TextFieldWidget searchBox;
+//	private TextFieldWidget titleBox;
 	private ClientRecipeBook book;
 	private final ComponentPage componentPage = new ComponentPage();
 	private final RecipeItemHelper stackedContents = new RecipeItemHelper();
 	private int timesInventoryChanged;
-	// private boolean ignoreTextInput;
 
 	public void init(int width, int height, Minecraft minecraft, boolean initVisuals, SpellBindingContainer menu) {
 		this.minecraft = minecraft;
@@ -74,53 +67,27 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		this.stackedContents.clear();
 		this.minecraft.player.inventory.fillStackedContents(this.stackedContents);
 		this.menu.fillCraftSlotsStackedContents(this.stackedContents);
-		String s = this.searchBox != null ? this.searchBox.getValue() : "";
-		this.searchBox = new TextFieldWidget(this.minecraft.font, i + 25, j + 14, 80, 9 + 5,
-				// TODO mettre la traduction ici ! new
-				// TranslationTextComponent("itemGroup.search"));
-				new StringTextComponent("test"));
-		this.searchBox.setMaxLength(50);
-		this.searchBox.setBordered(true);
-		this.searchBox.setVisible(true);
-		this.searchBox.setTextColor(16777215);
-		this.searchBox.setValue(s);
+//		String s = this.titleBox != null ? this.titleBox.getValue() : "";
+//		this.titleBox = new TextFieldWidget(this.minecraft.font, i + 13, j + 14, 86, 9 + 5,
+//				// TODO mettre la traduction ici ! new
+//				// TranslationTextComponent("itemGroup.search"));
+//				new StringTextComponent("test"));
+//		this.titleBox.setMaxLength(50);
+//		this.titleBox.setBordered(true);
+//		this.titleBox.setVisible(true);
+//		this.titleBox.setTextColor(16777215);
+//		this.titleBox.setValue(s);
 		this.componentPage.init(this.minecraft, i, j);
-//		this.componentPage.addListener(this);
-//		this.filterButton = new ToggleWidget(i + 110, j + 12, 26, 16, this.book.isFiltering(this.menu));
-//		this.initFilterButtonTextures();
-		// this.tabButtons.clear();
-
-//		for (RecipeBookCategories recipebookcategories : this.menu.getRecipeBookCategories()) {
-//			this.tabButtons.add(new RecipeTabToggleWidget(recipebookcategories));
-//		}
-
-//		if (this.selectedTab != null) {
-//			this.selectedTab = this.tabButtons.stream().filter((p_209505_1_) -> {
-//				return p_209505_1_.getCategory().equals(this.selectedTab.getCategory());
-//			}).findFirst().orElse((RecipeTabToggleWidget) null);
-//		}
-//
-//		if (this.selectedTab == null) {
-//			this.selectedTab = this.tabButtons.get(0);
-//		}
-//
-//		this.selectedTab.setStateTriggered(true);
 		this.updateCollections(false);
-//      this.updateTabs();
 	}
 
 	@Override
-	public boolean changeFocus(boolean p_231049_1_) {
+	public boolean changeFocus(boolean focus) {
 		return false;
 	}
 
-//	protected void initFilterButtonTextures() {
-//		this.filterButton.initTextureValues(152, 41, 28, 18, RECIPE_BOOK_LOCATION);
-//	}
-
 	public void removed() {
-		this.searchBox = null;
-//		this.selectedTab = null;
+//		this.titleBox = null;
 		this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
 	}
 
@@ -135,12 +102,8 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		return i;
 	}
 
-//	public void toggleVisibility() {
-//		this.setVisible(!this.isVisible());
-//	}
-
 	public boolean isVisible() {
-		return true;// this.book.isOpen(this.menu.getRecipeBookType());
+		return true;
 	}
 
 	public void setVisible() {
@@ -165,20 +128,30 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 			currentSelectedSlot = (SpellBindingRuneSlot) slot;
 		}
 		updateComponent();
-//		if(slot != null && slot.index < this.menu.getSize()) {
-//			if(componentPage)
-//		}
+	}
+
+	public Grade getGrade(ItemStack item) {
+		return Grade.STONE;
 	}
 
 	private void updateComponent() {
 		AbstractSpellComponent component = null;
-		if (getCurrentSelectedSlot() != null && getCurrentSelectedSlot().getItem().getItem() instanceof RuneItem)
+		Grade grade = Grade.UNKNOWN;
+//		String componentName = null;
+		if (getCurrentSelectedSlot() != null && getCurrentSelectedSlot().getItem().getItem() instanceof RuneItem) {
 			component = getCurrentSelectedSlot().getComponent();
-		componentPage.setComponent(component);
-		if (component == null)
-			this.searchBox.setValue("");
-		else
-			this.searchBox.setValue(component.getClass().getSimpleName());
+			grade = getGrade(getCurrentSelectedSlot().getItem());
+//			componentName = getCurrentSelectedSlot().getItem().getItem().getName(getCurrentSelectedSlot().getItem()).getContents();
+		}
+
+		componentPage.setComponent(grade, component);
+//		if (componentName == null) {
+//			this.titleBox.setValue("");
+//			this.titleBox.visible = false;
+//		} else {
+//			this.titleBox.setValue(componentName);
+//			this.titleBox.visible = true;
+//		}
 	}
 
 	private void updateCollections(boolean p_193003_1_) {
@@ -193,36 +166,7 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		list1.removeIf((p_193953_0_) -> {
 			return !p_193953_0_.hasFitting();
 		});
-//		String s = this.searchBox.getValue();
-//		if (!s.isEmpty()) {
-//			ObjectSet<RecipeList> objectset = new ObjectLinkedOpenHashSet<>(this.minecraft
-//					.getSearchTree(SearchTreeManager.RECIPE_COLLECTIONS).search(s.toLowerCase(Locale.ROOT)));
-//			list1.removeIf((p_193947_1_) -> {
-//				return !objectset.contains(p_193947_1_);
-//			});
-//		}
-
-//		this.componentPage.updateCollections(list1, p_193003_1_);
 	}
-
-	/*
-	 * @Override private void updateTabs() { int i = (this.width - 147) / 2 -
-	 * this.xOffset - 30; int j = (this.height - 166) / 2 + 3; int k = 27; int l =
-	 * 0;
-	 * 
-	 * for(RecipeTabToggleWidget recipetabtogglewidget : this.tabButtons) {
-	 * RecipeBookCategories recipebookcategories =
-	 * recipetabtogglewidget.getCategory(); if (recipebookcategories !=
-	 * RecipeBookCategories.CRAFTING_SEARCH && recipebookcategories !=
-	 * RecipeBookCategories.FURNACE_SEARCH) { if
-	 * (recipetabtogglewidget.updateVisibility(this.book)) {
-	 * recipetabtogglewidget.setPosition(i, j + 27 * l++);
-	 * recipetabtogglewidget.startAnimation(this.minecraft); } } else {
-	 * recipetabtogglewidget.visible = true; recipetabtogglewidget.setPosition(i, j
-	 * + 27 * l++); } }
-	 * 
-	 * }
-	 */
 
 	public void tick() {
 		if (this.isVisible()) {
@@ -234,16 +178,9 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 				updateComponent();
 			}
 
-			this.searchBox.tick();
+//			this.titleBox.tick();
 		}
 	}
-
-//	private void updateStackedContents() {
-//		this.stackedContents.clear();
-//		this.minecraft.player.inventory.fillStackedContents(this.stackedContents);
-//		this.menu.fillCraftSlotsStackedContents(this.stackedContents);
-//		this.updateCollections(false);
-//	}
 
 	@Override
 	@SuppressWarnings("deprecation")
@@ -251,24 +188,14 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		if (this.isVisible()) {
 			RenderSystem.pushMatrix();
 			RenderSystem.translatef(0.0F, 0.0F, 100.0F);
-			this.minecraft.getTextureManager().bind(RECIPE_BOOK_LOCATION);
+			this.minecraft.getTextureManager().bind(COMPONENT_PAGE_LOCATION);
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			int i = (this.width - 147) / 2 - this.xOffset;
 			int j = (this.height - 166) / 2;
 			this.blit(mStack, i, j, 1, 1, 147, 166);
-//			if (!this.searchBox.isFocused() && this.searchBox.getValue().isEmpty()) {
-//				drawString(p_230430_1_, this.minecraft.font, SEARCH_HINT, i + 25, j + 14, -1);
-//			} else {
-			this.searchBox.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
-//			}
 
-			/*
-			 * for (RecipeTabToggleWidget recipetabtogglewidget : this.tabButtons) {
-			 * recipetabtogglewidget.render(p_230430_1_, p_230430_2_, p_230430_3_,
-			 * p_230430_4_); }
-			 */
+//			this.titleBox.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
 
-//			this.filterButton.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
 			this.componentPage.render(mStack, i, j, p_230430_2_, p_230430_3_, p_230430_4_);
 			RenderSystem.popMatrix();
 		}
@@ -279,42 +206,6 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 			this.componentPage.renderTooltip(mStack, p_238924_4_, p_238924_5_);
 		}
 	}
-
-	/*
-	 * @Override private ITextComponent getFilterButtonTooltip() { return
-	 * this.filterButton.isStateTriggered() ? this.getRecipeFilterName() :
-	 * ALL_RECIPES_TOOLTIP; }
-	 */
-
-	/*
-	 * @Override protected ITextComponent getRecipeFilterName() { return
-	 * ONLY_CRAFTABLES_TOOLTIP; }
-	 */
-
-//   @Override
-//   private void renderGhostRecipeTooltip(MatrixStack p_238925_1_, int p_238925_2_, int p_238925_3_, int p_238925_4_, int p_238925_5_) {
-//      ItemStack itemstack = null;
-//
-//      for(int i = 0; i < this.ghostRecipe.size(); ++i) {
-//         GhostRecipe.GhostIngredient ghostrecipe$ghostingredient = this.ghostRecipe.get(i);
-//         int j = ghostrecipe$ghostingredient.getX() + p_238925_2_;
-//         int k = ghostrecipe$ghostingredient.getY() + p_238925_3_;
-//         if (p_238925_4_ >= j && p_238925_5_ >= k && p_238925_4_ < j + 16 && p_238925_5_ < k + 16) {
-//            itemstack = ghostrecipe$ghostingredient.getItem();
-//         }
-//      }
-//
-//      if (itemstack != null && this.minecraft.screen != null) {
-//         this.minecraft.screen.renderComponentTooltip(p_238925_1_, this.minecraft.screen.getTooltipFromItem(itemstack), p_238925_4_, p_238925_5_);
-//      }
-//
-//   }
-
-//   @Override
-//   @aaa
-//   public void renderGhostRecipe(MatrixStack p_230477_1_, int p_230477_2_, int p_230477_3_, boolean p_230477_4_, float p_230477_5_) {
-//      this.ghostRecipe.render(p_230477_1_, this.minecraft, p_230477_2_, p_230477_3_, p_230477_4_, p_230477_5_);
-//   }
 
 	@Override
 	public boolean mouseClicked(double p_231044_1_, double p_231044_3_, int p_231044_5_) {

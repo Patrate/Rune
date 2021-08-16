@@ -5,17 +5,18 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import fr.emmuliette.rune.mod.gui.StarHelper;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
 
 public class BoolWidget extends PropertyWidget<BoolProperty> {
 
-	protected BoolWidget(BoolProperty property, AbstractSpellComponent component, int x, int y, int width, int height) {
-		super(property, component, x, y, width, height);
+	protected BoolWidget(Grade grade, BoolProperty property, AbstractSpellComponent component, int x, int y) {
+		super(grade, property, component, x, y, 1);
 	}
 
 	@Override
 	protected void internalRender(MatrixStack mStack, int a, int b, float c) {
-		int baseX = this.x + 18;
-		int baseY = this.y + 9;
+		int baseX = this.x + 5;
+		int baseY = this.y + 15;
 
 		mStack.pushPose();
 		StarHelper.start();

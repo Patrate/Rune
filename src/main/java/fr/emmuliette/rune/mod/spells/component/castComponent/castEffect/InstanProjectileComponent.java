@@ -11,10 +11,11 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectC
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
-import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.spells.properties.EnumElement;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 
 public class InstanProjectileComponent extends AbstractCastEffectComponent implements TargetAir {
 	public InstanProjectileComponent(AbstractSpellComponent parent) throws RunePropertiesException {
@@ -58,10 +59,10 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					Map<String, Supplier<? extends Cost<?>>> modes = new HashMap<String, Supplier<? extends Cost<?>>>();
-					modes.put("laser", Cost.ZERO_COST);
-					modes.put("eclair", () -> new ManaCost(3));
-					this.addNewProperty(Grade.WOOD, new EnumProperty(KEY_MODE, "laser", modes));
+					Map<EnumElement, Supplier<? extends Cost<?>>> modes = new HashMap<EnumElement, Supplier<? extends Cost<?>>>();
+					modes.put(new EnumElement("laser", Grade.WOOD), Cost.ZERO_COST);
+					modes.put(new EnumElement("eclair", Grade.IRON), () -> new ManaCost(3));
+					this.addNewProperty(new EnumProperty(KEY_MODE, Grade.IRON, "laser", modes));
 				}
 			};
 			return retour;

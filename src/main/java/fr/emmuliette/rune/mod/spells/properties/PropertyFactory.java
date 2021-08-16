@@ -17,21 +17,21 @@ public abstract class PropertyFactory {
 		}
 
 		@Override
-		public RuneProperties fromNBT(CompoundNBT compoundNBT) {
+		public RuneProperties fromNBT(INBT compoundNBT) {
 			return build();
 		}
 	};
 
 	public abstract RuneProperties build();
 
-	public RuneProperties fromNBT(CompoundNBT data) {
+	public RuneProperties fromNBT(INBT data) {
 		RuneProperties retour = build();
-		for (Grade grade : Grade.values()) {
-			ListNBT prop = (ListNBT) ((CompoundNBT) data).get(grade.getKey());
-			for (INBT propertyINBT : prop) {
-				CompoundNBT propertyNBT = (CompoundNBT) propertyINBT;
-				retour.getProperty(propertyNBT.getString(Property.NAME)).setValue(propertyNBT.get(Property.VALUE));
-			}
+		if (!(data instanceof ListNBT))
+			return retour;
+		ListNBT prop = (ListNBT) data;
+		for (INBT propertyINBT : prop) {
+			CompoundNBT propertyNBT = (CompoundNBT) propertyINBT;
+			retour.getProperty(propertyNBT.getString(Property.NAME)).setValue(propertyNBT.get(Property.VALUE));
 		}
 		return retour;
 	}

@@ -1,5 +1,8 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
@@ -69,18 +72,24 @@ public class ProjectileComponent extends AbstractCastEffectComponent
 	}
 
 	private static final String KEY_SPEED = "speed";
-	private static final String KEY_GRAVITY = "gravity";
+	private static final String KEY_GRAVITY = "no_gravity";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
 		public RuneProperties build() {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD,
-							new LevelProperty(KEY_SPEED, 6, () -> new ManaCost(1), true)
-									.setDescription("Vitesse du projectile"))
-							.addNewProperty(Grade.IRON, new BoolProperty(KEY_GRAVITY, () -> new ManaCost(10))
-									.setDescription("Gravité affecte le projectile"));
+					Map<Grade, Integer> speedLevels = new HashMap<Grade, Integer>();
+					speedLevels.put(Grade.WOOD, 2);
+					speedLevels.put(Grade.IRON, 3);
+					speedLevels.put(Grade.REDSTONE, 5);
+					speedLevels.put(Grade.NETHERITE, 7);
+					
+					this.addNewProperty(new LevelProperty(KEY_SPEED, speedLevels, () -> new ManaCost(1), true)
+							.setDescription("Vitesse du projectile"));
+					
+					this.addNewProperty(new BoolProperty(KEY_GRAVITY, Grade.REDSTONE, () -> new ManaCost(10))
+							.setDescription("Gravité affecte le projectile"));
 				}
 			};
 			return retour;

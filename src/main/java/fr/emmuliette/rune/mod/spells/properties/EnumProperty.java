@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.spells.properties;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -9,11 +10,11 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.StringNBT;
 
 public final class EnumProperty extends Property<String> {
+	
+	private Map<EnumElement, Supplier<? extends Cost<?>>> tagNCost;
 
-	private Map<String, Supplier<? extends Cost<?>>> tagNCost;
-
-	public EnumProperty(String name, String def, Map<String, Supplier<? extends Cost<?>>> tagNCost) {
-		super(name, def);
+	public EnumProperty(String name, Grade gradeVisible, String def, Map<EnumElement, Supplier<? extends Cost<?>>> tagNCost) {
+		super(name, gradeVisible, def);
 		this.tagNCost = tagNCost;
 	}
 
@@ -24,9 +25,13 @@ public final class EnumProperty extends Property<String> {
 
 	@Override
 	public void setValueInternal(String s) {
-		if (tagNCost.containsKey(s))
-			super.setValueInternal(s);
-		// TODO throw error here
+		for(EnumElement e:this.tagNCost.keySet()) {
+			if(e.getValue().equals(s)) {
+				super.setValueInternal(s);
+				return;
+			}
+		}
+		// TODO throw error
 	}
 
 	@Override
@@ -36,7 +41,12 @@ public final class EnumProperty extends Property<String> {
 
 	@Override
 	public Cost<?> getCost() {
-		return tagNCost.get(this.getValue()).get();
+		for(EnumElement e:this.tagNCost.keySet()) {
+			if(e.getValue().equals(this.getValue()))
+				return tagNCost.get(e).get();
+		}
+		// TODO throw error
+		return Cost.ZERO_COST.get();
 	}
 
 	@Override
@@ -44,7 +54,12 @@ public final class EnumProperty extends Property<String> {
 		return ((StringNBT) inbt).getAsString();
 	}
 	
-	public Set<String> getValues() {
-		return tagNCost.keySet();
+	public Set<String> getValues(Grade grade) {
+		Set<String> retour = new HashSet<String>();
+		for(EnumElement e:this.tagNCost.keySet()) {
+			if(e.getGrade().getLevel() <= grade.getLevel()) 
+				retour.add(e.getValue());
+		}
+		return retour;
 	}
 }

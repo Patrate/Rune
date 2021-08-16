@@ -19,6 +19,7 @@ public class SpellBuilder {
 	public static Spell buildSpell(String name, List<AbstractSpellComponent> componentList)
 			throws RunePropertiesException {
 		if (componentList.size() < 2) {
+			RuneMain.LOGGER.info("[BUILD SPELL] components list is too small: " + componentList.size());
 			return null;
 		}
 		boolean requiredCastEffect = false, requiredEffect = false;
@@ -26,6 +27,7 @@ public class SpellBuilder {
 		AbstractSpellComponent previous = null;
 		List<SpellTag> spellTags = new ArrayList<SpellTag>();
 		for (AbstractSpellComponent current : componentList) {
+			current.clear();
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
 				requiredCastEffect = true;
 			}
@@ -37,8 +39,6 @@ public class SpellBuilder {
 			} else {
 				current.setParent(previous);
 				if (!previous.validate(current) || !previous.addNextPart(current)) {
-					RuneMain.LOGGER.error("INVALID NEXT PART: " + current.getClass().getSimpleName()
-							+ " can't go after " + previous.getClass().getSimpleName());
 					return null;
 				}
 			}
@@ -54,6 +54,10 @@ public class SpellBuilder {
 		if (requiredCastEffect && requiredEffect) {
 			return new Spell(name, start, componentList, spellTags);
 		}
+		if(!requiredCastEffect)
+			RuneMain.LOGGER.info("[BUILD SPELL] No required Cast Effect");
+		if(!requiredEffect)
+			RuneMain.LOGGER.info("[BUILD SPELL] No required Effect");
 		return null;
 	}
 
@@ -80,6 +84,7 @@ public class SpellBuilder {
 		boolean requiredCastEffect = false, requiredEffect = false;
 		AbstractSpellComponent previous = null;
 		for (AbstractSpellComponent current:componentsList) {
+			current.clear();
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
 				requiredCastEffect = true;
 			}

@@ -9,12 +9,20 @@ public abstract class Property<T> {
 	public static final String VALUE = "value";
 	private String name;
 	private String description;
+	private Grade gradeVisible;
+	private Grade currentGrade;
 	private T currentValue;
 
-	public Property(String name, T def) {
+	public Grade getGradeVisible() {
+		return gradeVisible;
+	}
+	
+	public Property(String name, Grade gradeVisible, T def) {
 		this.name = name;
 		this.currentValue = def;
 		this.description = "";
+		this.currentGrade = Grade.UNKNOWN;
+		this.gradeVisible = gradeVisible;
 	}
 
 	public String getDescription() {
@@ -59,4 +67,16 @@ public abstract class Property<T> {
 	}
 
 	public abstract Cost<?> getCost();
+	
+	public boolean isVisible(Grade grade) {
+		return grade.getLevel() <= gradeVisible.getLevel();
+	}
+
+	public Grade getCurrentGrade() {
+		return currentGrade;
+	}
+
+	public void setCurrentGrade(Grade currentGrade) {
+		this.currentGrade = currentGrade;
+	}
 }

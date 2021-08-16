@@ -1,8 +1,10 @@
 package fr.emmuliette.rune.mod.spells.component.castComponent.castMod;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fr.emmuliette.rune.RuneMain;
@@ -127,8 +129,15 @@ public class LoadingModComponent extends AbstractCastModComponent implements Cal
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD, new LevelProperty(KEY_CHARGE_TIME, 10, () -> new ManaCost(1)))
-							.addNewProperty(Grade.GOLD, new BoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, () -> new ManaCost(10)));
+					Map<Grade, Integer> durationLevels = new HashMap<Grade, Integer>();
+					durationLevels.put(Grade.WOOD, 2);
+					durationLevels.put(Grade.IRON, 3);
+					durationLevels.put(Grade.REDSTONE, 5);
+					durationLevels.put(Grade.NETHERITE, 7);
+
+					this.addNewProperty(new LevelProperty(KEY_CHARGE_TIME, durationLevels, () -> new ManaCost(0)));
+					this.addNewProperty(
+							new BoolProperty(KEY_IGNORE_CANCEL_ON_DAMAGE, Grade.GOLD, () -> new ManaCost(2)));
 				}
 			};
 			return retour;

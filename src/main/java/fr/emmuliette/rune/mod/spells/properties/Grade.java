@@ -1,5 +1,7 @@
 package fr.emmuliette.rune.mod.spells.properties;
 
+import java.util.Set;
+
 public enum Grade {
 
 	WOOD("GRADE_WOOD", 0), STONE("GRADE_STONE", 1), IRON("GRADE_IRON", 2), REDSTONE("GRADE_REDSTONE", 3),
@@ -19,5 +21,26 @@ public enum Grade {
 
 	public int getLevel() {
 		return level;
+	}
+
+	public static Grade getMax(Set<Grade> keySet, Grade currentGrade) {
+		int level = currentGrade.level;
+		Grade retour = null;
+		for (Grade grade : keySet) {
+			if (grade.level > level)
+				continue;
+			if (retour == null || grade.level > retour.level)
+				retour = grade;
+		}
+		return retour;
+	}
+
+	public static Grade getMin(Set<Grade> keySet) {
+		Grade retour = null;
+		for (Grade grade : keySet) {
+			if (retour == null || grade.level < retour.level)
+				retour = grade;
+		}
+		return retour;
 	}
 }

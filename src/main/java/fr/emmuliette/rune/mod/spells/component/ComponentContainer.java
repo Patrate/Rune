@@ -8,4 +8,5 @@ public interface ComponentContainer<T extends AbstractSpellComponent> {
 	public abstract boolean canAddChildren(AbstractSpellComponent children);
 	public abstract boolean addChildren(AbstractSpellComponent children);
 	public abstract List<T> getChildrens();
+	public abstract void clearChildrens();
 }

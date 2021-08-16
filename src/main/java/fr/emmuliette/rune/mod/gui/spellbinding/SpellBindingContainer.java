@@ -107,7 +107,6 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 
 	public void propertyChanged() {
 		CompoundNBT nbt = new CompoundNBT();
-		// get prop erties nbt()
 		nbt.putInt(CSpellBindingSlotPacket.CONTAINER_ID_NBT, this.containerId);
 		nbt.put(CSpellBindingSlotPacket.PROPERTIES_NBT, this.craftSlots.getProperties());
 		nbt.putString(CSpellBindingSlotPacket.NAME_NBT, this.getSpellName());

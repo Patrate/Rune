@@ -6,6 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.mod.gui.StarHelper;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
@@ -13,9 +14,8 @@ import net.minecraftforge.client.gui.ForgeIngameGui;
 
 public class LevelWidget extends PropertyWidget<LevelProperty> {
 
-	protected LevelWidget(LevelProperty property, AbstractSpellComponent component, int x, int y, int width,
-			int height) {
-		super(property, component, x, y, width, height);
+	protected LevelWidget(Grade grade, LevelProperty property, AbstractSpellComponent component, int x, int y) {
+		super(grade, property, component, x, y, 1);
 	}
 
 	@Override
@@ -24,13 +24,13 @@ public class LevelWidget extends PropertyWidget<LevelProperty> {
 		int level = this.getProperty().getValue();
 		boolean boostable = this.getProperty().isBoostable();
 
-		int baseX = this.x + 18;
-		int baseY = this.y + 9;
+		int baseX = this.x + 5;
+		int baseY = this.y + 15;
 		Minecraft minecraft = Minecraft.getInstance();
 
 		mStack.pushPose();
 		ForgeIngameGui.drawString(mStack, minecraft.font,
-				new StringTextComponent("niveau " + level + " sur " + maxLevel), this.x + 2, this.y + 2,
+				new StringTextComponent(level + "/" + maxLevel), this.x + this.width - 50, this.y + 5,
 				Color.WHITE.getRGB());
 		mStack.popPose();
 
@@ -54,8 +54,25 @@ public class LevelWidget extends PropertyWidget<LevelProperty> {
 
 	@Override
 	protected void internalClic(double x, double y) {
-		System.out.println("CLIC ! " + this.getProperty());
-		int newLevel = (this.getProperty().getValue()) % this.getProperty().getMaxLevel() + 1;
+		int X = (int) (x - this.x); // 88
+		int Y = (int) (y - this.y); // 8
+
+		System.out.println(X + "/" + Y + ", clicked " + x + "/" + y);
+
+		int newLevel = this.getProperty().getValue();
+
+		if (X <= 33) {
+			newLevel--;
+		} else if (X <= 66) {
+			newLevel++;
+		} else {
+			this.getProperty().setBoostable(!this.getProperty().isBoostable());
+		}
+		if (newLevel > this.getProperty().getMaxLevel()) {
+			newLevel = 1;
+		}
+		if (newLevel < 1)
+			newLevel = this.getProperty().getMaxLevel();
 		this.getProperty().setValueInternal(newLevel);
 	}
 }

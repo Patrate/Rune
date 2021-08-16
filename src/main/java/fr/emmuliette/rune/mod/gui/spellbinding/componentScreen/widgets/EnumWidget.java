@@ -8,6 +8,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
@@ -15,10 +16,10 @@ import net.minecraftforge.client.gui.ForgeIngameGui;
 public class EnumWidget extends PropertyWidget<EnumProperty> {
 	private List<String> internalValues;
 	private int internalId;
-	
-	protected EnumWidget(EnumProperty property, AbstractSpellComponent component, int x, int y, int width, int height) {
-		super(property, component, x, y, width, height);
-		this.internalValues = new ArrayList<String>(property.getValues());
+
+	protected EnumWidget(Grade grade, EnumProperty property, AbstractSpellComponent component, int x, int y) {
+		super(grade, property, component, x, y, 1);
+		this.internalValues = new ArrayList<String>(property.getValues(grade));
 		this.internalId = internalValues.indexOf(this.getProperty().getValue());
 	}
 
@@ -26,16 +27,15 @@ public class EnumWidget extends PropertyWidget<EnumProperty> {
 	protected void internalRender(MatrixStack mStack, int a, int b, float c) {
 		Minecraft minecraft = Minecraft.getInstance();
 		mStack.pushPose();
-		ForgeIngameGui.drawString(mStack, minecraft.font,
-				new StringTextComponent(this.getProperty().getName() + ": " + this.getProperty().getValue()), this.x + 2, this.y + 2,
-				Color.WHITE.getRGB());
+		ForgeIngameGui.drawString(mStack, minecraft.font, new StringTextComponent(this.getProperty().getValue()),
+				this.x + 5, this.y + 15, Color.WHITE.getRGB());
 		mStack.popPose();
 	}
 
 	@Override
 	protected void internalClic(double x, double y) {
 		System.out.println("CLIC ! " + this.getProperty());
-		internalId = (internalId + 1)%internalValues.size();
+		internalId = (internalId + 1) % internalValues.size();
 		this.getProperty().setValue(internalValues.get(internalId));
 	}
 }

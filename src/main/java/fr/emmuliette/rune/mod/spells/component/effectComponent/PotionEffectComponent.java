@@ -1,8 +1,10 @@
 package fr.emmuliette.rune.mod.spells.component.effectComponent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import fr.emmuliette.rune.mod.spells.SpellContext;
@@ -149,13 +151,25 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent impl
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {
-					this.addNewProperty(Grade.WOOD,
-							new LevelProperty(KEY_POTION_DURATION, 10, () -> new ManaCost(1), true))
-							.addNewProperty(Grade.WOOD,
-									new LevelProperty(KEY_POTION_AMPLIFIER, 10, () -> new ManaCost(1), true))
-							.addNewProperty(Grade.IRON, new BoolProperty(KEY_POTION_LINGERING, () -> new ManaCost(3)))
-							.addNewProperty(Grade.SECRET, new BoolProperty(KEY_POTION_AMBIENT, () -> new ManaCost(1)))
-							.addNewProperty(Grade.SECRET, new BoolProperty(KEY_POTION_VISIBLE, () -> new ManaCost(1)));
+					Map<Grade, Integer> durationLevels = new HashMap<Grade, Integer>();
+					durationLevels.put(Grade.WOOD, 2);
+					durationLevels.put(Grade.IRON, 3);
+					durationLevels.put(Grade.REDSTONE, 5);
+					durationLevels.put(Grade.NETHERITE, 7);
+
+					Map<Grade, Integer> amplifierLevels = new HashMap<Grade, Integer>();
+					amplifierLevels.put(Grade.WOOD, 2);
+					amplifierLevels.put(Grade.IRON, 3);
+					amplifierLevels.put(Grade.REDSTONE, 5);
+					amplifierLevels.put(Grade.NETHERITE, 7);
+
+					this.addNewProperty(
+							new LevelProperty(KEY_POTION_DURATION, durationLevels, () -> new ManaCost(1), true));
+					this.addNewProperty(
+							new LevelProperty(KEY_POTION_AMPLIFIER, amplifierLevels, () -> new ManaCost(1), true));
+					this.addNewProperty(new BoolProperty(KEY_POTION_LINGERING, Grade.IRON, () -> new ManaCost(3)));
+					this.addNewProperty(new BoolProperty(KEY_POTION_AMBIENT, Grade.SECRET, () -> new ManaCost(1)));
+					this.addNewProperty(new BoolProperty(KEY_POTION_VISIBLE, Grade.SECRET, () -> new ManaCost(1)));
 				}
 			};
 			return retour;

@@ -134,16 +134,15 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 	}
 
 	@Override
-	public boolean mouseClicked(double p_231044_1_, double p_231044_3_, int p_231044_5_) {
-		if (this.componentGui.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_)) {
+	public boolean mouseClicked(double x, double y, int mouseButton) {
+		if (this.componentGui.mouseClicked(x, y, mouseButton)) {
 			this.setFocused(this.componentGui);
 			return true;
-		} else if (this.spellNameBox.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_)) {
+		} else if (this.spellNameBox.mouseClicked(x, y, mouseButton)) {
 			this.setFocused(this.spellNameBox);
 			return true;
 		} else {
-			return this.widthTooNarrow && this.componentGui.isVisible() ? true
-					: super.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_);
+			return this.widthTooNarrow && this.componentGui.isVisible() ? true : super.mouseClicked(x, y, mouseButton);
 		}
 	}
 
@@ -191,25 +190,18 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 	private Slot selectedSlot = null;
 
 	@Override
-	protected void slotClicked(Slot slot, int p_184098_2_, int p_184098_3_, ClickType clickType) {
-		super.slotClicked(slot, p_184098_2_, p_184098_3_, clickType);
-		if (slot == null || !(slot instanceof SpellBindingRuneSlot)) {
+	protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType clickType) {
+		if (slot != null && slot instanceof SpellBindingRuneSlot && mouseButton == 1) {
+			if (!slot.equals(selectedSlot)) {
+				selectSlot(slot);
+			}
+			this.componentGui.slotClicked(slot);
 			return;
 		}
-
-		// Quand je clique sur un spellSlot:
-		// S'il en résulte qu'il reste un spellcomponent dans le slot, alors
-		// sélectionner ça
-		// S'il en résulte que dans le selectedComponent actuel il n'y en a plus, alors
-		// kill it.
-
-		// QUand le slot change :
-
-		if (!slot.equals(selectedSlot)) {
-			selectSlot(slot);
+		super.slotClicked(slot, slotId, mouseButton, clickType);
+		if(selectedSlot != null && !selectedSlot.hasItem()) {
+			selectedSlot = null;
 		}
-		this.componentGui.slotClicked(slot);
-
 	}
 
 	public void selectSlot(Slot sSlot) {
@@ -227,8 +219,9 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 	}
 
 	public void slotChanged(Container container, int slot, ItemStack item) {
-//		  this.minecraft.gameMode.connection.send(new CCreativeInventoryActionPacket(slot, item));
-//		System.out.println("SlotChanged");
+		if(selectedSlot != null && !selectedSlot.hasItem()) {
+			selectedSlot = null;
+		}
 	}
 
 	public void setContainerData(Container p_71112_1_, int p_71112_2_, int p_71112_3_) {

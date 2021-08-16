@@ -136,7 +136,7 @@ public abstract class AbstractSpellComponent {
 		Class<?> clazz = Class.forName(data.getString(Spell.NBT_CLASS));
 		AbstractSpellComponent retour = (AbstractSpellComponent) clazz.getConstructor(AbstractSpellComponent.class)
 				.newInstance((AbstractSpellComponent) null);
-		retour.properties = retour.propFactory.fromNBT((CompoundNBT) data.get(Spell.NBT_PROPERTIES));
+		retour.properties = retour.propFactory.fromNBT(data.get(Spell.NBT_PROPERTIES));
 
 		return retour;
 	}
@@ -165,6 +165,8 @@ public abstract class AbstractSpellComponent {
 	}
 
 	public abstract boolean addNextPart(AbstractSpellComponent other);
+	
+	public abstract void clear();
 
 	public AbstractSpellComponent getParent() {
 		return parent;
@@ -180,20 +182,22 @@ public abstract class AbstractSpellComponent {
 
 	public float getMaxPower() {
 		float maxPower = 0f;
-		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
+		Collection<Property<?>> propList = this.properties.getProperties();
 		for (Property<?> prop : propList) {
 			if (prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
 				float tmpMax = ((LevelProperty) prop).getMaxLevel() - ((LevelProperty) prop).getValue();
+				System.out.println("Tmp max is " + tmpMax + " with prop " + prop.getName());
 				if (maxPower < tmpMax)
 					maxPower = tmpMax;
 			}
 		}
+		System.out.println("MaxPower is " + maxPower);
 		return maxPower;
 	}
 
 	public Cost<?> getCost() {
 		Cost<?> retour = Cost.ZERO_COST.get();
-		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
+		Collection<Property<?>> propList = this.properties.getProperties();
 		for (Property<?> prop : propList) {
 			retour.add(prop.getCost());
 		}
@@ -202,7 +206,7 @@ public abstract class AbstractSpellComponent {
 
 	public Cost<?> getBoostCost() {
 		Cost<?> boostCost = null;
-		Collection<Property<?>> propList = this.properties.getProperties(Grade.DIAMOND);// this.getGrade())
+		Collection<Property<?>> propList = this.properties.getProperties();
 		for (Property<?> prop : propList) {
 			if (prop instanceof LevelProperty && ((LevelProperty) prop).isBoostable()) {
 				if (boostCost == null)

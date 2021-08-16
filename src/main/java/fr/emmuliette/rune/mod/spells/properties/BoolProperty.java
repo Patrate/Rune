@@ -9,8 +9,8 @@ import net.minecraft.nbt.StringNBT;
 public final class BoolProperty extends Property<Boolean> {
 	private Supplier<? extends Cost<?>> cost;
 
-	public BoolProperty(String name, Supplier<? extends Cost<?>> cost) {
-		super(name, false);
+	public BoolProperty(String name, Grade gradeVisible, Supplier<? extends Cost<?>> cost) {
+		super(name, gradeVisible, false);
 		this.cost = cost;
 	}
 
@@ -23,7 +23,6 @@ public final class BoolProperty extends Property<Boolean> {
 	public void setValueInternal(Boolean val) {
 		if (val != null)
 			super.setValueInternal(val);
-		// TODO throw exception
 	}
 
 	@Override
@@ -42,4 +41,6 @@ public final class BoolProperty extends Property<Boolean> {
 	public Boolean nBTtoValue(INBT inbt) {
 		return Boolean.valueOf(((StringNBT) inbt).getAsString());
 	}
+	
+	
 }

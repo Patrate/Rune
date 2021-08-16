@@ -166,6 +166,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 			addChildrenInternal(newEffect);
 			return true;
 		}
+		System.out.println("Can't add children");
 		return false;
 	}
 
@@ -238,5 +239,10 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 	@Override
 	public boolean addNextPart(AbstractSpellComponent other) {
 		return addChildren(other);
+	}
+	
+	@Override
+	public void clear() {
+		clearChildrens();
 	}
 }

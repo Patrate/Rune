@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.spells.properties;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
@@ -7,17 +8,18 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
 
 public final class LevelProperty extends Property<Integer> {
-	private int maxLevel;
+	private Map<Grade, Integer> levels;
 	private Supplier<? extends Cost<?>> costPerLevel;
 	private boolean boostable;
 
-	public LevelProperty(String name, int maxLevel, Supplier<? extends Cost<?>> manaPerLevel) {
-		this(name, maxLevel, manaPerLevel, false);
+	public LevelProperty(String name, Map<Grade, Integer> levels, Supplier<? extends Cost<?>> manaPerLevel) {
+		this(name, levels, manaPerLevel, false);
 	}
-	
-	public LevelProperty(String name, int maxLevel,  Supplier<? extends Cost<?>> manaPerLevel, boolean boostable) {
-		super(name, 1);
-		this.maxLevel = maxLevel;
+
+	public LevelProperty(String name, Map<Grade, Integer> levels, Supplier<? extends Cost<?>> manaPerLevel,
+			boolean boostable) {
+		super(name, Grade.getMin(levels.keySet()), 1);
+		this.setLevels(levels);
 		this.costPerLevel = manaPerLevel;
 		this.boostable = boostable;
 	}
@@ -28,20 +30,20 @@ public final class LevelProperty extends Property<Integer> {
 	}
 
 	public Integer getValue(float boostValue) {
-		return (int) Math.min(maxLevel, this.getValue() + boostValue - 1);
+		return (int) Math.min(getMaxLevel(), this.getValue() + boostValue - 1);
 	}
-	
+
 	@Override
 	public void setValueInternal(Integer val) {
-		if(val <= maxLevel && val >= 1)
+		if (val <= getMaxLevel() && val >= 1)
 			super.setValueInternal(val);
 		// TODO throw exception
 	}
-	
+
 	public int getMaxLevel() {
-		return maxLevel;
+		return levels.get(Grade.getMax(levels.keySet(), this.getCurrentGrade()));
 	}
-	
+
 	public Cost<?> getCostPerLevel() {
 		return costPerLevel.get();
 	}
@@ -53,20 +55,32 @@ public final class LevelProperty extends Property<Integer> {
 
 	@Override
 	public Cost<?> getCost() {
-		if(this.getValue() < 1)
+		if (this.getValue() < 1)
 			return Cost.ZERO_COST.get();
 		Cost<?> total = costPerLevel.get();
-		for(int i = 0; i < this.getValue(); i++)
+		for (int i = 0; i < this.getValue(); i++)
 			total.add(total);
 		return total;
 	}
 
 	@Override
 	public Integer nBTtoValue(INBT inbt) {
-		return ((IntNBT)inbt).getAsInt();
+		return ((IntNBT) inbt).getAsInt();
 	}
 
 	public boolean isBoostable() {
 		return boostable;
+	}
+	
+	public void setBoostable(boolean boostable) {
+		this.boostable = boostable;
+	}
+
+	public Map<Grade, Integer> getLevels() {
+		return levels;
+	}
+
+	public void setLevels(Map<Grade, Integer> levels) {
+		this.levels = levels;
 	}
 }

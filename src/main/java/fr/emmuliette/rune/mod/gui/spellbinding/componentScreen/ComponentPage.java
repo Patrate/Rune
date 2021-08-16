@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ComponentPage {
+	private final static int COMP_PER_PAGE = 4;
 	private final List<PropertyWidget<?>> buttons = Lists.newArrayListWithCapacity(20);
 	private PropertyWidget<?> hoveredButton;
 	private final RecipeOverlayGui overlay = new RecipeOverlayGui();
@@ -28,8 +29,6 @@ public class ComponentPage {
 	private int totalPages;
 	private int currentPage;
 	private RecipeBook recipeBook;
-//	private IRecipe<?> lastClickedRecipe;
-//	private RecipeList lastClickedRecipeCollection;
 	private AbstractSpellComponent currentComponent;
 	protected SpellBindingContainer menu;
 
@@ -49,57 +48,48 @@ public class ComponentPage {
 		}
 
 		this.forwardButton = new ToggleWidget(x + 93, y + 137, 12, 17, false);
-		this.forwardButton.initTextureValues(1, 208, 13, 18, ComponentGui.RECIPE_BOOK_LOCATION);
+		this.forwardButton.initTextureValues(1, 208, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
 		this.backButton = new ToggleWidget(x + 38, y + 137, 12, 17, true);
-		this.backButton.initTextureValues(1, 208, 13, 18, ComponentGui.RECIPE_BOOK_LOCATION);
+		this.backButton.initTextureValues(1, 208, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
 		this.propertyX = x;
 		this.propertyY = y;
 	}
 
-	public void setComponent(AbstractSpellComponent comp) {
+	public void setComponent(Grade grade, AbstractSpellComponent comp) {
 		this.buttons.clear();
 		currentComponent = comp;
 		if (comp == null)
 			return;
-		// TODO Grade modulable !!!
-		// TODO move it dans le component somehow ?
-		int i = this.propertyX + 10;
-		int j = this.propertyY + 34;
-		int height = 27;
+		int i = this.propertyX + 7;
+		int j = this.propertyY + 7;
+		int height = 32;
 		int k = 0;
-		for (Property<?> property : comp.getProperties().getProperties(Grade.WOOD)) {
-			this.buttons.add(PropertyWidget.buildWidget(this, property, currentComponent, i, j + k * height, 88, height));
-			++k;
+		for (Property<?> property : comp.getProperties().getProperties(grade)) {
+			PropertyWidget<?> widget = PropertyWidget.buildWidget(this, grade, property, currentComponent, i,
+					j + (k % COMP_PER_PAGE) * height);
+			if (widget.getSize() + k > COMP_PER_PAGE) {
+				widget.y = j;
+				k = 0;
+			}
+			this.buttons.add(widget);
+			k += widget.getSize();
 		}
+		this.totalPages = 1 + (this.buttons.size() / COMP_PER_PAGE);
+		this.currentPage = 0;
 
-		/*
-		 * for (int i = 0; i < 20; ++i) { this.buttons.add(new PropertyWidget(comp)); }
-		 */
+		updateButtonsForPage();
 	}
 
-//	public void updateCollections(List<RecipeList> recipeList, boolean p_194192_2_) {
-//		this.recipeCollections = recipeList;
-//		this.totalPages = (int) Math.ceil((double) recipeList.size() / 20.0D);
-//		if (this.totalPages <= this.currentPage || p_194192_2_) {
-//			this.currentPage = 0;
-//		}
-//
-//		this.updateButtonsForPage();
-//	}
-
 	private void updateButtonsForPage() {
-//		int i = 20 * this.currentPage;
+		int i = COMP_PER_PAGE * this.currentPage;
 
 		for (int j = 0; j < this.buttons.size(); ++j) {
 			PropertyWidget<?> propertyWidget = this.buttons.get(j);
-			propertyWidget.visible = true;
-//			if (i + j < this.recipeCollections.size()) {
-//				RecipeList recipelist = this.recipeCollections.get(i + j);
-//				propertyWidget.init(recipelist, this);
-//				propertyWidget.visible = true;
-//			} else {
-//				propertyWidget.visible = false;
-//			}
+			if (j >= i && j < i + COMP_PER_PAGE) {
+				propertyWidget.visible = true;
+			} else {
+				propertyWidget.visible = false;
+			}
 		}
 
 		this.updateArrowButtons();
@@ -141,24 +131,12 @@ public class ComponentPage {
 
 	}
 
-//	@Nullable
-//	public IRecipe<?> getLastClickedRecipe() {
-//		return this.lastClickedRecipe;
-//	}
-
-//	@Nullable
-//	public RecipeList getLastClickedRecipeCollection() {
-//		return this.lastClickedRecipeCollection;
-//	}
-
 	public void setInvisible() {
 		this.overlay.setVisible(false);
 	}
 
 	public boolean mouseClicked(double p_198955_1_, double p_198955_3_, int p_198955_5_, int p_198955_6_,
 			int p_198955_7_, int p_198955_8_, int p_198955_9_) {
-//		this.lastClickedRecipe = null;
-//		this.lastClickedRecipeCollection = null;
 		if (this.overlay.isVisible()) {
 			if (this.overlay.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
 //				this.lastClickedRecipe = this.overlay.getLastRecipeClicked();
@@ -179,17 +157,6 @@ public class ComponentPage {
 		} else {
 			for (PropertyWidget<?> propertyWidget : this.buttons) {
 				if (propertyWidget.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
-//					if (p_198955_5_ == 0) {
-//						this.lastClickedRecipe = recipewidget.getRecipe();
-//						this.lastClickedRecipeCollection = recipewidget.getCollection();
-//					} /*
-//						 * else if (p_198955_5_ == 1 && !this.overlay.isVisible() &&
-//						 * !recipewidget.isOnlyOption()) { this.overlay.init(this.minecraft,
-//						 * recipewidget.getCollection(), recipewidget.x, recipewidget.y, p_198955_6_ +
-//						 * p_198955_8_ / 2, p_198955_7_ + 13 + p_198955_9_ / 2,
-//						 * (float)recipewidget.getWidth()); }
-//						 */
-
 					return true;
 				}
 			}
