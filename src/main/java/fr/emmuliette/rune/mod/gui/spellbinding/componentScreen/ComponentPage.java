@@ -48,9 +48,9 @@ public class ComponentPage {
 		}
 
 		this.forwardButton = new ToggleWidget(x + 93, y + 137, 12, 17, false);
-		this.forwardButton.initTextureValues(1, 208, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
+		this.forwardButton.initTextureValues(153, 29, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
 		this.backButton = new ToggleWidget(x + 38, y + 137, 12, 17, true);
-		this.backButton.initTextureValues(1, 208, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
+		this.backButton.initTextureValues(153, 29, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
 		this.propertyX = x;
 		this.propertyY = y;
 	}
@@ -64,32 +64,42 @@ public class ComponentPage {
 		int j = this.propertyY + 7;
 		int height = 32;
 		int k = 0;
+		this.totalPages = 1;
 		for (Property<?> property : comp.getProperties().getProperties(grade)) {
 			PropertyWidget<?> widget = PropertyWidget.buildWidget(this, grade, property, currentComponent, i,
 					j + (k % COMP_PER_PAGE) * height);
 			if (widget.getSize() + k > COMP_PER_PAGE) {
 				widget.y = j;
 				k = 0;
+				this.totalPages += 1;
 			}
 			this.buttons.add(widget);
 			k += widget.getSize();
 		}
-		this.totalPages = 1 + (this.buttons.size() / COMP_PER_PAGE);
 		this.currentPage = 0;
 
 		updateButtonsForPage();
 	}
 
 	private void updateButtonsForPage() {
-		int i = COMP_PER_PAGE * this.currentPage;
-
+//		int i = COMP_PER_PAGE * this.currentPage;
+		int k = 0;
+		int currentPage = 0;
 		for (int j = 0; j < this.buttons.size(); ++j) {
 			PropertyWidget<?> propertyWidget = this.buttons.get(j);
-			if (j >= i && j < i + COMP_PER_PAGE) {
+			k += propertyWidget.getSize();
+			if (k > COMP_PER_PAGE)
+				currentPage++;
+			if (currentPage == this.currentPage) {
 				propertyWidget.visible = true;
 			} else {
 				propertyWidget.visible = false;
 			}
+//			if (k >= i && k < i + COMP_PER_PAGE) {
+//				propertyWidget.visible = true;
+//			} else {
+//				propertyWidget.visible = false;
+//			}
 		}
 
 		this.updateArrowButtons();

@@ -13,6 +13,7 @@ import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.GridProperty;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import net.minecraft.client.Minecraft;
@@ -39,6 +40,8 @@ public abstract class PropertyWidget<T extends Property<?>> extends Widget {
 			retour = new BoolWidget(grade, (BoolProperty) property, component, x, y);
 		else if (property instanceof EnumProperty)
 			retour = new EnumWidget(grade, (EnumProperty) property, component, x, y);
+		else if (property instanceof GridProperty)
+			retour = new GridWidget(grade, (GridProperty) property, component, x, y);
 		else
 			return null;
 		retour.page = page;
@@ -54,13 +57,14 @@ public abstract class PropertyWidget<T extends Property<?>> extends Widget {
 		this.size = size;
 	}
 
-	public void init(ComponentPage page) {}
+	public void init(ComponentPage page) {
+	}
 
 	public void setPosition(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
-	
+
 	public int getSize() {
 		return size;
 	}
@@ -68,7 +72,20 @@ public abstract class PropertyWidget<T extends Property<?>> extends Widget {
 	public void renderButton(MatrixStack mStack, int a, int b, float c) {
 		Minecraft minecraft = Minecraft.getInstance();
 		minecraft.getTextureManager().bind(ComponentGui.COMPONENT_PAGE_LOCATION);
-		this.blit(mStack, this.x, this.y, 1, 168, this.width, this.height);
+		int iY = this.y;
+		for (int i = 0; i < this.size; i++) {
+			if (i == 0) {
+				this.blit(mStack, this.x, iY, 1, 168, this.width, 16);
+			} else {
+				this.blit(mStack, this.x, iY, 1, 200, this.width, 16);
+			}
+			if (i + 1 == this.size) {
+				this.blit(mStack, this.x, iY + 16, 1, 184, this.width, 16);
+			} else {
+				this.blit(mStack, this.x, iY + 16, 1, 200, this.width, 16);
+			}
+			iY += 32;
+		}
 
 		mStack.pushPose();
 		ForgeIngameGui.drawString(mStack, minecraft.font, new StringTextComponent(this.getProperty().getName()),

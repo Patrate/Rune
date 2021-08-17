@@ -8,9 +8,11 @@ import fr.emmuliette.rune.exception.UnknownPropertyException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.BlockGrid;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.GridProperty;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -111,6 +113,15 @@ public abstract class AbstractSpellComponent {
 			return ((EnumProperty) properties.getProperty(key)).getValue();
 		} else {
 			RuneMain.LOGGER.error("unknown enum property " + key + " in component " + this.getClass().getSimpleName());
+			return null;
+		}
+	}
+	
+	public BlockGrid getGridProperty(String key) {
+		if (properties.getProperty(key) != null) {
+			return ((GridProperty) properties.getProperty(key)).getValue();
+		} else {
+			RuneMain.LOGGER.error("unknown grid property " + key + " in component " + this.getClass().getSimpleName());
 			return null;
 		}
 	}
