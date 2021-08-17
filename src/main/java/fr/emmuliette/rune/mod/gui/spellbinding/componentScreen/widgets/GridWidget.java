@@ -39,7 +39,7 @@ public class GridWidget extends PropertyWidget<GridProperty> {
 
 	@Override
 	protected void internalRender(MatrixStack mStack, int a, int b, float c) {
-		int maxSize = this.getProperty().getMaxLevel();
+		int maxSize = this.getProperty().getMaxBlocks();
 		int currentSize = this.getProperty().getValue().getSize();
 
 		int baseX = this.x + BASE_X;

@@ -57,9 +57,10 @@ public final class LevelProperty extends Property<Integer> {
 	public Cost<?> getCost() {
 		if (this.getValue() < 1)
 			return Cost.ZERO_COST.get();
-		Cost<?> total = costPerLevel.get();
+		Cost<?> cost = costPerLevel.get();
+		Cost<?> total = Cost.ZERO_COST.get();
 		for (int i = 0; i < this.getValue(); i++)
-			total.add(total);
+			total.add(cost);
 		return total;
 	}
 
@@ -71,7 +72,7 @@ public final class LevelProperty extends Property<Integer> {
 	public boolean isBoostable() {
 		return boostable;
 	}
-	
+
 	public void setBoostable(boolean boostable) {
 		this.boostable = boostable;
 	}

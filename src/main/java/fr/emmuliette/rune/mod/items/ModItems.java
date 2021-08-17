@@ -13,10 +13,11 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChannelingM
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ChargingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.LoadingModComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castMod.ToggleModComponent;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.BlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.DamageComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.FireComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.TeleportComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.MoveBlockEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.PhaseBlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.SilenceEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.BlindnessEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.ConfusionEffectComponent;
@@ -75,8 +76,11 @@ public enum ModItems {
 	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_EFFECT_GROUP, FireComponent.class)),
 	DAMAGE_RUNE(new RuneModItem("damage_rune", RuneMain.RUNE_EFFECT_GROUP, DamageComponent.class)),
 	TELEPORT_RUNE(new RuneModItem("teleport_rune", RuneMain.RUNE_EFFECT_GROUP, TeleportComponent.class)),
-	BLOCK_RUNE(new RuneModItem("block_rune", RuneMain.RUNE_EFFECT_GROUP, BlockEffectComponent.class)),
 	SILENCE_RUNE(new RuneModItem("silence_rune", RuneMain.RUNE_EFFECT_GROUP, SilenceEffectComponent.class)),
+
+	// Block effects
+	MOVE_BLOCK_RUNE(new RuneModItem("move_block_rune", RuneMain.RUNE_EFFECT_GROUP, MoveBlockEffectComponent.class)),
+	PHASE_BLOCK_RUNE(new RuneModItem("phase_block_rune", RuneMain.RUNE_EFFECT_GROUP, PhaseBlockEffectComponent.class)),
 
 	// VANILLA EFFECTS
 	BLINDNESS_RUNE(new RuneModItem("blindness_rune", RuneMain.RUNE_EFFECT_GROUP, BlindnessEffectComponent.class)),
