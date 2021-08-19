@@ -69,6 +69,8 @@ public class AnchoredTileEntity extends TileEntity implements ITickableTileEntit
 		}
 		if (data.contains(OLD_TILE_ENTITY)) {
 			this.oldTE = data.getCompound(OLD_TILE_ENTITY);
+			this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(),
+					BlockFlags.BLOCK_UPDATE);
 		}
 		super.load(state, data);
 	}

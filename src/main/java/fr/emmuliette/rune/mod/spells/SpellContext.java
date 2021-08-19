@@ -27,6 +27,7 @@ public class SpellContext {
 	private BlockPos block;
 	private Set<ChannelEffect> channeled;
 	private Direction casterFacing;
+	private Direction blockDirection;
 
 	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
 			ItemUseContext itemUseContext) {
@@ -63,6 +64,7 @@ public class SpellContext {
 		this.currentCaster = itemUseContext.getPlayer();
 		this.itemUseContext = itemUseContext;
 		this.block = itemUseContext.getClickedPos();
+		this.blockDirection = itemUseContext.getClickedFace().getOpposite();
 	}
 
 	private void setAirContext(float power, ItemStack itemStack, World world, Entity caster) {
@@ -158,5 +160,9 @@ public class SpellContext {
 
 	public void setCasterFacing(Direction casterFacing) {
 		this.casterFacing = casterFacing;
+	}
+	
+	public Direction getBlockDirection() {
+		return blockDirection;
 	}
 }

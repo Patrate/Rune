@@ -26,7 +26,8 @@ public class MoveBlockEffectComponent extends BlockEffectComponent {
 	protected boolean blockEffects(World world, BlockPos block, SpellContext context) {
 		Direction direction = Direction.byName(this.getEnumProperty(KEY_DIRECTION));
 		BlockGrid grid = this.getGridProperty(KEY_BLOCKS_LEVEL);
-		for (BlockPos newBlock : grid.getBlockPos(world, block, context.getCasterFacing())) {
+		Direction dir = (context.getBlockDirection() == null)?context.getCasterFacing():context.getBlockDirection();
+		for (BlockPos newBlock : grid.getBlockPos(world, block, dir)) {
 			System.out.println("Applying on " + newBlock.toShortString());
 			BlockPos blockpos = newBlock.relative(direction);
 			if (world.getBlockState(blockpos).getBlockState() == Blocks.AIR.defaultBlockState()) {
