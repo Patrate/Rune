@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rune:block/phased_block"
+    }
+  }
+}

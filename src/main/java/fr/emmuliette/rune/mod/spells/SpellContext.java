@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -25,6 +26,7 @@ public class SpellContext {
 	private float power;
 	private BlockPos block;
 	private Set<ChannelEffect> channeled;
+	private Direction casterFacing;
 
 	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
 			ItemUseContext itemUseContext) {
@@ -50,6 +52,7 @@ public class SpellContext {
 		if (this.getOriginalCaster() == null) {
 			this.originalCaster = this.currentCaster;
 		}
+		this.casterFacing = this.currentCaster.getDirection();
 	}
 
 	private void setBlockContext(float power, ItemUseContext itemUseContext) {
@@ -147,5 +150,13 @@ public class SpellContext {
 
 	public Set<ChannelEffect> getChanneledEffects() {
 		return this.channeled;
+	}
+
+	public Direction getCasterFacing() {
+		return casterFacing;
+	}
+
+	public void setCasterFacing(Direction casterFacing) {
+		this.casterFacing = casterFacing;
 	}
 }

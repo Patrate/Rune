@@ -16,6 +16,8 @@ import fr.emmuliette.rune.mod.spells.SpellRecipe;
 import fr.emmuliette.rune.mod.spells.entities.ModEntities;
 import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
+import fr.emmuliette.rune.mod.tileEntity.ModTileEntity;
+import fr.emmuliette.rune.mod.tileEntityRenderer.ModTileEntityRenderer;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.EntityType;
@@ -86,6 +88,7 @@ public class Registration {
 
 		ModEffects.register();
 		ModBlocks.register();
+		ModTileEntity.register();
 		ModItems.register();
 		SyncHandler.register();
 		ModContainers.register();
@@ -96,7 +99,9 @@ public class Registration {
 
 	// For client only stuff (rendering)
 	public static void clientRegister(final FMLClientSetupEvent event) {
+		RenderTypeRegistry.register();
 		ModRenderer.register();
+		ModTileEntityRenderer.register();
 		ScreenManager.register(ModContainers.SPELLBINDING.get(), SpellBindingScreen::new);
 		ScreenManager.register(ModContainers.GRIMOIRE.get(), GrimoireScreen::new);
 	}

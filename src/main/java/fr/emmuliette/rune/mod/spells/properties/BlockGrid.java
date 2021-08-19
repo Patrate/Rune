@@ -8,6 +8,7 @@ import java.util.Set;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -21,26 +22,98 @@ public class BlockGrid {
 	public int getSize() {
 		return internalGrid.size();
 	}
-	
+
 	public boolean hasPos(int x, int y, int z) {
 		return internalGrid.contains(new Coord3D(x, y, z));
 	}
-	
+
 	public void togglePos(int x, int y, int z) {
 		Coord3D nCoord = new Coord3D(x, y, z);
-		if(internalGrid.contains(nCoord))
+		if (internalGrid.contains(nCoord))
 			internalGrid.remove(nCoord);
 		else
 			internalGrid.add(nCoord);
 	}
 
+	public BlockGrid getRotatedGrid(Direction direction) {
+		BlockGrid newGrid = new BlockGrid();
+		switch (direction) {
+		case SOUTH:
+			for (Coord3D c3d : internalGrid) {
+				newGrid.internalGrid.add(new Coord3D(c3d.x * -1, c3d.y, c3d.z * -1));
+			}
+			break;
+		case EAST:
+			for (Coord3D c3d : internalGrid) {
+				newGrid.internalGrid.add(new Coord3D(c3d.z * -1, c3d.y, c3d.x));
+			}
+			break;
+		case WEST:
+			for (Coord3D c3d : internalGrid) {
+				newGrid.internalGrid.add(new Coord3D(c3d.z, c3d.y, c3d.x * -1));
+			}
+			break;
+		case UP:
+			for (Coord3D c3d : internalGrid) {
+				newGrid.internalGrid.add(new Coord3D(c3d.x, c3d.z * -1, c3d.y * -1));
+			}
+			break;
+		case DOWN:
+			for (Coord3D c3d : internalGrid) {
+				newGrid.internalGrid.add(new Coord3D(c3d.x, c3d.z, c3d.y));
+			}
+			break;
+		case NORTH:
+		default:
+			for (Coord3D c3d : internalGrid) {
+				newGrid.internalGrid.add(new Coord3D(c3d.x, c3d.y, c3d.z));
+			}
+			break;
+		}
+		return newGrid;
+	}
+
 	public List<BlockPos> getBlockPos(World world, BlockPos center) {
+		return getBlockPos(world, center, Direction.NORTH);
+	}
+
+	public List<BlockPos> getBlockPos(World world, BlockPos center, Direction direction) {
 		List<BlockPos> blockPos = new ArrayList<BlockPos>();
 		int baseX = center.getX();
 		int baseY = center.getY();
 		int baseZ = center.getZ();
-		for (Coord3D c3d : internalGrid) {
-			blockPos.add(new BlockPos(baseX + c3d.x, baseY + c3d.y, baseZ + c3d.z));
+		switch (direction) {
+		case SOUTH:
+			for (Coord3D c3d : internalGrid) {
+				blockPos.add(new BlockPos(baseX - c3d.x, baseY + c3d.y, baseZ - c3d.z));
+			}
+			break;
+		case EAST:
+			for (Coord3D c3d : internalGrid) {
+				blockPos.add(new BlockPos(baseX - c3d.z, baseY + c3d.y, baseZ + c3d.x));
+			}
+			break;
+		case WEST:
+			for (Coord3D c3d : internalGrid) {
+				blockPos.add(new BlockPos(baseX + c3d.z, baseY + c3d.y, baseZ - c3d.x));
+			}
+			break;
+		case UP:
+			for (Coord3D c3d : internalGrid) {
+				blockPos.add(new BlockPos(baseX + c3d.x, baseY - c3d.z, baseZ - c3d.y));
+			}
+			break;
+		case DOWN:
+			for (Coord3D c3d : internalGrid) {
+				blockPos.add(new BlockPos(baseX + c3d.x, baseY + c3d.z, baseZ + c3d.y));
+			}
+			break;
+		case NORTH:
+		default:
+			for (Coord3D c3d : internalGrid) {
+				blockPos.add(new BlockPos(baseX + c3d.x, baseY + c3d.y, baseZ + c3d.z));
+			}
+			break;
 		}
 		return blockPos;
 	}

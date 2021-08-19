@@ -29,7 +29,16 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 		ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
 		for(AbstractModObject entity:ModObjectsManager.getItemRegister()) {
-			builder(itemGenerated, entity.getName());
+//			File f = new File("item/" + entity.getName());
+//			if(f.exists() && !f.isDirectory()) { 
+			try {	
+				builder(itemGenerated, entity.getName());
+			} catch(Exception e) {
+				System.err.println("Texture for item " + entity.getName() + " doesn't exist ! " + e.getMessage());
+			}
+//			} else {
+//				System.err.println("Texture for item " + entity.getName() + " doesn't exist !");
+//			}
 		}
 	}
 

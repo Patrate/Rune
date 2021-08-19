@@ -14,6 +14,9 @@ public class ModTags {
 	
 	public static final class Blocks {
 		public static final ITag.INamedTag<Block> CASTER_BLOCK = forge("storage_blocks/caster");
+//		public static final ITag.INamedTag<Block> PHASED_BLOCK = forge("storage_blocks/caster");
+//		public static final ITag.INamedTag<Block> ANCHORED_BLOCK = forge("storage_blocks/caster");
+//		public static final ITag.INamedTag<Block> SPELLBINDING_BLOCK = forge("storage_blocks/caster");
 		
 		private static ITag.INamedTag<Block> forge(String path) {
 			return BlockTags.bind(new ResourceLocation("forge", path).toString());
