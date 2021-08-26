@@ -7,12 +7,14 @@ import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.tags.BuildTag;
 
 public abstract class AbstractCastModComponent extends AbstractCastModContainerComponent {
 
 	public AbstractCastModComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
 			throws RunePropertiesException {
 		super(propFactory, parent);
+		this.addTag(BuildTag.CAST_MOD);
 	}
 
 	@Override

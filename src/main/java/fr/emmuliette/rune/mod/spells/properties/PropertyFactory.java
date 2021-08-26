@@ -2,13 +2,15 @@ package fr.emmuliette.rune.mod.spells.properties;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
+import fr.emmuliette.rune.RuneMain;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 
 public abstract class PropertyFactory {
-	public static final PropertyFactory EMPTY_FACTORY = new PropertyFactory() {
+	public static final Supplier<PropertyFactory> EMPTY_FACTORY = () -> new PropertyFactory() {
 		@Override
 		public RuneProperties buildInternal() {
 			return new RuneProperties() {
@@ -19,8 +21,9 @@ public abstract class PropertyFactory {
 		}
 
 		@Override
-		public RuneProperties fromNBT(INBT compoundNBT) {
-			return build();
+		public PropertyFactory addSub(PropertyFactory sub) {
+			RuneMain.LOGGER.error("CAN'T ADD SUB TO EMPTY FACTORY >=(");
+			return super.addSub(sub);
 		}
 	};
 

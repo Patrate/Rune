@@ -14,7 +14,7 @@ import net.minecraft.entity.LivingEntity;
 public class ZoneComponent extends AbstractCastEffectComponent implements TargetAir {
 
 	public ZoneComponent(AbstractSpellComponent parent) throws RunePropertiesException {
-		super(PropertyFactory.EMPTY_FACTORY, parent);
+		super(PropertyFactory.EMPTY_FACTORY.get(), parent);
 	}
 
 	@Override

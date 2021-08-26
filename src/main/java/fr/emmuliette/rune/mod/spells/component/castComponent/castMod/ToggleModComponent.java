@@ -21,6 +21,7 @@ import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
@@ -33,6 +34,7 @@ public class ToggleModComponent extends AbstractCastModComponent implements Call
 
 	public ToggleModComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PROPFACT, parent);
+		this.addTag(SpellTag.TOGGLE);
 	}
 
 	@Override

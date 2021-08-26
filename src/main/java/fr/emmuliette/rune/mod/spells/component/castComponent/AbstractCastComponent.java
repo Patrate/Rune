@@ -14,6 +14,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.tags.BuildTag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,6 +27,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 	public AbstractCastComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
 			throws RunePropertiesException {
 		super(propFactory, parent);
+		this.addTag(BuildTag.CAST);
 	}
 
 	public boolean specialCast(SpellContext context) {

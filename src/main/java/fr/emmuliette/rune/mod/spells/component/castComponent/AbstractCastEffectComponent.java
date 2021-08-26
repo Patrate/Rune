@@ -7,6 +7,7 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.tags.BuildTag;
 
 public abstract class AbstractCastEffectComponent extends AbstractCastComponent<AbstractEffectComponent> {
 	private List<AbstractEffectComponent> children;
@@ -15,6 +16,7 @@ public abstract class AbstractCastEffectComponent extends AbstractCastComponent<
 			throws RunePropertiesException {
 		super(propFactory, parent);
 		children = new ArrayList<AbstractEffectComponent>();
+		this.addTag(BuildTag.CAST);
 	}
 
 	@Override

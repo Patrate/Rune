@@ -17,11 +17,11 @@ import net.minecraft.world.World;
 
 public abstract class BlockEffectComponent extends AbstractEffectComponent {
 	public BlockEffectComponent(AbstractSpellComponent parent) {
-		this(PropertyFactory.EMPTY_FACTORY, parent);
+		this(null, parent);
 	}
 
 	public BlockEffectComponent(PropertyFactory props, AbstractSpellComponent parent) {
-		super(props.addSub(PROPFACT), parent);
+		super(props == null?PROPFACT:PROPFACT.addSub(props), parent);
 	}
 
 	@Override

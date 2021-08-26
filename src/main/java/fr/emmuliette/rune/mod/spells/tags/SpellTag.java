@@ -15,14 +15,7 @@ public class SpellTag extends OtherTag {
 		this.unique = unique;
 	}
 
-	static void init() {
-		CHARGING.touch();
-		LOADING.touch();
-		CHANNELING.touch();
-	}
-
-	private void touch() {
-	}
+	static void init() {}
 
 	public boolean isUnique() {
 		return unique;

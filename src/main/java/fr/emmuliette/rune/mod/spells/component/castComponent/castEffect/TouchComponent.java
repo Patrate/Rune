@@ -11,7 +11,7 @@ import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 public class TouchComponent extends AbstractCastEffectComponent implements TargetBlock, TargetLivingEntity {
 
 	public TouchComponent(AbstractSpellComponent parent) throws RunePropertiesException {
-		super(PropertyFactory.EMPTY_FACTORY, parent);
+		super(PropertyFactory.EMPTY_FACTORY.get(), parent);
 	}
 
 	@Override

@@ -31,11 +31,13 @@ public abstract class AbstractSpellComponent {
 	private AbstractSpellComponent parent;
 	private PropertyFactory propFactory;
 	private int spellInternalId;
+	private MainTag tags;
 
 	public AbstractSpellComponent(PropertyFactory propFact, AbstractSpellComponent parent) {
 		this.propFactory = propFact;
-		this.properties = getDefaultProperties();
+//		this.properties = getDefaultProperties();
 		this.parent = parent;
+		this.tags = new MainTag();
 	}
 
 	protected final int getSpellInternalId() {
@@ -116,7 +118,7 @@ public abstract class AbstractSpellComponent {
 			return null;
 		}
 	}
-	
+
 	public BlockGrid getGridProperty(String key) {
 		if (properties.getProperty(key) != null) {
 			return ((GridProperty) properties.getProperty(key)).getValue();
@@ -156,11 +158,16 @@ public abstract class AbstractSpellComponent {
 		return 0;
 	}
 
-	public final RuneProperties getDefaultProperties() {
-		return propFactory.build();
-	}
+//	public final RuneProperties getDefaultProperties() {
+//		return propFactory.build();
+//	}
 
 	public boolean validate(AbstractSpellComponent other) {
+		if (getTags().getBuildTag() == null) {
+			// TODO throw exception
+			RuneMain.LOGGER.error("BuildTag is null for component " + this.getClass().getSimpleName());
+			return false;
+		}
 		return getTags().getBuildTag().isAllowedAsNext(other.getTags().getBuildTag());
 	}
 
@@ -176,7 +183,7 @@ public abstract class AbstractSpellComponent {
 	}
 
 	public abstract boolean addNextPart(AbstractSpellComponent other);
-	
+
 	public abstract void clear();
 
 	public AbstractSpellComponent getParent() {
@@ -188,7 +195,12 @@ public abstract class AbstractSpellComponent {
 	}
 
 	public MainTag getTags() {
-		return MainTag.getTags(this);
+		return tags;
+	}
+
+	public AbstractSpellComponent addTag(Tag tag) {
+		this.tags.setTag(tag);
+		return this;
 	}
 
 	public float getMaxPower() {

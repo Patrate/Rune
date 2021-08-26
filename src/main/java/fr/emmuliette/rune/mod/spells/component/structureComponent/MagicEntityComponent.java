@@ -17,6 +17,7 @@ import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.spells.tags.BuildTag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,6 +30,7 @@ public class MagicEntityComponent<T extends AbstractSpellComponent> extends Abst
 	public MagicEntityComponent(AbstractSpellComponent parent) {
 		super(PROPFACT, parent);
 		magicEntityAI = new ArrayList<AbstractAIComponent>();
+		this.addTag(BuildTag.MAGIC_ENTITY);
 	}
 
 	private MagicEntity summonMagicEntity(World world, BlockPos position, SpellContext context) {

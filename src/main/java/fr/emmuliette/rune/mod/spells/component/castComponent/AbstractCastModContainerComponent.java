@@ -11,6 +11,7 @@ import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.tags.BuildTag;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -20,6 +21,7 @@ public abstract class AbstractCastModContainerComponent extends AbstractCastComp
 	public AbstractCastModContainerComponent(PropertyFactory propFactory, AbstractSpellComponent parent)
 			throws RunePropertiesException {
 		super(propFactory, parent);
+		this.addTag(BuildTag.CAST_MOD);
 	}
 
 	@Override

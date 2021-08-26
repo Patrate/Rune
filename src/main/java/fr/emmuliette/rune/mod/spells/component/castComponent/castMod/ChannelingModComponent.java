@@ -30,6 +30,7 @@ import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -44,6 +45,7 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 	public ChannelingModComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PROPFACT, parent);
 		channeledEffects = new HashSet<ChannelEffect>();
+		this.addTag(SpellTag.CHANNELING);
 	}
 
 	@Override

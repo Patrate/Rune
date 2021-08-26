@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 public class TeleportComponent extends AbstractEffectComponent {
 	public TeleportComponent(AbstractSpellComponent parent) {
-		super(PropertyFactory.EMPTY_FACTORY, parent);
+		super(PropertyFactory.EMPTY_FACTORY.get(), parent);
 	}
 	@Override
 	public boolean applyOnTarget(LivingEntity target, SpellContext context) {
