@@ -168,7 +168,7 @@ public class ChargingModComponent extends AbstractCastModComponent implements Ca
 	private static final String KEY_IGNORE_CANCEL_ON_DAMAGE = "ignore_cancel_on_damage";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public RuneProperties build() {
+		public RuneProperties buildInternal() {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {

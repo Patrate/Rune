@@ -58,17 +58,22 @@ public class ComponentPage {
 	public void setComponent(Grade grade, AbstractSpellComponent comp) {
 		this.buttons.clear();
 		currentComponent = comp;
-		if (comp == null)
+		if (comp == null) {
+			System.out.println("Component is null");
 			return;
+		}
 		int i = this.propertyX + 7;
 		int j = this.propertyY + 7;
 		int height = 32;
 		int k = 0;
 		this.totalPages = 1;
+		System.out.println("Adding properties:");
 		for (Property<?> property : comp.getProperties().getProperties(grade)) {
+			System.out.println("Adding " + property.getName());
 			PropertyWidget<?> widget = PropertyWidget.buildWidget(this, grade, property, currentComponent, i,
 					j + (k % COMP_PER_PAGE) * height);
 			if (widget.getSize() + k > COMP_PER_PAGE) {
+				System.out.println("Too big for this page");
 				widget.y = j;
 				k = 0;
 				this.totalPages += 1;

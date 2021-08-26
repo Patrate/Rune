@@ -25,6 +25,8 @@ public enum Grade {
 			if (retour == null || grade.level > retour.level)
 				retour = grade;
 		}
+		if(retour == null)
+			retour = getMin(keySet);
 		return retour;
 	}
 

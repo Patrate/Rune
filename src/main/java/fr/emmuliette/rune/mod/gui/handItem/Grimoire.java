@@ -38,7 +38,7 @@ public class Grimoire {
 	@SubscribeEvent
 	public static void renderHandParchment(RenderHandEvent event) {
 		ItemStack is = event.getItemStack();
-		if (is.getItem() != ModItems.GRIMOIRE.getItem()) {
+		if (is.getItem() != ModItems.GRIMOIRE.get()) {
 			return;
 		}
 		renderArmWithItem(Minecraft.getInstance().player, event.getHand(), event.getItemStack(), event.getMatrixStack(),
@@ -52,7 +52,7 @@ public class Grimoire {
 		HandSide handside = flag ? player.getMainArm() : player.getMainArm().getOpposite();
 		mStack.pushPose();
 		if (!itemStack.isEmpty()) {
-			if (itemStack.getItem() == ModItems.GRIMOIRE.getItem()) {
+			if (itemStack.getItem() == ModItems.GRIMOIRE.get()) {
 				if (flag && !player.isInvisible()) {
 					renderPlayerArm(mStack, renderBuffer, light, dems, prems, handside);
 				}

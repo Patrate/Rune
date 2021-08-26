@@ -26,7 +26,7 @@ public class PhasedBlock extends Block {
 			if (oldTE != null)
 				oldTeNBT = oldTE.serializeNBT();
 			world.removeBlock(position, false);
-			world.setBlockAndUpdate(position, ModBlocks.PHASED_BLOCK.getBlock().defaultBlockState());
+			world.setBlockAndUpdate(position, ModBlocks.PHASED_BLOCK.get().defaultBlockState());
 			PhasedTileEntity pte = (PhasedTileEntity) world.getBlockEntity(position);
 			if (pte != null) {
 				pte.setOldBlock(oldBlock, oldTeNBT);

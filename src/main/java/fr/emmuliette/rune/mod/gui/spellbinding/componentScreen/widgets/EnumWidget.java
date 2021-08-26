@@ -35,6 +35,8 @@ public class EnumWidget extends PropertyWidget<EnumProperty> {
 	@Override
 	protected void internalClic(double x, double y) {
 		System.out.println("CLIC ! " + this.getProperty());
+		if(internalValues.isEmpty())
+			return;
 		internalId = (internalId + 1) % internalValues.size();
 		this.getProperty().setValue(internalValues.get(internalId));
 	}

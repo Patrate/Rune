@@ -34,6 +34,12 @@ public abstract class RuneProperties {
 		return this;
 	}
 	
+	public void addAll(RuneProperties other) {
+		for(Property<?> prop:other.properties.values()) {
+			addNewProperty(prop);
+		}
+	}
+	
 	public Collection<Property<?>> getProperties() {
 		return properties.values();
 	}

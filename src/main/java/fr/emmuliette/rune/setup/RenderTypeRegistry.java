@@ -12,8 +12,8 @@ public class RenderTypeRegistry {
 	@SubscribeEvent
 	public static void onRenderTypeSetup(FMLClientSetupEvent event) {
 		event.enqueueWork(() -> {
-			RenderTypeLookup.setRenderLayer(ModBlocks.PHASED_BLOCK.getBlock(), RenderType.cutout());
-			RenderTypeLookup.setRenderLayer(ModBlocks.ANCHORED_BLOCK.getBlock(), RenderType.cutout());
+			RenderTypeLookup.setRenderLayer(ModBlocks.PHASED_BLOCK.get(), RenderType.cutout());
+			RenderTypeLookup.setRenderLayer(ModBlocks.ANCHORED_BLOCK.get(), RenderType.cutout());
 		});
 	}
 	

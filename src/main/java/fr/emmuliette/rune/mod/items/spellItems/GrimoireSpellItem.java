@@ -31,7 +31,7 @@ public class GrimoireSpellItem extends AbstractSpellItem {
 
 	public static ItemStack getGrimoireSpell(Grimoire source, String name) {
 		GrimoireSpellItem spellitem;
-		spellitem = (GrimoireSpellItem) ModItems.SPELL.getItem();
+		spellitem = (GrimoireSpellItem) ModItems.SPELL.get();
 		ItemStack itemStack = new ItemStack(spellitem);
 		itemStack.addTagElement(SPELL_NAME, StringNBT.valueOf(name));
 		return itemStack;

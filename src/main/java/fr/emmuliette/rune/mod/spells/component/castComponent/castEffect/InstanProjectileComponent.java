@@ -55,7 +55,7 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 	private static final String KEY_MODE = "mode";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public RuneProperties build() {
+		public RuneProperties buildInternal() {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {

@@ -30,7 +30,11 @@ public final class LevelProperty extends Property<Integer> {
 	}
 
 	public Integer getValue(float boostValue) {
-		return (int) Math.min(getMaxLevel(), this.getValue() + boostValue - 1);
+//		return (int) Math.min(getMaxLevel(), this.getValue() + boostValue - 1);
+		if (boostable)
+			return (int) (this.getValue() + boostValue - 1);
+		else
+			return this.getValue();
 	}
 
 	@Override

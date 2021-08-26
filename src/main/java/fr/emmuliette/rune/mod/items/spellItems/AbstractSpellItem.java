@@ -42,13 +42,13 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public ITextComponent getName(ItemStack iStack) {
 		String base;
-		if (iStack.getItem() == ModItems.PARCHMENT.getItem()) {
+		if (iStack.getItem() == ModItems.PARCHMENT.get()) {
 			// TODO translation
 			base = "Parchemin de ";
-		} else if (iStack.getItem() == ModItems.GRIMOIRE.getItem()) {
+		} else if (iStack.getItem() == ModItems.GRIMOIRE.get()) {
 			// TODO translation
 			base = "Grimoire de ";
-		} else if (iStack.getItem() == ModItems.SOCKET.getItem()) {
+		} else if (iStack.getItem() == ModItems.SOCKET.get()) {
 			// TODO translation
 			base = "Socket de ";
 		} else {
@@ -89,7 +89,7 @@ public abstract class AbstractSpellItem extends Item {
 				Spell spell = getSpell(itemStack, caster);
 				if (spell != null) {
 					if (spell.castSpecial(getPower(caster), itemStack, target, caster.level, caster, null)) {
-						retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.getItem());
+						retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.get());
 						if (retour.consume) {
 							retour.resultType = ActionResultType.CONSUME;
 							retour.result = ActionResult.consume(itemStack);
@@ -209,7 +209,7 @@ public abstract class AbstractSpellItem extends Item {
 	}
 
 	protected boolean learnSpell(ItemStack item, Entity caster) {
-		if (Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.getItem())
+		if (Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.get())
 			return learnFromGrimoire(item, caster);
 		return false;
 	}
@@ -268,7 +268,7 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
 			} else if (cont) {
-				retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.getItem());
+				retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.get());
 				if (retour.consume) {
 					retour.resultType = ActionResultType.CONSUME;
 					retour.result = ActionResult.consume(itemStack);
@@ -286,7 +286,7 @@ public abstract class AbstractSpellItem extends Item {
 				retour.resultType = ActionResultType.SUCCESS;
 				retour.result = ActionResult.success(itemStack);
 			} else if (cont) {
-				retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.getItem());
+				retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.get());
 				if (retour.consume) {
 					retour.resultType = ActionResultType.CONSUME;
 					retour.result = ActionResult.consume(itemStack);

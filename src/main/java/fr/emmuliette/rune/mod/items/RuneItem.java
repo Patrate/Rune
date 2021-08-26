@@ -48,7 +48,7 @@ public class RuneItem extends Item {
 		}
 		return (stack.getTag() != null && stack.getTag().contains("grade"))
 				? Grade.valueOf(stack.getTag().getString("grade"))
-				: Grade.WOOD;
+				: Grade.NETHERITE; // TODO set to UNKNOWN
 	}
 
 	public static void setGrade(ItemStack stack, Grade grade) {

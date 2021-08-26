@@ -191,7 +191,8 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 
 	@Override
 	protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType clickType) {
-		if (slot != null && slot instanceof SpellBindingRuneSlot && mouseButton == 1) {
+//		this.minecraft.player.item
+		if (slot != null && slot instanceof SpellBindingRuneSlot && mouseButton == 1 && this.minecraft.player.inventory.getCarried().isEmpty()) {
 			if (!slot.equals(selectedSlot)) {
 				selectSlot(slot);
 			}

@@ -18,6 +18,10 @@ public enum ModBlocks {
 			() -> new SpellBindingBlock(
 					AbstractBlock.Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)))),
 
+	ILLUSION_BLOCK(new ModBlock("illusion_block", RuneMain.RUNE_GROUP,
+			() -> new IllusionBlock(AbstractBlock.Properties.of(Material.HEAVY_METAL).noCollission().noDrops()
+					.noOcclusion().strength(-1.0f, 3600000.0F)))),
+	
 	PHASED_BLOCK(new ModBlock("phased_block", RuneMain.RUNE_GROUP,
 			() -> new PhasedBlock(AbstractBlock.Properties.of(Material.HEAVY_METAL).noCollission().noDrops()
 					.noOcclusion().strength(-1.0f, 3600000.0F)))),
@@ -31,7 +35,7 @@ public enum ModBlocks {
 		this.entity = entity;
 	}
 
-	public Block getBlock() {
+	public Block get() {
 		return entity.getModBlock().get();
 	}
 

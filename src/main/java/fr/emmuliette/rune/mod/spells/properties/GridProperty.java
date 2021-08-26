@@ -10,13 +10,14 @@ public final class GridProperty extends Property<BlockGrid> {
 	private Supplier<? extends Cost<?>> costPerBlock;
 	private Map<Grade, Integer> levels;
 
-	public GridProperty(String name, Map<Grade, Integer> levels, Supplier<? extends Cost<?>> manaPerLevel) {
-		this(name, levels, manaPerLevel, false);
-	}
+//	public GridProperty(String name, Map<Grade, Integer> levels, Supplier<? extends Cost<?>> manaPerLevel) {
+//		this(name, levels, manaPerLevel, false);
+//	}
 
-	public GridProperty(String name, Map<Grade, Integer> levels, Supplier<? extends Cost<?>> manaPerBlock,
+	public GridProperty(String name, int zero, Map<Grade, Integer> levels, Supplier<? extends Cost<?>> manaPerBlock,
 			boolean boostable) {
 		super(name, Grade.getMin(levels.keySet()), new BlockGrid());
+		levels.put(Grade.UNKNOWN, zero);
 		this.setLevels(levels);
 		this.costPerBlock = manaPerBlock;
 	}

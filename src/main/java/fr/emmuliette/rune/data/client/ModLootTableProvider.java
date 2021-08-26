@@ -44,8 +44,8 @@ public class ModLootTableProvider extends LootTableProvider {
 	public static class ModBlockLootTables extends BlockLootTables {
 		@Override
 		protected void addTables() {
-			dropSelf(ModBlocks.CASTER_BLOCK.getBlock());
-			dropSelf(ModBlocks.SPELLBINDING_BLOCK.getBlock());
+			dropSelf(ModBlocks.CASTER_BLOCK.get());
+			dropSelf(ModBlocks.SPELLBINDING_BLOCK.get());
 		}
 
 		@Override

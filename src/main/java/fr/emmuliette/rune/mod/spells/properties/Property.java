@@ -16,7 +16,7 @@ public abstract class Property<T> {
 	public Grade getGradeVisible() {
 		return gradeVisible;
 	}
-	
+
 	public Property(String name, Grade gradeVisible, T def) {
 		this.name = name;
 		this.currentValue = def;
@@ -67,9 +67,9 @@ public abstract class Property<T> {
 	}
 
 	public abstract Cost<?> getCost();
-	
+
 	public boolean isVisible(Grade grade) {
-		return grade.getLevel() <= gradeVisible.getLevel();
+		return grade.getLevel() >= gradeVisible.getLevel();
 	}
 
 	public Grade getCurrentGrade() {

@@ -26,7 +26,7 @@ public class AnchoredBlock extends Block {
 			if (oldTE != null)
 				oldTeNBT = oldTE.serializeNBT();
 			world.removeBlock(position, false);
-			world.setBlockAndUpdate(position, ModBlocks.ANCHORED_BLOCK.getBlock().defaultBlockState());
+			world.setBlockAndUpdate(position, ModBlocks.ANCHORED_BLOCK.get().defaultBlockState());
 			AnchoredTileEntity pte = (AnchoredTileEntity) world.getBlockEntity(position);
 			if (pte != null) {
 				pte.setOldBlock(oldBlock, oldTeNBT);

@@ -17,6 +17,7 @@ import fr.emmuliette.rune.mod.spells.component.effectComponent.DamageComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.FireComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.TeleportComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.AnchorBlockEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.IllusionBlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.MoveBlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.PhaseBlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.SilenceEffectComponent;
@@ -100,6 +101,7 @@ public enum ModItems {
 
 	// Block effects
 	MOVE_BLOCK_RUNE(new RuneModItem("move_block_rune", RuneMain.RUNE_EFFECT_GROUP, MoveBlockEffectComponent.class)),
+	ILLUSION_BLOCK_RUNE(new RuneModItem("illusion_block_rune", RuneMain.RUNE_EFFECT_GROUP, IllusionBlockEffectComponent.class)),
 	PHASE_BLOCK_RUNE(new RuneModItem("phase_block_rune", RuneMain.RUNE_EFFECT_GROUP, PhaseBlockEffectComponent.class)),
 	ANCHOR_BLOCK_RUNE(
 			new RuneModItem("anchor_block_rune", RuneMain.RUNE_EFFECT_GROUP, AnchorBlockEffectComponent.class)),
@@ -162,7 +164,7 @@ public enum ModItems {
 		this.entity = entity;
 	}
 
-	public Item getItem() {
+	public Item get() {
 		return entity.getModItem().get();
 	}
 

@@ -59,7 +59,7 @@ public class MagicEntityComponent<T extends AbstractSpellComponent> extends Abst
 	private static final String KEY_DURATION = "duration";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public RuneProperties build() {
+		public RuneProperties buildInternal() {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {

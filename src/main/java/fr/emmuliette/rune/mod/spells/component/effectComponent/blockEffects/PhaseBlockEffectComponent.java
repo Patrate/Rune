@@ -28,7 +28,6 @@ public class PhaseBlockEffectComponent extends BlockEffectComponent {
 		BlockGrid grid = this.getGridProperty(KEY_BLOCKS_LEVEL);
 		Direction dir = (context.getBlockDirection() == null) ? context.getCasterFacing() : context.getBlockDirection();
 		for (BlockPos newBlock : grid.getBlockPos(world, block, dir)) {
-			System.out.println("Applying on " + newBlock.toShortString());
 			PhasedBlock.phaseBlock(world, newBlock, 300);
 //			world.setBlockAndUpdate(newBlock, Blocks.AIR.defaultBlockState());
 		}

@@ -9,6 +9,10 @@ import net.minecraft.nbt.StringNBT;
 public final class BoolProperty extends Property<Boolean> {
 	private Supplier<? extends Cost<?>> cost;
 
+	public BoolProperty(String name, Supplier<? extends Cost<?>> cost) {
+		this(name, Grade.UNKNOWN, cost);
+	}
+	
 	public BoolProperty(String name, Grade gradeVisible, Supplier<? extends Cost<?>> cost) {
 		super(name, gradeVisible, false);
 		this.cost = cost;

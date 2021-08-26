@@ -16,7 +16,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 		for(ModBlocks modBlock:ModBlocks.values()) {
 //			simpleBlock(ModBlocks.CASTER_BLOCK.getBlock());
 			try {
-				simpleBlock(modBlock.getBlock());
+				simpleBlock(modBlock.get());
 			} catch(Exception e) {
 				System.out.println("No texture for " + modBlock.name() + ": " + e.getMessage());
 			}

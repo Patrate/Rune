@@ -36,19 +36,19 @@ public class RuneMain {
 	public static final ItemGroup RUNE_GROUP = new ItemGroup("rune_items") {
 		@Override
 		public ItemStack makeIcon() {
-			return ModItems.BLANK_RUNE.getItem().getDefaultInstance();
+			return ModItems.BLANK_RUNE.get().getDefaultInstance();
 		}
 	};
 	public static final ItemGroup RUNE_EFFECT_GROUP = new ItemGroup("rune_effects") {
 		@Override
 		public ItemStack makeIcon() {
-			return ModItems.FIRE_RUNE.getItem().getDefaultInstance();
+			return ModItems.FIRE_RUNE.get().getDefaultInstance();
 		}
 	};
 	public static final ItemGroup RUNE_OTHER_GROUP = new ItemGroup("rune_other") {
 		@Override
 		public ItemStack makeIcon() {
-			return ModItems.PROJECTILE_RUNE.getItem().getDefaultInstance();
+			return ModItems.PROJECTILE_RUNE.get().getDefaultInstance();
 		}
 	};
 

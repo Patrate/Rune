@@ -12,9 +12,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ModItemModelsProperties {
 	public static void register() {
 		for (ModItems mItem : ModItems.values()) {
-			if (mItem.getItem() instanceof RuneItem) {
+			if (mItem.get() instanceof RuneItem) {
 				RuneMain.LOGGER.info("Registering item model for " + mItem.name());
-				ItemModelsProperties.register(mItem.getItem(), new ResourceLocation(RuneMain.MOD_ID, "grade"),
+				ItemModelsProperties.register(mItem.get(), new ResourceLocation(RuneMain.MOD_ID, "grade"),
 						(stack, world, living) -> {
 							return RuneItem.getGrade(stack).getLevel();
 						});

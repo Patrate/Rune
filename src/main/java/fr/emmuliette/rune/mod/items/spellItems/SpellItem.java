@@ -25,17 +25,17 @@ public class SpellItem extends AbstractSpellItem {
 		try {
 			switch (type) {
 			case GRIMOIRE:
-				spellitem = (SpellItem) ModItems.GRIMOIRE.getItem();
+				spellitem = (SpellItem) ModItems.GRIMOIRE.get();
 				break;
 			case SOCKET:
-				spellitem = (SpellItem) ModItems.SOCKET.getItem();
+				spellitem = (SpellItem) ModItems.SOCKET.get();
 				break;
 			case SPELL:
-				spellitem = (SpellItem) ModItems.SPELL.getItem();
+				spellitem = (SpellItem) ModItems.SPELL.get();
 				break;
 			case PARCHMENT:
 			default:
-				spellitem = (SpellItem) ModItems.PARCHMENT.getItem();
+				spellitem = (SpellItem) ModItems.PARCHMENT.get();
 				break;
 			}
 			ItemStack itemStack = new ItemStack(spellitem);

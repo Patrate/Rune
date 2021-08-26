@@ -87,7 +87,6 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	protected static void slotChangedCraftingGrid(int containerId, World world, PlayerEntity player,
 			SpellBindingInventory spellBindingInventory, CraftResultInventory craftingResultInventory) {
 		if (!world.isClientSide) {
-			System.out.println("Slot changed, spell name is " + spellBindingInventory.getSpellName());
 			ServerPlayerEntity serverplayerentity = (ServerPlayerEntity) player;
 			ItemStack itemstack = ItemStack.EMPTY;
 			if (!spellBindingInventory.getSpellName().isEmpty()) {
@@ -153,7 +152,7 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	}
 
 	public boolean stillValid(PlayerEntity player) {
-		return stillValid(this.access, player, ModBlocks.SPELLBINDING_BLOCK.getBlock());
+		return stillValid(this.access, player, ModBlocks.SPELLBINDING_BLOCK.get());
 	}
 
 	public ItemStack quickMoveStack(PlayerEntity player, int slotId) {

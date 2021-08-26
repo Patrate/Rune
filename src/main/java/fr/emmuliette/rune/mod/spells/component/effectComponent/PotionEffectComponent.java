@@ -147,7 +147,7 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent impl
 	private static final String KEY_POTION_VISIBLE = "potion_visible";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override
-		public RuneProperties build() {
+		public RuneProperties buildInternal() {
 			RuneProperties retour = new RuneProperties() {
 				@Override
 				protected void init() {

@@ -1,10 +1,19 @@
 package fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.properties.BlockGrid;
+import fr.emmuliette.rune.mod.spells.properties.EnumElement;
+import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -12,7 +21,7 @@ import net.minecraft.world.World;
 
 public class MoveBlockEffectComponent extends BlockEffectComponent {
 	public MoveBlockEffectComponent(AbstractSpellComponent parent) {
-		super(parent);
+		super(PROPFACT, parent);
 	}
 
 	@Override
@@ -39,4 +48,24 @@ public class MoveBlockEffectComponent extends BlockEffectComponent {
 		}
 		return true;
 	}
+	
+	protected static final String KEY_DIRECTION = "direction";
+	private static final PropertyFactory PROPFACT = new PropertyFactory() {
+		@Override
+		public RuneProperties buildInternal() {
+			RuneProperties retour = new RuneProperties() {
+				@Override
+				protected void init() {
+					Map<EnumElement, Supplier<? extends Cost<?>>> directions = new HashMap<EnumElement, Supplier<? extends Cost<?>>>();
+					for (Direction direction : Direction.values()) {
+						directions.put(new EnumElement(direction.getName(), Grade.WOOD), Cost.ZERO_COST);
+					}
+
+					this.addNewProperty(
+							new EnumProperty(KEY_DIRECTION, Grade.WOOD, Direction.UP.getName(), directions));
+				}
+			};
+			return retour;
+		}
+	};
 }

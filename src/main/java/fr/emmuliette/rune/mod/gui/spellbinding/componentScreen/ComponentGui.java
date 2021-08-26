@@ -21,7 +21,6 @@ import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.recipebook.RecipeList;
 import net.minecraft.client.util.ClientRecipeBook;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.play.client.CUpdateRecipeBookStatusPacket;
@@ -118,16 +117,13 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		updateComponent();
 	}
 
-	public Grade getGrade(ItemStack item) {
-		return Grade.STONE;
-	}
-
 	private void updateComponent() {
 		AbstractSpellComponent component = null;
 		Grade grade = Grade.UNKNOWN;
 		if (getCurrentSelectedSlot() != null && getCurrentSelectedSlot().getItem().getItem() instanceof RuneItem) {
 			component = getCurrentSelectedSlot().getComponent();
-			grade = getGrade(getCurrentSelectedSlot().getItem());
+			grade = RuneItem.getGrade(getCurrentSelectedSlot().getItem());
+			System.out.println("Grade is " + grade.name());
 		}
 
 		componentPage.setComponent(grade, component);
@@ -152,8 +148,9 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 			if (this.timesInventoryChanged != this.minecraft.player.inventory.getTimesChanged()) {
 				this.timesInventoryChanged = this.minecraft.player.inventory.getTimesChanged();
 			}
-			if (getCurrentSelectedSlot() == null || !getCurrentSelectedSlot().hasItem()) {
+			if (getCurrentSelectedSlot() != null && !getCurrentSelectedSlot().hasItem()) {
 				updateComponent();
+				currentSelectedSlot = null;
 			}
 		}
 	}

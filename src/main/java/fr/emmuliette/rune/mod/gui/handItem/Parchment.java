@@ -36,7 +36,7 @@ public class Parchment {
 	@SubscribeEvent
 	public static void renderHandParchment(RenderHandEvent event) {
 		ItemStack is = event.getItemStack();
-		if (is.getItem() != ModItems.PARCHMENT.getItem() && is.getItem() != ModItems.SPELL.getItem()) {
+		if (is.getItem() != ModItems.PARCHMENT.get() && is.getItem() != ModItems.SPELL.get()) {
 			return;
 		}
 		renderArmWithItem(Minecraft.getInstance().player, event.getHand(), event.getItemStack(), event.getMatrixStack(),
@@ -50,12 +50,12 @@ public class Parchment {
 		HandSide handside = flag ? player.getMainArm() : player.getMainArm().getOpposite();
 		mStack.pushPose();
 		if (!itemStack.isEmpty()) {
-			if (itemStack.getItem() == ModItems.PARCHMENT.getItem()) {
+			if (itemStack.getItem() == ModItems.PARCHMENT.get()) {
 				if (flag && !player.isInvisible()) {
 					renderPlayerArm(mStack, renderBuffer, light, dems, prems, handside);
 				}
 				renderParchment(mStack, renderBuffer, light, dems, handside, dems, itemStack);
-			} else if (itemStack.getItem() == ModItems.SPELL.getItem()) {
+			} else if (itemStack.getItem() == ModItems.SPELL.get()) {
 				renderSpell();
 			}
 		}

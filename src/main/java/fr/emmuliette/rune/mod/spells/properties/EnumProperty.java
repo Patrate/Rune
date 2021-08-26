@@ -10,10 +10,15 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.StringNBT;
 
 public final class EnumProperty extends Property<String> {
-	
+
 	private Map<EnumElement, Supplier<? extends Cost<?>>> tagNCost;
 
-	public EnumProperty(String name, Grade gradeVisible, String def, Map<EnumElement, Supplier<? extends Cost<?>>> tagNCost) {
+	public EnumProperty(String name, String def, Map<EnumElement, Supplier<? extends Cost<?>>> tagNCost) {
+		this(name, Grade.UNKNOWN, def, tagNCost);
+	}
+
+	public EnumProperty(String name, Grade gradeVisible, String def,
+			Map<EnumElement, Supplier<? extends Cost<?>>> tagNCost) {
 		super(name, gradeVisible, def);
 		this.tagNCost = tagNCost;
 	}
@@ -25,8 +30,8 @@ public final class EnumProperty extends Property<String> {
 
 	@Override
 	public void setValueInternal(String s) {
-		for(EnumElement e:this.tagNCost.keySet()) {
-			if(e.getValue().equals(s)) {
+		for (EnumElement e : this.tagNCost.keySet()) {
+			if (e.getValue().equals(s)) {
 				super.setValueInternal(s);
 				return;
 			}
@@ -41,8 +46,8 @@ public final class EnumProperty extends Property<String> {
 
 	@Override
 	public Cost<?> getCost() {
-		for(EnumElement e:this.tagNCost.keySet()) {
-			if(e.getValue().equals(this.getValue()))
+		for (EnumElement e : this.tagNCost.keySet()) {
+			if (e.getValue().equals(this.getValue()))
 				return tagNCost.get(e).get();
 		}
 		// TODO throw error
@@ -53,11 +58,11 @@ public final class EnumProperty extends Property<String> {
 	public String nBTtoValue(INBT inbt) {
 		return ((StringNBT) inbt).getAsString();
 	}
-	
+
 	public Set<String> getValues(Grade grade) {
 		Set<String> retour = new HashSet<String>();
-		for(EnumElement e:this.tagNCost.keySet()) {
-			if(e.getGrade().getLevel() <= grade.getLevel()) 
+		for (EnumElement e : this.tagNCost.keySet()) {
+			if (e.getGrade().getLevel() <= grade.getLevel())
 				retour.add(e.getValue());
 		}
 		return retour;
