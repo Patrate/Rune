@@ -4,19 +4,12 @@ import java.util.Set;
 
 public enum Grade {
 
-	WOOD("GRADE_WOOD", 0), STONE("GRADE_STONE", 1), IRON("GRADE_IRON", 2), REDSTONE("GRADE_REDSTONE", 3),
-	LAPIS("GRADE_LAPIS", 3), GOLD("GRADE_GOLD", 3), DIAMOND("GRADE_DIAMOND", 4), NETHERITE("GRADE_NETHERITE", 4),
-	SECRET("GRADE_SECRET", 99), UNKNOWN("GRADE_UNKNOWN", 99);
+	WOOD(0), STONE(1), IRON(2), GOLD(3), DIAMOND(4), NETHERITE(4), SECRET(99), UNKNOWN(-1);
 
-	private String key;
 	private int level;
 
-	private Grade(String key, int level) {
-		this.key = key;
-	}
-
-	public String getKey() {
-		return key;
+	private Grade(int level) {
+		this.level = level;
 	}
 
 	public int getLevel() {

@@ -169,8 +169,8 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 			if (slotId == getResultSlotIndex()) { // RESULT SLOT ?
-				this.access.execute((p_217067_2_, p_217067_3_) -> {
-					itemstack1.getItem().onCraftedBy(itemstack1, p_217067_2_, player);
+				this.access.execute((world, p_217067_3_) -> {
+					itemstack1.getItem().onCraftedBy(itemstack1, world, player);
 				});
 				// Put it in the inventory
 				if (!this.moveItemStackTo(itemstack1, inventoryMin, inventoryMax, true)) {

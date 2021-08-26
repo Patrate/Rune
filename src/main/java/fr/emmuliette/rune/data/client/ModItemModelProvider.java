@@ -28,22 +28,17 @@ public class ModItemModelProvider extends ItemModelProvider {
 		withExistingParent("caster_block", modLoc("block/caster_block"));
 
 		ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
-		for(AbstractModObject entity:ModObjectsManager.getItemRegister()) {
-//			File f = new File("item/" + entity.getName());
-//			if(f.exists() && !f.isDirectory()) { 
-			try {	
+		for (AbstractModObject entity : ModObjectsManager.getItemRegister()) {
+			try {
 				builder(itemGenerated, entity.getName());
-			} catch(Exception e) {
+			} catch (Exception e) {
 				System.err.println("Texture for item " + entity.getName() + " doesn't exist ! " + e.getMessage());
 			}
-//			} else {
-//				System.err.println("Texture for item " + entity.getName() + " doesn't exist !");
-//			}
 		}
 	}
 
 	private ItemModelBuilder builder(ModelFile itemGenerated, String name) {
-		return getBuilder(name).parent(itemGenerated).texture("layer0","item/"+name);
+		return getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + name);
 	}
 
 }

@@ -49,7 +49,6 @@ public abstract class BlockEffectComponent extends AbstractEffectComponent {
 					Map<Grade, Integer> blockLevels = new HashMap<Grade, Integer>();
 					blockLevels.put(Grade.WOOD, 15);
 					blockLevels.put(Grade.IRON, 30);
-					blockLevels.put(Grade.REDSTONE, 60);
 					blockLevels.put(Grade.NETHERITE, 120);
 
 					Map<EnumElement, Supplier<? extends Cost<?>>> directions = new HashMap<EnumElement, Supplier<? extends Cost<?>>>();

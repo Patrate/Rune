@@ -304,38 +304,6 @@ public abstract class AbstractSpellItem extends Item {
 		return retour;
 	}
 
-	/*
-	 * private Result castSpell(float power, @Nonnull ItemStack itemStack,
-	 * LivingEntity target, World world,
-	 * 
-	 * @Nonnull LivingEntity caster, ItemUseContext itemUseContext, Hand hand) {
-	 * final Result retour = new Result(itemStack); try { ISpell cap =
-	 * itemStack.getCapability(SpellCapability.SPELL_CAPABILITY) .orElseThrow(new
-	 * SpellCapabilityExceptionSupplier(itemStack)); Spell spell = cap.getSpell();
-	 * if (spell == null) { return retour; } if (!caster.level.isClientSide) {
-	 * Boolean cont = spell.cast(power, itemStack, target, world, caster,
-	 * itemUseContext); if (cont == null) { retour.resultType =
-	 * ActionResultType.SUCCESS; retour.result = ActionResult.success(itemStack); }
-	 * else if (cont) { try { retour.consume = (itemStack.getItem() ==
-	 * ModObjects.PARCHMENT.getModItem()); } catch (NotAnItemException e) {
-	 * e.printStackTrace(); } if (retour.consume) { retour.resultType =
-	 * ActionResultType.CONSUME; retour.result = ActionResult.consume(itemStack); }
-	 * else { retour.resultType = ActionResultType.SUCCESS; retour.result =
-	 * ActionResult.success(itemStack); } } else { retour.resultType =
-	 * ActionResultType.PASS; } } else { Boolean cont = spell.castable(power,
-	 * itemStack, target, world, caster, itemUseContext); if (cont == null) {
-	 * retour.resultType = ActionResultType.SUCCESS; retour.result =
-	 * ActionResult.success(itemStack); } else if (cont) { try { retour.consume =
-	 * (itemStack.getItem() == ModObjects.PARCHMENT.getModItem()); } catch
-	 * (NotAnItemException e) { e.printStackTrace(); } if (retour.consume) {
-	 * retour.resultType = ActionResultType.CONSUME; retour.result =
-	 * ActionResult.consume(itemStack); } else { retour.resultType =
-	 * ActionResultType.SUCCESS; retour.result = ActionResult.success(itemStack); }
-	 * } else { retour.resultType = ActionResultType.PASS; } } } catch
-	 * (SpellCapabilityException e) { e.printStackTrace(); } if (retour.consume) {
-	 * itemStack.shrink(1); } return retour; }
-	 */
-
 	protected Spell getSpell(ItemStack iStack) throws SpellCapabilityException {
 		ISpell cap = iStack.getCapability(SpellCapability.SPELL_CAPABILITY)
 				.orElseThrow(new SpellCapabilityExceptionSupplier(iStack));

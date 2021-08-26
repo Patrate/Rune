@@ -18,6 +18,7 @@ import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import fr.emmuliette.rune.mod.tileEntity.ModTileEntity;
 import fr.emmuliette.rune.mod.tileEntityRenderer.ModTileEntityRenderer;
+import fr.emmuliette.rune.setup.modelBake.ModItemModelsProperties;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.EntityType;
@@ -104,5 +105,8 @@ public class Registration {
 		ModTileEntityRenderer.register();
 		ScreenManager.register(ModContainers.SPELLBINDING.get(), SpellBindingScreen::new);
 		ScreenManager.register(ModContainers.GRIMOIRE.get(), GrimoireScreen::new);
+		event.enqueueWork(() -> {
+			ModItemModelsProperties.register();
+		});
 	}
 }

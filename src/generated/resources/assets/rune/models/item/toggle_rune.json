@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "rune:item/toggle_rune"
-  }
+  "parent": "minecraft:item/generated"
 }

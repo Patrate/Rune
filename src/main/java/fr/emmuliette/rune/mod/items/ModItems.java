@@ -42,19 +42,38 @@ import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vani
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.WitherEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.structureComponent.MagicEntityComponent;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemTier;
 
 public enum ModItems {
-	WANDA(new AdvancedModItem("wand_a", RuneMain.RUNE_GROUP) {
+	WOODEN_WAND(new AdvancedModItem("wooden_wand", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new WandItem((WandItem.MagicItemProperties) new WandItem.MagicItemProperties().maxMana(5)
-					.chargeSpeed(200).tab(getGroup()).stacksTo(1));
+			return () -> new WandItem(ItemTier.WOOD, new Item.Properties().tab(getGroup()).stacksTo(1));
 		}
-	}), WANDB(new AdvancedModItem("wand_b", RuneMain.RUNE_GROUP) {
+	}), STONE_WAND(new AdvancedModItem("stone_wand", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new WandItem((WandItem.MagicItemProperties) new WandItem.MagicItemProperties().maxMana(40)
-					.chargeSpeed(20).tab(getGroup()).stacksTo(1));
+			return () -> new WandItem(ItemTier.STONE, new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	}), IRON_WAND(new AdvancedModItem("iron_wand", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new WandItem(ItemTier.IRON, new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	}), GOLDEN_WAND(new AdvancedModItem("golden_wand", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new WandItem(ItemTier.GOLD, new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	}), DIAMOND_WAND(new AdvancedModItem("diamond_wand", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new WandItem(ItemTier.DIAMOND, new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	}), NETHERITE_WAND(new AdvancedModItem("netherite_wand", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new WandItem(ItemTier.NETHERITE, new Item.Properties().tab(getGroup()).stacksTo(1));
 		}
 	}),
 
@@ -82,7 +101,8 @@ public enum ModItems {
 	// Block effects
 	MOVE_BLOCK_RUNE(new RuneModItem("move_block_rune", RuneMain.RUNE_EFFECT_GROUP, MoveBlockEffectComponent.class)),
 	PHASE_BLOCK_RUNE(new RuneModItem("phase_block_rune", RuneMain.RUNE_EFFECT_GROUP, PhaseBlockEffectComponent.class)),
-	ANCHOR_BLOCK_RUNE(new RuneModItem("anchor_block_rune", RuneMain.RUNE_EFFECT_GROUP, AnchorBlockEffectComponent.class)),
+	ANCHOR_BLOCK_RUNE(
+			new RuneModItem("anchor_block_rune", RuneMain.RUNE_EFFECT_GROUP, AnchorBlockEffectComponent.class)),
 
 	// VANILLA EFFECTS
 	BLINDNESS_RUNE(new RuneModItem("blindness_rune", RuneMain.RUNE_EFFECT_GROUP, BlindnessEffectComponent.class)),

@@ -160,7 +160,6 @@ public class ChannelingModComponent extends AbstractCastModComponent implements 
 					Map<Grade, Integer> durationLevels = new HashMap<Grade, Integer>();
 					durationLevels.put(Grade.WOOD, 2);
 					durationLevels.put(Grade.IRON, 3);
-					durationLevels.put(Grade.REDSTONE, 5);
 					durationLevels.put(Grade.NETHERITE, 7);
 
 					this.addNewProperty(new LevelProperty(KEY_CAST_SPEED, durationLevels, () -> new ManaCost(1)));

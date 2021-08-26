@@ -154,13 +154,11 @@ public abstract class PotionEffectComponent extends AbstractEffectComponent impl
 					Map<Grade, Integer> durationLevels = new HashMap<Grade, Integer>();
 					durationLevels.put(Grade.WOOD, 2);
 					durationLevels.put(Grade.IRON, 3);
-					durationLevels.put(Grade.REDSTONE, 5);
 					durationLevels.put(Grade.NETHERITE, 7);
 
 					Map<Grade, Integer> amplifierLevels = new HashMap<Grade, Integer>();
 					amplifierLevels.put(Grade.WOOD, 2);
 					amplifierLevels.put(Grade.IRON, 3);
-					amplifierLevels.put(Grade.REDSTONE, 5);
 					amplifierLevels.put(Grade.NETHERITE, 7);
 
 					this.addNewProperty(

@@ -48,9 +48,8 @@ public class DamageComponent extends AbstractEffectComponent {
 					Map<Grade, Integer> damageLevels = new HashMap<Grade, Integer>();
 					damageLevels.put(Grade.WOOD, 2);
 					damageLevels.put(Grade.IRON, 3);
-					damageLevels.put(Grade.REDSTONE, 5);
 					damageLevels.put(Grade.NETHERITE, 7);
-					
+
 					this.addNewProperty(new LevelProperty(KEY_DAMAGE_LEVEL, damageLevels, () -> new ManaCost(1), true));
 				}
 			};
