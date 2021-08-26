@@ -3,6 +3,7 @@
 325a534b052d52bc4a441d1b4176e487b9ee0850 assets/rune/blockstates/phased_block.json
 3c985b442fb8694b047070d8a45f9efb85910852 assets/rune/models/block/anchored_block.json
 3aebd4860e532208331f36aa6c15886aef7049bc assets/rune/models/block/caster_block.json
+64025afc7daf387ba69591bc9528fa5a1f459683 assets/rune/models/block/illusion_block.json
 d2c7137ebb68b748f31d21fc745e30d06f326b2c assets/rune/models/block/phased_block.json
 64025afc7daf387ba69591bc9528fa5a1f459683 assets/rune/models/block/spellbinding_block.json
 47376b609429605639ab76cf964518032bb5721e assets/rune/models/item/anchor_block_rune.json
@@ -23,6 +24,7 @@ d510f89ab6e24947afa1225c66190e05dadafa59 assets/rune/models/item/fire_rune.json
 47376b609429605639ab76cf964518032bb5721e assets/rune/models/item/glow_rune.json
 3ef17605f45e75e0760d734483bfa4b4b3d0c8b0 assets/rune/models/item/golden_wand.json
 a1c6b6882b9e7e383b790f71d771933b76d6b698 assets/rune/models/item/grimoire.json
+47376b609429605639ab76cf964518032bb5721e assets/rune/models/item/illusion_block_rune.json
 47376b609429605639ab76cf964518032bb5721e assets/rune/models/item/invisibility_rune.json
 51b09c2bc3db5c2dc4ea124f49ee20a3bc9da215 assets/rune/models/item/iron_wand.json
 47376b609429605639ab76cf964518032bb5721e assets/rune/models/item/jump_rune.json
