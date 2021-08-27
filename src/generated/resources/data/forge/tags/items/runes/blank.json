@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
-    "rune:blank_wooden_rune"
+    "rune:blank_wooden_rune",
+    "rune:blank_stone_rune",
+    "rune:blank_iron_rune",
+    "rune:blank_golden_rune",
+    "rune:blank_diamond_rune",
+    "rune:blank_netherite_rune"
   ]
 }

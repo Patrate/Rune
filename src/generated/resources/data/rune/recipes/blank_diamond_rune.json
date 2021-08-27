@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "minecraft:planks"
+      "item": "minecraft:diamond"
     },
     {
       "item": "minecraft:flint"
     }
   ],
   "result": {
-    "item": "rune:blank_wooden_rune"
+    "item": "rune:blank_diamond_rune"
   }
 }

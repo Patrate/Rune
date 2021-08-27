@@ -21,6 +21,11 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		copy(ModTags.Blocks.CASTER_BLOCK, ModTags.Items.CASTER_BLOCK);
 		copy(Tags.Blocks.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS);
 		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_WOODEN_RUNE.get());
+		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_STONE_RUNE.get());
+		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_IRON_RUNE.get());
+		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_GOLDEN_RUNE.get());
+		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_DIAMOND_RUNE.get());
+		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_NETHERITE_RUNE.get());
 	}
 
 }

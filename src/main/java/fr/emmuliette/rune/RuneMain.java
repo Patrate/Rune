@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.setup.AutoUpdater;
 import fr.emmuliette.rune.setup.Configuration;
-import fr.emmuliette.rune.setup.ModCapabilities;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemGroup;
@@ -87,7 +86,8 @@ public class RuneMain {
 		} else {
 			LOGGER.info("AUTO UPDATE DEACTIVATED");
 		}
-		ModCapabilities.register();
+		
+		Registration.setup();
 	}
 
 	@SuppressWarnings("resource")

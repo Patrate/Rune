@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "minecraft:planks"
+      "item": "minecraft:iron_ingot"
     },
     {
       "item": "minecraft:flint"
     }
   ],
   "result": {
-    "item": "rune:blank_wooden_rune"
+    "item": "rune:blank_iron_rune"
   }
 }

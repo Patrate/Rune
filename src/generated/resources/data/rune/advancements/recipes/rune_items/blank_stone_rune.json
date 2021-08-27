@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "rune:blank_wooden_rune"
+      "rune:blank_stone_rune"
     ]
   },
   "criteria": {
-    "has_planks": {
+    "has_cobblestone": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "minecraft:planks"
+            "tag": "minecraft:stone_tool_materials"
           }
         ]
       }
@@ -29,13 +29,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "rune:blank_wooden_rune"
+        "recipe": "rune:blank_stone_rune"
       }
     }
   },
   "requirements": [
     [
-      "has_planks",
+      "has_cobblestone",
       "has_flint",
       "has_the_recipe"
     ]

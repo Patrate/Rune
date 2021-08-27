@@ -6,6 +6,7 @@ import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeBuilder;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.setup.Registration;
+import net.minecraft.data.CustomRecipeBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
@@ -30,10 +31,8 @@ public class ModRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_item", has(ModItems.BLANK_WOODEN_RUNE.get())).unlockedBy("has_log", has(ItemTags.LOGS))
 				.save(consumer);
 
-		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_WOODEN_RUNE.get()).requires(Items.FLINT).requires(Items.STONE)
-				.unlockedBy("has_flint", has(Items.FLINT)).unlockedBy("has_stone", has(Items.STONE)).save(consumer);
-
 		SpellBindingRecipeBuilder.build(Registration.SPELL_RECIPE.get()).save(consumer, "spellbinding_spell_recipe");
+		CustomRecipeBuilder.special(Registration.RUNE_RECIPE.get()).save(consumer, "special_rune_recipe");
 
 		ShapedRecipeBuilder.shaped(ModItems.WOODEN_WAND.get()).define('#', Items.STICK).define('X', ItemTags.PLANKS)
 				.pattern("#").pattern("X").pattern("#").unlockedBy("has_stick", has(Items.STICK)).save(consumer);
@@ -43,23 +42,46 @@ public class ModRecipeProvider extends RecipeProvider {
 		ShapedRecipeBuilder.shaped(ModItems.IRON_WAND.get()).define('#', Items.STICK).define('X', Items.IRON_INGOT)
 				.pattern("#").pattern("X").pattern("#").unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
 				.save(consumer);
-		ShapedRecipeBuilder.shaped(ModItems.GOLDEN_WAND.get()).define('#', Items.STICK)
-				.define('X', Items.GOLD_INGOT).pattern("#").pattern("X").pattern("#")
-				.unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT)).save(consumer);
+		ShapedRecipeBuilder.shaped(ModItems.GOLDEN_WAND.get()).define('#', Items.STICK).define('X', Items.GOLD_INGOT)
+				.pattern("#").pattern("X").pattern("#").unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
+				.save(consumer);
 		ShapedRecipeBuilder.shaped(ModItems.DIAMOND_WAND.get()).define('#', Items.STICK).define('X', Items.DIAMOND)
 				.pattern("#").pattern("X").pattern("#").unlockedBy("has_diamond", has(Items.DIAMOND)).save(consumer);
 		ShapedRecipeBuilder.shaped(ModItems.NETHERITE_WAND.get()).define('#', Items.STICK)
 				.define('X', Items.NETHERITE_INGOT).pattern("#").pattern("X").pattern("#")
 				.unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT)).save(consumer);
 
-		netheriteSmithing(consumer, ModItems.DIAMOND_WAND.get(), ModItems.NETHERITE_WAND.get());
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_WOODEN_RUNE.get()).requires(ItemTags.PLANKS)
+				.requires(Items.FLINT).unlockedBy("has_planks", has(ItemTags.PLANKS))
+				.unlockedBy("has_flint", has(Items.FLINT)).save(consumer);
 
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_STONE_RUNE.get()).requires(ItemTags.STONE_TOOL_MATERIALS)
+				.requires(Items.FLINT).unlockedBy("has_cobblestone", has(ItemTags.STONE_TOOL_MATERIALS))
+				.unlockedBy("has_flint", has(Items.FLINT)).save(consumer);
+
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_IRON_RUNE.get()).requires(Items.IRON_INGOT)
+				.requires(Items.FLINT).unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+				.unlockedBy("has_flint", has(Items.FLINT)).save(consumer);
+
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_GOLDEN_RUNE.get()).requires(Items.GOLD_INGOT)
+				.requires(Items.FLINT).unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
+				.unlockedBy("has_flint", has(Items.FLINT)).save(consumer);
+
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_DIAMOND_RUNE.get()).requires(Items.DIAMOND)
+				.requires(Items.FLINT).unlockedBy("has_diamond", has(Items.DIAMOND))
+				.unlockedBy("has_flint", has(Items.FLINT)).save(consumer);
+
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_NETHERITE_RUNE.get()).requires(Items.NETHERITE_INGOT)
+				.requires(Items.FLINT).unlockedBy("has_netherite_ingot", has(Items.NETHERITE_INGOT))
+				.unlockedBy("has_flint", has(Items.FLINT)).save(consumer);
+
+		netheriteSmithing(consumer, ModItems.DIAMOND_WAND.get(), ModItems.NETHERITE_WAND.get());
 	}
 
 	@SuppressWarnings("deprecation")
-	private static void netheriteSmithing(Consumer<IFinishedRecipe> p_240469_0_, Item p_240469_1_, Item p_240469_2_) {
-		SmithingRecipeBuilder.smithing(Ingredient.of(p_240469_1_), Ingredient.of(Items.NETHERITE_INGOT), p_240469_2_)
+	private static void netheriteSmithing(Consumer<IFinishedRecipe> consumer, Item input, Item output) {
+		SmithingRecipeBuilder.smithing(Ingredient.of(input), Ingredient.of(Items.NETHERITE_INGOT), output)
 				.unlocks("has_netherite_ingot", has(Items.NETHERITE_INGOT))
-				.save(p_240469_0_, Registry.ITEM.getKey(p_240469_2_.asItem()).getPath() + "_smithing");
+				.save(consumer, Registry.ITEM.getKey(output.asItem()).getPath() + "_smithing");
 	}
 }

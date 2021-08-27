@@ -2,16 +2,16 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "rune:blank_wooden_rune"
+      "rune:blank_netherite_rune"
     ]
   },
   "criteria": {
-    "has_planks": {
+    "has_netherite_ingot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "minecraft:planks"
+            "item": "minecraft:netherite_ingot"
           }
         ]
       }
@@ -29,13 +29,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "rune:blank_wooden_rune"
+        "recipe": "rune:blank_netherite_rune"
       }
     }
   },
   "requirements": [
     [
-      "has_planks",
+      "has_netherite_ingot",
       "has_flint",
       "has_the_recipe"
     ]

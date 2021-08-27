@@ -12,7 +12,8 @@ import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireScreen;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import fr.emmuliette.rune.mod.items.ModItems;
-import fr.emmuliette.rune.mod.spells.SpellRecipe;
+import fr.emmuliette.rune.mod.specialRecipes.RuneRecipe;
+import fr.emmuliette.rune.mod.specialRecipes.SpellRecipe;
 import fr.emmuliette.rune.mod.spells.entities.ModEntities;
 import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
@@ -25,6 +26,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.potion.Effect;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
@@ -68,6 +70,15 @@ public class Registration {
 						}
 					}));
 
+	public static final RegistryObject<SpecialRecipeSerializer<RuneRecipe>> RUNE_RECIPE = Registration.RECIPE.register(
+			"crafting_special_rune",
+			() -> new SpecialRecipeSerializer<RuneRecipe>(new Function<ResourceLocation, RuneRecipe>() {
+				@Override
+				public RuneRecipe apply(ResourceLocation t) {
+					return new RuneRecipe(t);
+				}
+			}));
+
 //	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> CRAFTING_SPELL_RECIPE = Registration.RECIPE
 //			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<SpellRecipe>(new Function<ResourceLocation, SpellRecipe>() {
 //				@Override
@@ -93,8 +104,12 @@ public class Registration {
 		SyncHandler.register();
 		ModContainers.register();
 		ModEntities.register();
-
 		MainTag.register();
+	}
+	
+	public static void setup() {
+		ModCapabilities.register();
+		RuneRecipe.register();
 	}
 
 	// For client only stuff (rendering)

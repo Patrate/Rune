@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells;
+package fr.emmuliette.rune.mod.specialRecipes;
 
 import java.util.List;
 
@@ -9,6 +9,8 @@ import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingInventory;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
+import fr.emmuliette.rune.mod.spells.Spell;
+import fr.emmuliette.rune.mod.spells.SpellBuilder;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.item.BookItem;
