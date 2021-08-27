@@ -25,12 +25,12 @@ public class ModRecipeProvider extends RecipeProvider {
 
 	@Override
 	protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
-		ShapedRecipeBuilder.shaped(ModBlocks.CASTER_BLOCK.get()).define('A', ModItems.BLANK_RUNE.get())
+		ShapedRecipeBuilder.shaped(ModBlocks.CASTER_BLOCK.get()).define('A', ModItems.BLANK_WOODEN_RUNE.get())
 				.define('B', ItemTags.LOGS).pattern("BBB").pattern("BAB").pattern("BBB")
-				.unlockedBy("has_item", has(ModItems.BLANK_RUNE.get())).unlockedBy("has_log", has(ItemTags.LOGS))
+				.unlockedBy("has_item", has(ModItems.BLANK_WOODEN_RUNE.get())).unlockedBy("has_log", has(ItemTags.LOGS))
 				.save(consumer);
 
-		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_RUNE.get()).requires(Items.FLINT).requires(Items.STONE)
+		ShapelessRecipeBuilder.shapeless(ModItems.BLANK_WOODEN_RUNE.get()).requires(Items.FLINT).requires(Items.STONE)
 				.unlockedBy("has_flint", has(Items.FLINT)).unlockedBy("has_stone", has(Items.STONE)).save(consumer);
 
 		SpellBindingRecipeBuilder.build(Registration.SPELL_RECIPE.get()).save(consumer, "spellbinding_spell_recipe");

@@ -13,7 +13,7 @@ import fr.emmuliette.rune.data.client.ModSounds;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.NotEnoughManaException;
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;

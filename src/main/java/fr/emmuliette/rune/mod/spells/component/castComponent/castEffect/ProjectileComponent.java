@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.emmuliette.rune.data.client.ModSounds;
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;

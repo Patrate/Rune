@@ -2,8 +2,8 @@ package fr.emmuliette.rune.mod.capabilities.spell;
 
 import java.lang.reflect.InvocationTargetException;
 
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.SyncHandler;
-import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;

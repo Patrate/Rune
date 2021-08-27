@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "rune:item/blank_stone_rune",
+    "layer1": "rune:item/self_rune"
+  }
+}

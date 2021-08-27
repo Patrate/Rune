@@ -78,20 +78,25 @@ public enum ModItems {
 		}
 	}),
 
-	BLANK_RUNE(new ModItem("blank_rune", RuneMain.RUNE_GROUP)),
+	BLANK_WOODEN_RUNE(new ModItem("blank_wooden_rune", RuneMain.RUNE_GROUP)),
+	BLANK_STONE_RUNE(new ModItem("blank_stone_rune", RuneMain.RUNE_GROUP)),
+	BLANK_IRON_RUNE(new ModItem("blank_iron_rune", RuneMain.RUNE_GROUP)),
+	BLANK_GOLDEN_RUNE(new ModItem("blank_golden_rune", RuneMain.RUNE_GROUP)),
+	BLANK_DIAMOND_RUNE(new ModItem("blank_diamond_rune", RuneMain.RUNE_GROUP)),
+	BLANK_NETHERITE_RUNE(new ModItem("blank_netherite_rune", RuneMain.RUNE_GROUP)),
 	// Cast
-	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_OTHER_GROUP, ProjectileComponent.class)),
-	TOUCH_RUNE(new RuneModItem("touch_rune", RuneMain.RUNE_OTHER_GROUP, TouchComponent.class)),
-	SELF_RUNE(new RuneModItem("self_rune", RuneMain.RUNE_OTHER_GROUP, SelfComponent.class)),
+	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_CAST_GROUP, ProjectileComponent.class)),
+	TOUCH_RUNE(new RuneModItem("touch_rune", RuneMain.RUNE_CAST_GROUP, TouchComponent.class)),
+	SELF_RUNE(new RuneModItem("self_rune", RuneMain.RUNE_CAST_GROUP, SelfComponent.class)),
 
 	// Cast mod
-	LOAD_RUNE(new RuneModItem("load_rune", RuneMain.RUNE_OTHER_GROUP, LoadingModComponent.class)),
-	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_OTHER_GROUP, ChargingModComponent.class)),
-	CHANNEL_RUNE(new RuneModItem("channel_rune", RuneMain.RUNE_OTHER_GROUP, ChannelingModComponent.class)),
-	TOGGLE_RUNE(new RuneModItem("toggle_rune", RuneMain.RUNE_OTHER_GROUP, ToggleModComponent.class)),
+	LOAD_RUNE(new RuneModItem("load_rune", RuneMain.RUNE_CAST_GROUP, LoadingModComponent.class)),
+	CHARGE_RUNE(new RuneModItem("charge_rune", RuneMain.RUNE_CAST_GROUP, ChargingModComponent.class)),
+	CHANNEL_RUNE(new RuneModItem("channel_rune", RuneMain.RUNE_CAST_GROUP, ChannelingModComponent.class)),
+	TOGGLE_RUNE(new RuneModItem("toggle_rune", RuneMain.RUNE_CAST_GROUP, ToggleModComponent.class)),
 
 	// MAGIC ENTITY
-	MAGIC_ENTITY_RUNE(new RuneModItem("magic_entity_rune", RuneMain.RUNE_OTHER_GROUP, MagicEntityComponent.class)),
+	MAGIC_ENTITY_RUNE(new RuneModItem("magic_entity_rune", RuneMain.RUNE_CAST_GROUP, MagicEntityComponent.class)),
 
 	// Effect
 	FIRE_RUNE(new RuneModItem("fire_rune", RuneMain.RUNE_EFFECT_GROUP, FireComponent.class)),
@@ -101,7 +106,8 @@ public enum ModItems {
 
 	// Block effects
 	MOVE_BLOCK_RUNE(new RuneModItem("move_block_rune", RuneMain.RUNE_EFFECT_GROUP, MoveBlockEffectComponent.class)),
-	ILLUSION_BLOCK_RUNE(new RuneModItem("illusion_block_rune", RuneMain.RUNE_EFFECT_GROUP, IllusionBlockEffectComponent.class)),
+	ILLUSION_BLOCK_RUNE(
+			new RuneModItem("illusion_block_rune", RuneMain.RUNE_EFFECT_GROUP, IllusionBlockEffectComponent.class)),
 	PHASE_BLOCK_RUNE(new RuneModItem("phase_block_rune", RuneMain.RUNE_EFFECT_GROUP, PhaseBlockEffectComponent.class)),
 	ANCHOR_BLOCK_RUNE(
 			new RuneModItem("anchor_block_rune", RuneMain.RUNE_EFFECT_GROUP, AnchorBlockEffectComponent.class)),

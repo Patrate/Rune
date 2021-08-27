@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireInventory;

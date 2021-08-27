@@ -3,8 +3,8 @@ package fr.emmuliette.rune.mod.capabilities.caster;
 import java.lang.reflect.InvocationTargetException;
 
 import fr.emmuliette.rune.exception.NotEnoughManaException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.SyncHandler;
-import fr.emmuliette.rune.mod.RunePropertiesException;
 import fr.emmuliette.rune.mod.items.magicItems.ManaSource;
 import fr.emmuliette.rune.mod.items.magicItems.PowerSource;
 import net.minecraft.entity.Entity;

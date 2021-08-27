@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.annotation.Nullable;
 
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;

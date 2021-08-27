@@ -2,7 +2,7 @@ package fr.emmuliette.rune.mod.spells.component.castComponent.castEffect;
 
 import java.util.List;
 
-import fr.emmuliette.rune.mod.RunePropertiesException;
+import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;

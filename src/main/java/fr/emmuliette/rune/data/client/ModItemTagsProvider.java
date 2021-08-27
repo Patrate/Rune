@@ -20,7 +20,7 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 	protected void addTags() {
 		copy(ModTags.Blocks.CASTER_BLOCK, ModTags.Items.CASTER_BLOCK);
 		copy(Tags.Blocks.STORAGE_BLOCKS, Tags.Items.STORAGE_BLOCKS);
-		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_RUNE.get());
+		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_WOODEN_RUNE.get());
 	}
 
 }

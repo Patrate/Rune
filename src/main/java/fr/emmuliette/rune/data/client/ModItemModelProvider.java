@@ -5,6 +5,8 @@ import javax.annotation.Nonnull;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.AbstractModObject;
 import fr.emmuliette.rune.mod.ModObjectsManager;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.setup.ModItemModelsProperties;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -30,15 +32,41 @@ public class ModItemModelProvider extends ItemModelProvider {
 		ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
 		for (AbstractModObject entity : ModObjectsManager.getItemRegister()) {
 			try {
-				builder(itemGenerated, entity.getName());
+				builder(itemGenerated, entity, entity.getName());
 			} catch (Exception e) {
-				System.err.println("Texture for item " + entity.getName() + " doesn't exist ! " + e.getMessage());
+				try {
+					builder(itemGenerated, entity, "no_texture");
+//					getBuilder(entity.getName()).parent(itemGenerated).texture("layer0", "item/no_texture");
+					System.err.println("Texture for item " + entity.getName() + " doesn't exist ! " + e.getMessage());
+				} catch (Exception e2) {
+					System.err.println("Texture for item " + entity.getName()
+							+ " doesn't exist and no replacement found ! " + e.getMessage());
+				}
 			}
 		}
 	}
 
-	private ItemModelBuilder builder(ModelFile itemGenerated, String name) {
-		return getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + name);
+	private ItemModelBuilder builder(ModelFile itemGenerated, AbstractModObject entity, String tname) {
+		String name = entity.getName();
+		String a = "Name=" + name + ", group="
+				+ ((entity.getGroup() == null) ? "null" : entity.getGroup().getDisplayName().getString());
+		if (entity.getGroup() != null
+				&& (entity.getGroup() == RuneMain.RUNE_EFFECT_GROUP || entity.getGroup() == RuneMain.RUNE_CAST_GROUP)) {
+			System.out.println("IT'S A RUNE: " + a);
+			String[] grades = { "netherite", "diamond", "golden", "iron", "stone", "wooden" };
+
+			ItemModelBuilder base = getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + tname);
+			float i = Grade.NETHERITE.getLevel();
+			for (String grade : grades) {
+				ItemModelBuilder b = getBuilder(grade + "_" + name).parent(itemGenerated)
+						.texture("layer0", "item/blank_" + grade + "_rune").texture("layer1", "item/" + tname);
+				base.override().predicate(ModItemModelsProperties.gradeRL, i--).model(b).end();
+			}
+			return base;
+		} else {
+			System.out.println("NOT A RUNE: " + a);
+			return getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + name);
+		}
 	}
 
 }

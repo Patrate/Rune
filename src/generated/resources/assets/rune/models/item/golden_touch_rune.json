@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "rune:item/blank_golden_rune",
+    "layer1": "rune:item/touch_rune"
+  }
+}

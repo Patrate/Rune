@@ -1,3 +1,44 @@
 {
-  "parent": "minecraft:item/generated"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "rune:item/load_rune"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "rune:grade": 5.0
+      },
+      "model": "rune:item/netherite_load_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 4.0
+      },
+      "model": "rune:item/diamond_load_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 3.0
+      },
+      "model": "rune:item/golden_load_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 2.0
+      },
+      "model": "rune:item/iron_load_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 1.0
+      },
+      "model": "rune:item/stone_load_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 0.0
+      },
+      "model": "rune:item/wooden_load_rune"
+    }
+  ]
 }

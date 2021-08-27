@@ -36,7 +36,7 @@ public class RuneMain {
 	public static final ItemGroup RUNE_GROUP = new ItemGroup("rune_items") {
 		@Override
 		public ItemStack makeIcon() {
-			return ModItems.BLANK_RUNE.get().getDefaultInstance();
+			return ModItems.BLANK_WOODEN_RUNE.get().getDefaultInstance();
 		}
 	};
 	public static final ItemGroup RUNE_EFFECT_GROUP = new ItemGroup("rune_effects") {
@@ -45,7 +45,7 @@ public class RuneMain {
 			return ModItems.FIRE_RUNE.get().getDefaultInstance();
 		}
 	};
-	public static final ItemGroup RUNE_OTHER_GROUP = new ItemGroup("rune_other") {
+	public static final ItemGroup RUNE_CAST_GROUP = new ItemGroup("rune_cast") {
 		@Override
 		public ItemStack makeIcon() {
 			return ModItems.PROJECTILE_RUNE.get().getDefaultInstance();

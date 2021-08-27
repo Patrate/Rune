@@ -4,7 +4,7 @@ import java.util.Set;
 
 public enum Grade {
 
-	WOOD(0), STONE(1), IRON(2), GOLD(3), DIAMOND(4), NETHERITE(4), SECRET(99), UNKNOWN(-1);
+	WOOD(0), STONE(1), IRON(2), GOLD(3), DIAMOND(4), NETHERITE(5), SECRET(99), UNKNOWN(-1);
 
 	private int level;
 

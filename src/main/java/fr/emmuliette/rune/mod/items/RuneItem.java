@@ -8,6 +8,7 @@ import fr.emmuliette.rune.mod.spells.properties.Grade;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 public class RuneItem extends Item {
@@ -42,13 +43,20 @@ public class RuneItem extends Item {
 		}
 	}
 
+	private static final String GRADE_KEY = "grade";
+
+	private static String getGradeTag(ItemStack stack) {
+		CompoundNBT tags = stack.getOrCreateTag();
+		if (!tags.contains(GRADE_KEY))
+			tags.putString(GRADE_KEY, Grade.WOOD.name());
+		return tags.getString(GRADE_KEY);
+	}
+
 	public static Grade getGrade(ItemStack stack) {
 		if (!(stack.getItem() instanceof RuneItem)) {
 			return Grade.UNKNOWN;
 		}
-		return (stack.getTag() != null && stack.getTag().contains("grade"))
-				? Grade.valueOf(stack.getTag().getString("grade"))
-				: Grade.NETHERITE; // TODO set to UNKNOWN
+		return Grade.valueOf(getGradeTag(stack));
 	}
 
 	public static void setGrade(ItemStack stack, Grade grade) {
