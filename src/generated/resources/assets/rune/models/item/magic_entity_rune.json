@@ -6,27 +6,9 @@
   "overrides": [
     {
       "predicate": {
-        "rune:grade": 5.0
+        "rune:grade": 0.0
       },
-      "model": "rune:item/netherite_magic_entity_rune"
-    },
-    {
-      "predicate": {
-        "rune:grade": 4.0
-      },
-      "model": "rune:item/diamond_magic_entity_rune"
-    },
-    {
-      "predicate": {
-        "rune:grade": 3.0
-      },
-      "model": "rune:item/golden_magic_entity_rune"
-    },
-    {
-      "predicate": {
-        "rune:grade": 2.0
-      },
-      "model": "rune:item/iron_magic_entity_rune"
+      "model": "rune:item/wooden_magic_entity_rune"
     },
     {
       "predicate": {
@@ -36,9 +18,27 @@
     },
     {
       "predicate": {
-        "rune:grade": 0.0
+        "rune:grade": 2.0
       },
-      "model": "rune:item/wooden_magic_entity_rune"
+      "model": "rune:item/iron_magic_entity_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 3.0
+      },
+      "model": "rune:item/golden_magic_entity_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 4.0
+      },
+      "model": "rune:item/diamond_magic_entity_rune"
+    },
+    {
+      "predicate": {
+        "rune:grade": 5.0
+      },
+      "model": "rune:item/netherite_magic_entity_rune"
     }
   ]
 }

@@ -9,6 +9,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 public class RuneItem extends Item {
@@ -27,6 +29,39 @@ public class RuneItem extends Item {
 	public void onCraftedBy(ItemStack stack, World world, PlayerEntity player) {
 		// TODO ?
 		super.onCraftedBy(stack, world, player);
+	}
+
+	@Override
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		if (player.isCreative()) {
+			ItemStack item = player.getItemInHand(hand);
+			switch (RuneItem.getGrade(item)) {
+			case DIAMOND:
+				RuneItem.setGrade(item, Grade.NETHERITE);
+				break;
+			case GOLD:
+				RuneItem.setGrade(item, Grade.DIAMOND);
+				break;
+			case IRON:
+				RuneItem.setGrade(item, Grade.GOLD);
+				break;
+			case NETHERITE:
+				RuneItem.setGrade(item, Grade.WOOD);
+				break;
+			case STONE:
+				RuneItem.setGrade(item, Grade.IRON);
+				break;
+			case WOOD:
+				RuneItem.setGrade(item, Grade.STONE);
+				break;
+			case SECRET:
+			case UNKNOWN:
+			default:
+				return super.use(world, player, hand);
+			}
+			return ActionResult.success(player.getItemInHand(hand));
+		} else
+			return super.use(world, player, hand);
 	}
 
 	public AbstractSpellComponent getSpellComponent() {

@@ -36,7 +36,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 			} catch (Exception e) {
 				try {
 					builder(itemGenerated, entity, "no_texture");
-//					getBuilder(entity.getName()).parent(itemGenerated).texture("layer0", "item/no_texture");
 					System.err.println("Texture for item " + entity.getName() + " doesn't exist ! " + e.getMessage());
 				} catch (Exception e2) {
 					System.err.println("Texture for item " + entity.getName()
@@ -53,14 +52,14 @@ public class ModItemModelProvider extends ItemModelProvider {
 		if (entity.getGroup() != null
 				&& (entity.getGroup() == RuneMain.RUNE_EFFECT_GROUP || entity.getGroup() == RuneMain.RUNE_CAST_GROUP)) {
 			System.out.println("IT'S A RUNE: " + a);
-			String[] grades = { "netherite", "diamond", "golden", "iron", "stone", "wooden" };
+			String[] grades = { "wooden", "stone", "iron", "golden", "diamond", "netherite" };
 
 			ItemModelBuilder base = getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + tname);
-			float i = Grade.NETHERITE.getLevel();
+			float i = Grade.WOOD.getLevel();
 			for (String grade : grades) {
 				ItemModelBuilder b = getBuilder(grade + "_" + name).parent(itemGenerated)
 						.texture("layer0", "item/blank_" + grade + "_rune").texture("layer1", "item/" + tname);
-				base.override().predicate(ModItemModelsProperties.gradeRL, i--).model(b).end();
+				base.override().predicate(ModItemModelsProperties.gradeRL, i++).model(b).end();
 			}
 			return base;
 		} else {
