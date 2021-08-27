@@ -7,6 +7,7 @@ import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
+import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
@@ -33,10 +34,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 public abstract class AbstractSpellItem extends Item {
-	public static final String SPELL_NAME = "spell_id";
+	public static final String SPELL_ID = "spell_id";
 
-	public AbstractSpellItem(Properties p_i48487_1_) {
-		super(p_i48487_1_);
+	public static ItemStack getGrimoireSpell(Grimoire grimoire, int spellId) {
+		return grimoire.getItem(spellId);
+	}
+
+	public AbstractSpellItem(Properties prop) {
+		super(prop);
 	}
 
 	@Override
@@ -54,20 +59,11 @@ public abstract class AbstractSpellItem extends Item {
 		} else {
 			base = "";
 		}
-//		if (iStack.hasTag() && iStack.getTag().contains(SPELL_NAME))
-//			return new StringTextComponent(iStack.getTag().getString(SPELL_NAME));
 		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
 		if (iSpell != null && iSpell.getSpell() != null)
 			return new StringTextComponent(base + iSpell.getSpell().getName());
 		return super.getName(iStack);
 	}
-
-	/*
-	 * @Override public Set<ToolType> getToolTypes(ItemStack iStack) { Set<ToolType>
-	 * retour = super.getToolTypes(iStack); ISpell iSpell =
-	 * iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-	 * if(iSpell != null) { retour.add(ToolType.get("bite")); } return retour; }
-	 */
 
 	protected static class Result {
 		ActionResult<ItemStack> result;

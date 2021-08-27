@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.items.magicItems.WandItem;
-import fr.emmuliette.rune.mod.items.spellItems.GrimoireSpellItem;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.ProjectileComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.SelfComponent;
@@ -145,7 +144,7 @@ public enum ModItems {
 	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new GrimoireSpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
+			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
 		}
 	}), PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
 		@Override

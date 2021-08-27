@@ -2,25 +2,26 @@ package fr.emmuliette.rune.mod.capabilities.caster;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
 import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireInventory;
-import fr.emmuliette.rune.mod.items.spellItems.GrimoireSpellItem;
+import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
+import fr.emmuliette.rune.mod.items.spellItems.SpellItem.ItemType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 
 public class Grimoire {
-	private Map<String, ISpell> spellList;
+//	private Map<Integer, ISpell> spellList;
+	List<ISpell> spellList;
 	private GrimoireInventory inventory;
 
 	public Grimoire() {
-		spellList = new TreeMap<String, ISpell>();
+		spellList = new ArrayList<ISpell>();
 		initInventory();
 	}
 
@@ -34,42 +35,49 @@ public class Grimoire {
 	}
 
 	public boolean addSpell(ISpell spell) {
-//		System.out.println("ADDING THE SPELL TO THE GRIMOIRE CONTAINING " + spellList.size());
 		addSpellInternal(spell);
-//		System.out.println("THERE ARE NOW " + spellList.size() + " SPELLS ");
 		return true;
 	}
 
-	public boolean removeSpell(String name) {
-		removeSpellInternal(name);
+	public boolean removeSpell(Integer spellId) {
+		removeSpellInternal(spellId);
 		return true;
 	}
 
-	public ISpell getSpell(String name) {
-		return spellList.get(name);
+	public ISpell getSpell(Integer spellId) {
+		return spellList.get(spellId);
 	}
 
-	public ArrayList<ISpell> getSpells() {
-		return new ArrayList<ISpell>(spellList.values());
+	public List<ISpell> getSpells() {
+		return spellList;
 	}
 
-	public ItemStack getItem(String spellName) {
-		return GrimoireSpellItem.getGrimoireSpell(this, spellName);
+	public ItemStack getItem(Integer spellId) {
+		ISpell spell = this.getSpell(spellId);
+		if (spell == null) {
+			System.out.println("Spell is null");
+			return ItemStack.EMPTY;
+		}
+		if (spell.getSpell() == null) {
+			System.out.println("Spell.getSpell() is null");
+			return ItemStack.EMPTY;
+		}
+		return SpellItem.buildSpellItem(spell.getSpell(), ItemType.SPELL);
+//		SpellItem spellitem;
+//		spellitem = (SpellItem) ModItems.SPELL.get();
+//		ItemStack itemStack = new ItemStack(spellitem);
+//		itemStack.addTagElement(AbstractSpellItem.SPELL_ID, IntNBT.valueOf(spellId));
+//		return itemStack;
 	}
 
-	public ItemStack getItem(int index) {
-		return GrimoireSpellItem.getGrimoireSpell(this, getSpells().get(index).getSpell().getName());
-	}
-
-	private void removeSpellInternal(String name) {
-		spellList.remove(name);
+	private void removeSpellInternal(int spellId) {
+		spellList.remove(spellId);
+		initInventory();
 	}
 
 	private void addSpellInternal(ISpell spell) {
-//		System.out.println("XXXADDING THE SPELL TO THE GRIMOIRE CONTAINING " + spellList.size());
-		spellList.put(spell.getSpell().getName(), spell);
+		spellList.add(spell);
 		initInventory();
-//		System.out.println("XXXTHERE ARE NOW " + spellList.size() + " SPELLS ");
 	}
 
 	private static final String SPELL_LIST_KEY = "spell_list";
@@ -77,7 +85,7 @@ public class Grimoire {
 	public CompoundNBT toNBT() {
 		CompoundNBT retour = new CompoundNBT();
 		ListNBT sList = new ListNBT();
-		for (ISpell spell : spellList.values()) {
+		for (ISpell spell : spellList) {
 			sList.add(spell.toNBT());
 		}
 		retour.put(SPELL_LIST_KEY, sList);
@@ -106,11 +114,7 @@ public class Grimoire {
 
 	public void sync(Grimoire other) {
 		spellList.clear();
-		for (String spellName : other.spellList.keySet()) {
-			if (!spellList.containsKey(spellName)) {
-				spellList.put(spellName, other.spellList.get(spellName));
-			}
-		}
+		spellList.addAll(other.spellList);
 		initInventory();
 	}
 }

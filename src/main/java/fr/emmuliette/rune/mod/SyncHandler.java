@@ -7,6 +7,7 @@ import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterPacket;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellPacket;
+import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireActionPacket;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoirePacket;
 import fr.emmuliette.rune.mod.gui.spellbinding.CSpellBindingSlotPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -44,6 +45,8 @@ public class SyncHandler {
 		
 		HANDLER.registerMessage(disc++, CSpellBindingSlotPacket.class, CSpellBindingSlotPacket::encode, CSpellBindingSlotPacket::decode,
 				CSpellBindingSlotPacket.Handler::handle);
+		HANDLER.registerMessage(disc++, CGrimoireActionPacket.class, CGrimoireActionPacket::encode, CGrimoireActionPacket::decode,
+				CGrimoireActionPacket.Handler::handle);
 	}
 
 	/**
