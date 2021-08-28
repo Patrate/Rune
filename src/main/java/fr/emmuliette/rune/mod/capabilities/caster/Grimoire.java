@@ -7,7 +7,6 @@ import java.util.List;
 import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
-import fr.emmuliette.rune.mod.gui.grimoire.GrimoireInventory;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem.ItemType;
 import net.minecraft.item.ItemStack;
@@ -18,20 +17,9 @@ import net.minecraft.nbt.ListNBT;
 public class Grimoire {
 //	private Map<Integer, ISpell> spellList;
 	List<ISpell> spellList;
-	private GrimoireInventory inventory;
 
 	public Grimoire() {
 		spellList = new ArrayList<ISpell>();
-		initInventory();
-	}
-
-	public void initInventory() {
-		inventory = new GrimoireInventory();
-		inventory.init(this);
-	}
-
-	public GrimoireInventory getInventory() {
-		return inventory;
 	}
 
 	public boolean addSpell(ISpell spell) {
@@ -72,12 +60,10 @@ public class Grimoire {
 
 	private void removeSpellInternal(int spellId) {
 		spellList.remove(spellId);
-		initInventory();
 	}
 
 	private void addSpellInternal(ISpell spell) {
 		spellList.add(spell);
-		initInventory();
 	}
 
 	private static final String SPELL_LIST_KEY = "spell_list";
@@ -108,13 +94,11 @@ public class Grimoire {
 				}
 			}
 		}
-		retour.initInventory();
 		return retour;
 	}
 
 	public void sync(Grimoire other) {
 		spellList.clear();
 		spellList.addAll(other.spellList);
-		initInventory();
 	}
 }

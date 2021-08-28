@@ -18,11 +18,13 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE, value = Dist.CLIENT)
-public class GrimoireOpener {
+public class GrimoireOpenButton {
 	private static final ITextComponent CONTAINER_TITLE = new TranslationTextComponent("container.grimoire");
 	private static final ResourceLocation GRIMOIRE_BUTTON_LOCATION = new ResourceLocation(
 			"textures/gui/recipe_button.png");
-	private static final Widget button = new ImageButton(0, 0, 20, 18, 0, 0, 19, GRIMOIRE_BUTTON_LOCATION, (button) -> {
+
+//	private static final Widget BUTTON = new ImageButton(166, 0, 20, 18, 0, 0, 19, GrimoireScreen.GRIMOIRE_LOCATION, (button) -> {
+	private static final Widget BUTTON = new ImageButton(0, 0, 20, 18, 0, 0, 19, GRIMOIRE_BUTTON_LOCATION, (button) -> {
 		Minecraft minecraft = Minecraft.getInstance();
 		minecraft.setScreen(new GrimoireScreen(ModContainers.GRIMOIRE.get().create(0, minecraft.player.inventory),
 				minecraft.player.inventory, CONTAINER_TITLE));
@@ -32,20 +34,20 @@ public class GrimoireOpener {
 	public static void openInventoryEvent(GuiScreenEvent.InitGuiEvent event) {
 		if (event.getGui() instanceof InventoryScreen) {
 			InventoryScreen gui = (InventoryScreen) event.getGui();
-			button.x = gui.getGuiLeft() + 128;
-			button.y = gui.height / 2 - 22;
-			button.visible = true;
-			button.active = true;
-			event.addWidget(button);
+			BUTTON.x = gui.getGuiLeft() + 128;
+			BUTTON.y = gui.height / 2 - 22;
+			BUTTON.visible = true;
+			BUTTON.active = true;
+			event.addWidget(BUTTON);
 		} else {
-			button.visible = false;
-			button.active = false;
+			BUTTON.visible = false;
+			BUTTON.active = false;
 		}
 	}
 
 	@SubscribeEvent
 	public static void clicButtonEvent(GuiScreenEvent.MouseClickedEvent.Pre event) {
-		if (button.mouseClicked(event.getMouseX(), event.getMouseY(), event.getButton())) {
+		if (BUTTON.mouseClicked(event.getMouseX(), event.getMouseY(), event.getButton())) {
 			event.setCanceled(true);
 		}
 	}
@@ -53,8 +55,8 @@ public class GrimoireOpener {
 	@SubscribeEvent
 	public static void clicButtonEvent(GuiScreenEvent.MouseClickedEvent.Post event) {
 		if (event.getGui() instanceof InventoryScreen) {
-			if (button.visible)
-				button.x = ((InventoryScreen) event.getGui()).getGuiLeft();
+			if (BUTTON.visible)
+				BUTTON.x = ((InventoryScreen) event.getGui()).getGuiLeft();
 		}
 	}
 }

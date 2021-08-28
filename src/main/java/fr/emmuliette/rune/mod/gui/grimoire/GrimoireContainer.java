@@ -1,8 +1,5 @@
 package fr.emmuliette.rune.mod.gui.grimoire;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
@@ -12,7 +9,6 @@ import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.containers.ModContainers;
-import fr.emmuliette.rune.mod.items.spellItems.AbstractSpellItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -34,10 +30,6 @@ public class GrimoireContainer extends Container {
 		this(containerId, playerInventory, IWorldPosCallable.NULL);
 	}
 
-	public GrimoireContainer(int containerId, PlayerInventory playerInventory) {
-		this(containerId, playerInventory, IWorldPosCallable.NULL);
-	}
-
 	public GrimoireContainer(int containerId, PlayerInventory playerInventory, IWorldPosCallable postCall) {
 		super(ModContainers.GRIMOIRE.get(), containerId);
 		this.access = postCall;
@@ -45,28 +37,52 @@ public class GrimoireContainer extends Container {
 			ICaster cap = playerInventory.player.getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(playerInventory.player));
 			grimoire = cap.getGrimoire();
-			grimoire.initInventory();
-			this.spellSlots = grimoire.getInventory();
-
+			this.spellSlots = new GrimoireInventory();
+			this.spellSlots.init(grimoire);
 			spellCount = grimoire.getSpells().size();
+
 			for (int i = 0; i < spellCount; i++) {
-				this.addSlot(new GrimoireSpellSlot(this.spellSlots, i, 26, 32 + 18 * i));
+				this.addSlot(new Slot(this.spellSlots, i, 26, 32 + 18 * i) {
+					@Override
+					public ItemStack onTake(PlayerEntity player, ItemStack item) {
+						System.out.println("ON TAKE");
+						return item.copy();
+					}
+
+					@Override
+					public boolean mayPlace(ItemStack item) {
+						return false;
+					}
+
+					@Override
+					public boolean mayPickup(PlayerEntity player) {
+						return false;
+					}
+				});
 			}
 
-			// Shortcuts TODO
-			for (int l = 0; l < 9; ++l) {
-				this.addSlot(new Slot(playerInventory, l, 56 + l * 20, 183));
+			int wx = 36;
+			int he = 137;
+
+			for (int k = 0; k < 3; ++k) {
+				for (int l = 0; l < 9; ++l) {
+					this.addSlot(new Slot(playerInventory, l + k * 9 + 9, wx + l * 18, he + k * 18));
+				}
 			}
-//			this.broadcastChanges();
+
+			for (int i1 = 0; i1 < 9; ++i1) {
+				this.addSlot(new Slot(playerInventory, i1, wx + i1 * 18, he + 58));
+			}
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void getSpellServer(final int slotId) {
+		System.out.println("Getting spell in slot " + slotId);
 		CompoundNBT nbt = new CompoundNBT();
-		nbt.putInt(AbstractSpellItem.SPELL_ID, slotId);
-		SyncHandler.sendToServer(new CGrimoireActionPacket(nbt));
+		nbt.putInt(CGrimoireGetSpellPacket.SLOT_ID, slotId);
+		SyncHandler.sendToServer(new CGrimoireGetSpellPacket(nbt));
 	}
 
 	public void removed(PlayerEntity player) {
@@ -84,49 +100,15 @@ public class GrimoireContainer extends Container {
 		return spellCount;
 	}
 
-	public Collection<GrimoireCategories> getGrimoireCategories() {
-		return Arrays.asList(
-				new GrimoireCategories[] { GrimoireCategories.CRAFTING_SEARCH, GrimoireCategories.CRAFTING_REDSTONE });
-	}
-
-	public ItemStack quickMoveStack(PlayerEntity player, int slotId) {
-		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = this.slots.get(slotId);
-		if (slot != null && slot.hasItem()) {
-			ItemStack itemstack1 = slot.getItem();
-			itemstack = itemstack1.copy();
-			if (slotId < this.spellCount) {
-				if (!this.moveItemStackTo(itemstack1, this.spellCount, this.slots.size(), true)) {
-					return ItemStack.EMPTY;
-				}
-			} else {
-				return ItemStack.EMPTY;
-			}
-
-			if (itemstack1.isEmpty()) {
-				slot.set(ItemStack.EMPTY);
-			} else {
-				slot.setChanged();
-			}
-		}
-
-		return itemstack;
-	}
-
 	@Override
 	public ItemStack clicked(int slotId, int button, ClickType clickType, PlayerEntity player) {
 		System.out.println("slotId is " + slotId + ", CLIC IS " + clickType + " - BUTTON IS " + button);
-		if (slotId != -999 && player.inventory.getCarried().isEmpty()) {
-			Slot slot = this.slots.get(slotId);
-			if (slot instanceof GrimoireSpellSlot) {
-				if (button == 0) {
-					getSpellServer(slotId);
-//					ItemStack item = this.getSlot(slotId).getItem();
-//					player.inventory.setCarried(item);
-				} else if (button == 1)
-					selectSpell(slotId);
-				return ItemStack.EMPTY;
-			}
+		if (slotId >= 0 && slotId < spellCount) {
+			if (button == 0 && player.inventory.getCarried().isEmpty()) {
+				getSpellServer(slotId);
+			} else if (button == 1)
+				selectSpell(slotId);
+			return this.getSlot(slotId).getItem();
 		}
 		return super.clicked(slotId, button, clickType, player);
 	}
@@ -146,4 +128,28 @@ public class GrimoireContainer extends Container {
 	public Grimoire getGrimoire() {
 		return grimoire;
 	}
+
+//	public ItemStack quickMoveStack(PlayerEntity player, int slotId) {
+//		ItemStack itemstack = ItemStack.EMPTY;
+//		Slot slot = this.slots.get(slotId);
+//		if (slot != null && slot.hasItem()) {
+//			ItemStack itemstack1 = slot.getItem();
+//			itemstack = itemstack1.copy();
+//			if (slotId < this.spellCount) {
+//				if (!this.moveItemStackTo(itemstack1, this.spellCount, this.slots.size(), true)) {
+//					return ItemStack.EMPTY;
+//				}
+//			} else {
+//				return ItemStack.EMPTY;
+//			}
+//
+//			if (itemstack1.isEmpty()) {
+//				slot.set(ItemStack.EMPTY);
+//			} else {
+//				slot.setChanged();
+//			}
+//		}
+//
+//		return itemstack;
+//	}
 }

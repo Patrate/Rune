@@ -52,10 +52,10 @@ public class SpellItem extends AbstractSpellItem {
 		super(properties);
 	}
 
-	@Override
-	public boolean isFoil(ItemStack itemStack) {
-		return true;
-	}
+//	@Override
+//	public boolean isFoil(ItemStack itemStack) {
+//		return true;
+//	}
 
 	@Override
 	public CompoundNBT getShareTag(ItemStack stack) {

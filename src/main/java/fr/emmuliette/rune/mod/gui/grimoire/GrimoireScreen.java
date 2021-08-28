@@ -3,7 +3,7 @@ package fr.emmuliette.rune.mod.gui.grimoire;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
+import fr.emmuliette.rune.RuneMain;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
@@ -15,46 +15,34 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implements IContainerListener {// implements
-																										// IRecipeShownListener
-																										// {
-	static final ResourceLocation GRIMOIRE_LOCATION = new ResourceLocation("textures/gui/book.png");
+public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implements IContainerListener {
+	public static final ResourceLocation GRIMOIRE_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
+			"textures/gui/grimoire.png");
 
-	private final GrimoireGui grimoireGui = new GrimoireGui();
-	private GrimoireContainer container;
+//	private final GrimoireGui grimoireGui = new GrimoireGui();
+//	private GrimoireContainer container;
 
 	public GrimoireScreen(GrimoireContainer container, PlayerInventory playerInventory, ITextComponent textComp) {
 		super(container, playerInventory, textComp);
-		this.container = container;
 	}
 
 	protected void init() {
 		super.init();
 		this.imageWidth = 146 * 2;
 		this.imageHeight = 192;
-		this.grimoireGui.init(this.width, this.height, this.minecraft, this.menu);
-		this.leftPos = this.grimoireGui.updateScreenPosition(this.width, this.imageWidth);
-		this.children.add(this.grimoireGui);
-//		this.minecraft.player.inventoryMenu.removeSlotListener(this);
+//		this.grimoireGui.init(this.width, this.height, this.minecraft, this.menu);
+//		this.leftPos = this.grimoireGui.updateScreenPosition(this.width, this.imageWidth);
+//		this.children.add(this.grimoireGui);
 		this.menu.addSlotListener(this);
-		// this.minecraft.player.inventoryMenu.addSlotListener(this.listener);
-		this.setInitialFocus(this.grimoireGui);
+//		this.setInitialFocus(this.grimoireGui);
+		minecraft.player.containerMenu = menu;
 		initGrimoireGui();
-		/*
-		 * this.addButton(new ImageButton(this.leftPos + 5, this.height / 2 - 49, 20,
-		 * 18, 0, 0, 19, RECIPE_BUTTON_LOCATION, (p_214076_1_) -> {
-		 * this.recipeBookComponent.initVisuals(this.widthTooNarrow);
-		 * this.recipeBookComponent.toggleVisibility(); this.leftPos =
-		 * this.recipeBookComponent.updateScreenPosition(this.widthTooNarrow,
-		 * this.width, this.imageWidth); ((ImageButton)
-		 * p_214076_1_).setPosition(this.leftPos + 5, this.height / 2 - 49); }));
-		 * this.titleLabelX = 29;
-		 */
 	}
 
 	private void initGrimoireGui() {
-		this.grimoireGui.initVisuals();
-		this.leftPos = this.grimoireGui.updateScreenPosition(this.width, this.imageWidth);
+		this.leftPos = (this.width - this.imageWidth) / 2;
+//		this.grimoireGui.initVisuals();
+//		this.leftPos = this.grimoireGui.updateScreenPosition(this.width, this.imageWidth);
 	}
 
 	public void tick() {
@@ -65,12 +53,10 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	public void render(MatrixStack mStack, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
 		this.renderBackground(mStack);
 		super.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
-		this.grimoireGui.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
-		// this.componentGui.renderGhostRecipe(mStack, this.leftPos, this.topPos, true,
-		// p_230430_4_);
+//		this.grimoireGui.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
 
 		this.renderTooltip(mStack, p_230430_2_, p_230430_3_);
-		this.grimoireGui.renderTooltip(mStack, this.leftPos, this.topPos, p_230430_2_, p_230430_3_);
+//		this.grimoireGui.renderTooltip(mStack, this.leftPos, this.topPos, p_230430_2_, p_230430_3_);
 
 	}
 
@@ -90,17 +76,23 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		this.blit(mStack, i + k, j, 20, 0, k, this.imageHeight);
 		mStack.popPose();
 		mStack.pushPose();
-		this.minecraft.getTextureManager().bind(SpellBindingScreen.SPELLBINDER_LOCATION);
-		for (Slot slot : container.slots) {
-			if (slot instanceof GrimoireSpellSlot) {
-				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 166, 18, 18);
-//				this.font.draw(mStack, slot.getItem().getDisplayName(), i + slot.x, j + slot.y, 4210752);
+		this.minecraft.getTextureManager().bind(GRIMOIRE_LOCATION);
+		for (int slotId = 0; slotId < this.menu.slots.size(); slotId++) {
+			Slot slot = this.menu.slots.get(slotId);
+			if (slotId < this.menu.getSpellCount()) {
+				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 222, 18, 18);
 			} else {
-				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 166, 18, 18);
+				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 222, 18, 18);
 			}
-
 		}
 		mStack.popPose();
+		mStack.pushPose();
+		for (int slotId = 0; slotId < this.menu.getSpellCount(); slotId++) {
+			Slot slot = this.menu.slots.get(slotId);
+			this.font.draw(mStack, slot.getItem().getItem().getName(slot.getItem()), i + slot.x + 20, j + slot.y + 2,
+					4210752);
+		}
+
 		this.renderSpellPage(mStack, mouseX, mouseY, p_230430_4_);
 	}
 
@@ -124,64 +116,54 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 
 	@Override
 	public boolean mouseClicked(double p_231044_1_, double p_231044_3_, int p_231044_5_) {
-		if (this.grimoireGui.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_)) {
-			this.setFocused(this.grimoireGui);
-			return true;
-		} else {
-			return super.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_);
-		}
+//		if (this.grimoireGui.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_)) {
+//			this.setFocused(this.grimoireGui);
+//			return true;
+//		} else {
+		return super.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_);
+//		}
 	}
 
 	@Override
 	protected boolean hasClickedOutside(double p_195361_1_, double p_195361_3_, int p_195361_5_, int p_195361_6_,
 			int p_195361_7_) {
-		boolean flag = p_195361_1_ < (double) p_195361_5_ || p_195361_3_ < (double) p_195361_6_
-				|| p_195361_1_ >= (double) (p_195361_5_ + this.imageWidth)
-				|| p_195361_3_ >= (double) (p_195361_6_ + this.imageHeight);
-		return this.grimoireGui.hasClickedOutside(p_195361_1_, p_195361_3_, this.leftPos, this.topPos, this.imageWidth,
-				this.imageHeight, p_195361_7_) && flag;
+		return super.hasClickedOutside(p_195361_1_, p_195361_3_, p_195361_5_, p_195361_6_, p_195361_7_);
+//		boolean flag = p_195361_1_ < (double) p_195361_5_ || p_195361_3_ < (double) p_195361_6_
+//				|| p_195361_1_ >= (double) (p_195361_5_ + this.imageWidth)
+//				|| p_195361_3_ >= (double) (p_195361_6_ + this.imageHeight);
+//		return this.grimoireGui.hasClickedOutside(p_195361_1_, p_195361_3_, this.leftPos, this.topPos, this.imageWidth,
+//				this.imageHeight, p_195361_7_) && flag;
 	}
 
 	@Override
 	protected void slotClicked(Slot slot, int mouseX, int mouseY, ClickType clickType) {
 		super.slotClicked(slot, mouseX, mouseY, clickType);
-//		if (slot == null || !(slot instanceof SpellBindingRuneSlot)) {
-//			return;
-//		}
-
-		// Quand je clique sur un spellSlot:
-		// S'il en résulte qu'il reste un spellcomponent dans le slot, alors
-		// sélectionner ça
-		// S'il en résulte que dans le selectedComponent actuel il n'y en a plus, alors
-		// kill it.
-
-		// QUand le slot change :
-
-//		if (!slot.equals(selectedSlot)) {
-//			selectSlot(slot);
-//		}
-//		this.componentGui.slotClicked(slot);
-
 	}
 
 	public void removed() {
 		if (this.minecraft.player != null && this.minecraft.player.inventory != null) {
 			this.minecraft.player.inventoryMenu.removeSlotListener(this);
 		}
-		this.grimoireGui.removed();
+//		this.grimoireGui.removed();
 		super.removed();
 	}
 
 	public void refreshContainer(Container p_71110_1_, NonNullList<ItemStack> p_71110_2_) {
-		System.out.println("Refreshing");
+		try {
+			throw new Exception("Refreshing container GrimoireScreen: " + p_71110_2_);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void slotChanged(Container container, int slot, ItemStack item) {
-//		  this.minecraft.gameMode.connection.send(new CCreativeInventoryActionPacket(slot, item));
-		System.out.println("SlotChanged");
+		try {
+			throw new Exception("SlotChanged container GrimoireScreen: " + slot + ", " + item);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void setContainerData(Container p_71112_1_, int p_71112_2_, int p_71112_3_) {
-		System.out.println("settingContainerData");
 	}
 }

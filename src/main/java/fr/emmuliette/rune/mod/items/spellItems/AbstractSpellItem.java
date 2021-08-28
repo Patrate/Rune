@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 public abstract class AbstractSpellItem extends Item {
-	public static final String SPELL_ID = "spell_id";
+//	public static final String SPELL_ID = "spell_id";
 
 	public static ItemStack getGrimoireSpell(Grimoire grimoire, int spellId) {
 		return grimoire.getItem(spellId);
