@@ -28,8 +28,8 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 
 	protected void init() {
 		super.init();
-		this.imageWidth = 146 * 2;
-		this.imageHeight = 192;
+		this.imageWidth = 176;
+		this.imageHeight = 181;
 //		this.grimoireGui.init(this.width, this.height, this.minecraft, this.menu);
 //		this.leftPos = this.grimoireGui.updateScreenPosition(this.width, this.imageWidth);
 //		this.children.add(this.grimoireGui);
@@ -65,23 +65,17 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		int i = this.leftPos;
 //		int j = (this.height - this.imageHeight) / 2;
 		int j = this.topPos;
-		int k = this.imageWidth / 2;
 		this.minecraft.getTextureManager().bind(GRIMOIRE_LOCATION);
 		mStack.pushPose();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.blit(mStack, i, j, 20, 0, k, this.imageHeight);
+		this.blit(mStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 		mStack.popPose();
-		mStack.pushPose();
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.blit(mStack, i + k, j, 20, 0, k, this.imageHeight);
-		mStack.popPose();
+
 		mStack.pushPose();
 		this.minecraft.getTextureManager().bind(GRIMOIRE_LOCATION);
-		for (int slotId = 0; slotId < this.menu.slots.size(); slotId++) {
+		for (int slotId = 0; slotId < this.menu.getSpellCount(); slotId++) {
 			Slot slot = this.menu.slots.get(slotId);
 			if (slotId < this.menu.getSpellCount()) {
-				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 222, 18, 18);
-			} else {
 				this.blit(mStack, i + slot.x - 1, j + slot.y - 1, 0, 222, 18, 18);
 			}
 		}

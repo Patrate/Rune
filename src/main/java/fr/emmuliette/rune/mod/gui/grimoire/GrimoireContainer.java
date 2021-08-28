@@ -61,8 +61,8 @@ public class GrimoireContainer extends Container {
 				});
 			}
 
-			int wx = 36;
-			int he = 137;
+			int wx = 8;
+			int he = 99;
 
 			for (int k = 0; k < 3; ++k) {
 				for (int l = 0; l < 9; ++l) {
