@@ -205,7 +205,8 @@ public abstract class AbstractSpellItem extends Item {
 	}
 
 	protected boolean learnSpell(ItemStack item, Entity caster) {
-		if (Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.get())
+//		if (Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.get())
+		if (item.getItem() == ModItems.GRIMOIRE.get())
 			return learnFromGrimoire(item, caster);
 		return false;
 	}

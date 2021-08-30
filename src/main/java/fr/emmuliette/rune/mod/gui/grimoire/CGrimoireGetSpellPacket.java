@@ -14,7 +14,7 @@ import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class CGrimoireGetSpellPacket {
-	static final String SLOT_ID = "slot_id";
+	static final String SPELL_ID = "spell_id";
 	private final CompoundNBT nbt;
 
 	public CGrimoireGetSpellPacket(CompoundNBT nbt) {
@@ -48,12 +48,12 @@ public class CGrimoireGetSpellPacket {
 			if (caster == null)
 				System.out.println("CASTER IS NULL");
 			else {
-				int slotId = msg.nbt.getInt(SLOT_ID);
-				ItemStack itemstack = AbstractSpellItem.getGrimoireSpell(caster.getGrimoire(), slotId);
-				player.inventory.setCarried(itemstack);
-//				player.inventoryMenu.setItem(slotId, itemstack);
-//				player.inventoryMenu.setSynched(player, true);
-//				player.inventoryMenu.broadcastChanges();
+				int spellId = msg.nbt.getInt(SPELL_ID);
+				ItemStack itemstack = AbstractSpellItem.getGrimoireSpell(caster.getGrimoire(), spellId);
+//				player.inventory.setCarried(itemstack);
+				player.addItem(itemstack);
+				player.inventoryMenu.setSynched(player, true);
+				player.inventoryMenu.broadcastChanges();
 			}
 		}
 	}

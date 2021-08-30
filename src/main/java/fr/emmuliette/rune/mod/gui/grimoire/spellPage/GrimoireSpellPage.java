@@ -1,114 +1,56 @@
 package fr.emmuliette.rune.mod.gui.grimoire.spellPage;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 
-import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingContainer;
+import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.gui.grimoire.GrimoireScreen;
 import fr.emmuliette.rune.mod.gui.spellbinding.componentScreen.ComponentGui;
-import fr.emmuliette.rune.mod.gui.spellbinding.componentScreen.widgets.PropertyWidget;
-import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.Property;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.recipebook.RecipeOverlayGui;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.IGuiEventListener;
+import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.widget.ToggleWidget;
-import net.minecraft.item.crafting.RecipeBook;
+import net.minecraft.client.gui.widget.button.ImageButton;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class GrimoireSpellPage {
-	private final static int COMP_PER_PAGE = 4;
-	private final List<PropertyWidget<?>> buttons = Lists.newArrayListWithCapacity(20);
-	private PropertyWidget<?> hoveredButton;
-	private final RecipeOverlayGui overlay = new RecipeOverlayGui();
+public class GrimoireSpellPage extends AbstractGui implements IRenderable, IGuiEventListener {
+	public static final ResourceLocation SPELL_PAGE_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
+			"textures/gui/component_page.png");
+	private static final ResourceLocation SPELL_BUTTON_LOCATION = new ResourceLocation(
+			"textures/gui/recipe_button.png");
+
+	private int xOffset;
+	private int width;
+	private int height;
+
 	private Minecraft minecraft;
 	private ToggleWidget forwardButton;
 	private ToggleWidget backButton;
+
+	private ImageButton getSpellButton;
 	private int totalPages;
 	private int currentPage;
-	private RecipeBook recipeBook;
-	private AbstractSpellComponent currentComponent;
-	protected SpellBindingContainer menu;
+	private int spellId;
+	protected GrimoireScreen menu;
+
+	public FontRenderer getFont() {
+		return menu.getFont();
+	}
 
 	public GrimoireSpellPage() {
-		currentComponent = null;
 	}
 
-	private int propertyX = 0;
-	private int propertyY = 0;
-
-	public void init(Minecraft minecraft, int x, int y) {
-		this.minecraft = minecraft;
-		this.recipeBook = minecraft.player.getRecipeBook();
-
-		for (int i = 0; i < this.buttons.size(); ++i) {
-			this.buttons.get(i).setPosition(x + 11 + 25 * (i % 5), y + 31 + 25 * (i / 5));
-		}
-
-		this.forwardButton = new ToggleWidget(x + 93, y + 137, 12, 17, false);
-		this.forwardButton.initTextureValues(153, 29, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
-		this.backButton = new ToggleWidget(x + 38, y + 137, 12, 17, true);
-		this.backButton.initTextureValues(153, 29, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
-		this.propertyX = x;
-		this.propertyY = y;
+	public void getSpell() {
+		menu.getSpellServer(spellId);
 	}
 
-	public void setComponent(Grade grade, AbstractSpellComponent comp) {
-//		this.buttons.clear();
-//		currentComponent = comp;
-//		if (comp == null) {
-//			System.out.println("Component is null");
-//			return;
-//		}
-//		int i = this.propertyX + 7;
-//		int j = this.propertyY + 7;
-//		int height = 32;
-//		int k = 0;
-//		this.totalPages = 1;
-//		System.out.println("Adding properties:");
-//		for (Property<?> property : comp.getProperties().getProperties(grade)) {
-//			System.out.println("Adding " + property.getName());
-//			PropertyWidget<?> widget = PropertyWidget.buildWidget(this, grade, property, currentComponent, i,
-//					j + (k % COMP_PER_PAGE) * height);
-//			if (widget.getSize() + k > COMP_PER_PAGE) {
-//				System.out.println("Too big for this page");
-//				widget.y = j;
-//				k = 0;
-//				this.totalPages += 1;
-//			}
-//			this.buttons.add(widget);
-//			k += widget.getSize();
-//		}
-//		this.currentPage = 0;
-
-//		updateButtonsForPage();
-	}
-
-	private void updateButtonsForPage() {
-//		int i = COMP_PER_PAGE * this.currentPage;
-		int k = 0;
-		int currentPage = 0;
-		for (int j = 0; j < this.buttons.size(); ++j) {
-			PropertyWidget<?> propertyWidget = this.buttons.get(j);
-			k += propertyWidget.getSize();
-			if (k > COMP_PER_PAGE)
-				currentPage++;
-			if (currentPage == this.currentPage) {
-				propertyWidget.visible = true;
-			} else {
-				propertyWidget.visible = false;
-			}
-//			if (k >= i && k < i + COMP_PER_PAGE) {
-//				propertyWidget.visible = true;
-//			} else {
-//				propertyWidget.visible = false;
-//			}
-		}
-
-		this.updateArrowButtons();
+	public void setSpell(int spellId) {
+		this.spellId = spellId;
 	}
 
 	private void updateArrowButtons() {
@@ -116,80 +58,86 @@ public class GrimoireSpellPage {
 		this.backButton.visible = this.totalPages > 1 && this.currentPage > 0;
 	}
 
-	public void render(MatrixStack mStack, int p_238927_2_, int p_238927_3_, int p_238927_4_, int p_238927_5_,
-			float p_238927_6_) {
-		// Pages
-		if (this.totalPages > 1) {
-			String s = this.currentPage + 1 + "/" + this.totalPages;
-			int i = this.minecraft.font.width(s);
-			this.minecraft.font.draw(mStack, s, (float) (p_238927_2_ - i / 2 + 73), (float) (p_238927_3_ + 141), -1);
-		}
-
-		this.hoveredButton = null;
-
-		for (PropertyWidget<?> propertyWidget : this.buttons) {
-			propertyWidget.render(mStack, p_238927_4_, p_238927_5_, p_238927_6_);
-			if (propertyWidget.visible && propertyWidget.isHovered()) {
-				this.hoveredButton = propertyWidget;
-			}
-		}
-
-		this.backButton.render(mStack, p_238927_4_, p_238927_5_, p_238927_6_);
-		this.forwardButton.render(mStack, p_238927_4_, p_238927_5_, p_238927_6_);
-		this.overlay.render(mStack, p_238927_4_, p_238927_5_, p_238927_6_);
-	}
-
-	public void renderTooltip(MatrixStack p_238926_1_, int p_238926_2_, int p_238926_3_) {
-		if (this.minecraft.screen != null && this.hoveredButton != null && !this.overlay.isVisible()) {
-			this.minecraft.screen.renderComponentTooltip(p_238926_1_,
-					this.hoveredButton.getTooltipText(this.minecraft.screen), p_238926_2_, p_238926_3_);
-		}
-
-	}
-
-	public void setInvisible() {
-		this.overlay.setVisible(false);
-	}
-
 	public boolean mouseClicked(double p_198955_1_, double p_198955_3_, int p_198955_5_, int p_198955_6_,
 			int p_198955_7_, int p_198955_8_, int p_198955_9_) {
-		if (this.overlay.isVisible()) {
-			if (this.overlay.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
-//				this.lastClickedRecipe = this.overlay.getLastRecipeClicked();
-//				this.lastClickedRecipeCollection = this.overlay.getRecipeCollection();
-			} else {
-				this.overlay.setVisible(false);
-			}
-
-			return true;
-		} else if (this.forwardButton.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
+		if (this.forwardButton.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
 			++this.currentPage;
-			this.updateButtonsForPage();
+			// this.updateButtonsForPage();
 			return true;
 		} else if (this.backButton.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
 			--this.currentPage;
-			this.updateButtonsForPage();
+			// this.updateButtonsForPage();
 			return true;
-		} else {
-			for (PropertyWidget<?> propertyWidget : this.buttons) {
-				if (propertyWidget.mouseClicked(p_198955_1_, p_198955_3_, p_198955_5_)) {
-					return true;
-				}
-			}
-
-			return false;
 		}
+		return false;
 	}
 
 	public Minecraft getMinecraft() {
 		return this.minecraft;
 	}
 
-	public RecipeBook getRecipeBook() {
-		return this.recipeBook;
+	public boolean isVisible() {
+		return menu.getSelectedSpell() != null;
 	}
 
-	public SpellBindingContainer getMenu() {
-		return menu;
+	public void init(int width, int height, Minecraft minecraft, boolean initVisuals, GrimoireScreen menu) {
+		System.out.println("INIT GRIMOIRE SPELL PAGE");
+		this.minecraft = minecraft;
+		this.menu = menu;
+		this.width = width;
+		this.height = height;
+
+		this.forwardButton = new ToggleWidget(93, 137, 12, 17, false);
+		this.forwardButton.initTextureValues(153, 29, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
+		this.backButton = new ToggleWidget(38, 137, 12, 17, true);
+		this.backButton.initTextureValues(153, 29, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
+		this.getSpellButton = new ImageButton(32, 32, 20, 18, 0, 0, 19, SPELL_BUTTON_LOCATION, (button) -> {
+			getSpell();
+		});
+		updateArrowButtons();
+		minecraft.keyboardHandler.setSendRepeatsToGui(true);
+	}
+
+	public void initVisuals(boolean widthTooNarrow) {
+		this.xOffset = widthTooNarrow ? 0 : 86;
+	}
+
+	public int updateScreenPosition(boolean widthTooNarrow, int x, int y) {
+		int i;
+		if (this.isVisible() && !widthTooNarrow) {
+			i = 177 + (x - y - 200) / 2;
+		} else {
+			i = (x - y) / 2;
+		}
+
+		return i;
+	}
+
+	@Override
+	@SuppressWarnings("deprecation")
+	public void render(MatrixStack mStack, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+		if (this.isVisible()) {
+			RenderSystem.pushMatrix();
+			RenderSystem.translatef(0.0F, 0.0F, 100.0F);
+			this.minecraft.getTextureManager().bind(SPELL_PAGE_LOCATION);
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			int i = (this.width - 147) / 2 - this.xOffset;
+			int j = (this.height - 166) / 2;
+			this.blit(mStack, i, j, 1, 1, 147, 166);
+			RenderSystem.popMatrix();
+
+			// Pages
+			if (this.totalPages > 1) {
+				String s = this.currentPage + 1 + "/" + this.totalPages;
+				int fontWidth = this.minecraft.font.width(s);
+				this.minecraft.font.draw(mStack, s, (float) (p_230430_2_ - fontWidth / 2 + 73),
+						(float) (p_230430_3_ + 141), -1);
+			}
+
+			this.backButton.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
+			this.forwardButton.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
+			this.getSpellButton.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
+
+		}
 	}
 }

@@ -1,30 +1,19 @@
 package fr.emmuliette.rune.mod.gui.grimoire;
 
-import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.exception.CasterCapabilityException;
-import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.SyncHandler;
-import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
-import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
-import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
-import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.IWorldPosCallable;
 
 public class GrimoireContainer extends Container {
-	private GrimoireInventory spellSlots;
-	private final IWorldPosCallable access;
-	private Grimoire grimoire;
-	private ISpell selectedSpell;
-	private int spellCount;
+//	private GrimoireInventory spellSlots;
+//	private final IWorldPosCallable access;
+//	private Grimoire grimoire;
+//	private ISpell selectedSpell;
+//	private int spellCount;
 
 	public GrimoireContainer(int containerId, PlayerInventory playerInventory, PacketBuffer data) {
 		this(containerId, playerInventory, IWorldPosCallable.NULL);
@@ -32,8 +21,8 @@ public class GrimoireContainer extends Container {
 
 	public GrimoireContainer(int containerId, PlayerInventory playerInventory, IWorldPosCallable postCall) {
 		super(ModContainers.GRIMOIRE.get(), containerId);
-		this.access = postCall;
-		try {
+//		this.access = postCall;
+		/*try {
 			ICaster cap = playerInventory.player.getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(playerInventory.player));
 			grimoire = cap.getGrimoire();
@@ -59,7 +48,7 @@ public class GrimoireContainer extends Container {
 						return false;
 					}
 				});
-			}
+			}*/
 
 			int wx = 8;
 			int he = 99;
@@ -73,34 +62,34 @@ public class GrimoireContainer extends Container {
 			for (int i1 = 0; i1 < 9; ++i1) {
 				this.addSlot(new Slot(playerInventory, i1, wx + i1 * 18, he + 58));
 			}
-		} catch (CasterCapabilityException e) {
-			e.printStackTrace();
-		}
+//		} catch (CasterCapabilityException e) {
+//			e.printStackTrace();
+//		}
 	}
 
-	private void getSpellServer(final int slotId) {
+/*	private void getSpellServer(final int slotId) {
 		System.out.println("Getting spell in slot " + slotId);
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.putInt(CGrimoireGetSpellPacket.SLOT_ID, slotId);
 		SyncHandler.sendToServer(new CGrimoireGetSpellPacket(nbt));
-	}
+	}*/
 
 	public void removed(PlayerEntity player) {
 		super.removed(player);
-		this.access.execute((p_217068_2_, p_217068_3_) -> {
-			this.clearContainer(player, p_217068_2_, this.spellSlots);
-		});
+//		this.access.execute((p_217068_2_, p_217068_3_) -> {
+//			this.clearContainer(player, p_217068_2_, this.spellSlots);
+//		});
 	}
 
 	public boolean stillValid(PlayerEntity player) {
 		return true;
 	}
 
-	public int getSpellCount() {
-		return spellCount;
-	}
+//	public int getSpellCount() {
+//		return spellCount;
+//	}
 
-	@Override
+/*	@Override
 	public ItemStack clicked(int slotId, int button, ClickType clickType, PlayerEntity player) {
 		System.out.println("slotId is " + slotId + ", CLIC IS " + clickType + " - BUTTON IS " + button);
 		if (slotId >= 0 && slotId < spellCount) {
@@ -111,9 +100,9 @@ public class GrimoireContainer extends Container {
 			return this.getSlot(slotId).getItem();
 		}
 		return super.clicked(slotId, button, clickType, player);
-	}
+	}*/
 
-	private void selectSpell(int slotId) {
+/*	private void selectSpell(int slotId) {
 		if (this.getSlot(slotId).getItem() == ItemStack.EMPTY) {
 			RuneMain.LOGGER.info("ITEM is EMPTY");
 		}
@@ -127,7 +116,7 @@ public class GrimoireContainer extends Container {
 
 	public Grimoire getGrimoire() {
 		return grimoire;
-	}
+	}*/
 
 //	public ItemStack quickMoveStack(PlayerEntity player, int slotId) {
 //		ItemStack itemstack = ItemStack.EMPTY;
