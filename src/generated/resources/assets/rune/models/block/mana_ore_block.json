@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "rune:block/illusion_block"
+    "all": "rune:block/mana_ore_block"
   }
 }

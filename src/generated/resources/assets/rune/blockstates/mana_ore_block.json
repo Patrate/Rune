@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "rune:block/mana_ore_block"
+    }
+  }
+}

@@ -86,13 +86,10 @@ public class Spell {
 	public Boolean castSocketItem(float power, ItemStack itemStack, LivingEntity target, World world,
 			LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, boolean channeling,
 			ItemStack socketItem) {
-		System.out.println("CASTING SOCKET");
 		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext,
 				socketItem);
 		Boolean canCast = startingComponent.canCast(context);
-		System.out.println("CANCAST == " + canCast);
 		if (canCast == null || canCast == true) {
-			System.out.println("CASTING");
 			return startingComponent.cast(context);
 		}
 		return false;

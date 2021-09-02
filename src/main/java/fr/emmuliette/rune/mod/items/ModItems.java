@@ -47,6 +47,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemTier;
 
 public enum ModItems {
+
 	WOODEN_WAND(new AdvancedModItem("wooden_wand", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
@@ -86,6 +87,8 @@ public enum ModItems {
 					(MagicItemProperties) new MagicItemProperties(10, 5, 1).tab(getGroup()).stacksTo(1));
 		}
 	}),
+
+	MANA_ORE(new ModItem("mana_ore", RuneMain.RUNE_GROUP)),
 
 	BLANK_WOODEN_RUNE(new ModItem("blank_wooden_rune", RuneMain.RUNE_GROUP)),
 	BLANK_STONE_RUNE(new ModItem("blank_stone_rune", RuneMain.RUNE_GROUP)),
