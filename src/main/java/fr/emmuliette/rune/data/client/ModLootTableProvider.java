@@ -52,6 +52,7 @@ public class ModLootTableProvider extends LootTableProvider {
 		protected void addTables() {
 			dropSelf(ModBlocks.CASTER_BLOCK.get());
 			dropSelf(ModBlocks.SPELLBINDING_BLOCK.get());
+			dropSelf(ModBlocks.SPELLIVERSE_BLOCK.get());
 			
 			add(ModBlocks.MANA_ORE_BLOCK.get(), (block) -> {
 				return createSilkTouchDispatchTable(block,

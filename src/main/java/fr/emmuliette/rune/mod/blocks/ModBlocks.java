@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.blocks;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingBlock;
+import fr.emmuliette.rune.mod.blocks.spelliverse.SpelliverseBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -23,6 +24,10 @@ public enum ModBlocks {
 	SPELLBINDING_BLOCK(new ModBlock("spellbinding_block", RuneMain.RUNE_GROUP,
 			() -> new SpellBindingBlock(
 					AbstractBlock.Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)))),
+
+	SPELLIVERSE_BLOCK(new ModBlock("spelliverse_block", RuneMain.RUNE_GROUP,
+			() -> new SpelliverseBlock(AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(3.0f, 3.0f)
+					.harvestLevel(1).harvestTool(ToolType.PICKAXE).sound(SoundType.NETHERRACK)))),
 
 	ILLUSION_BLOCK(new ModBlock("illusion_block", RuneMain.RUNE_GROUP,
 			() -> new IllusionBlock(AbstractBlock.Properties.of(Material.HEAVY_METAL).noCollission().noDrops()

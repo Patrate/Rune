@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireContainer;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingContainer;
+import fr.emmuliette.rune.mod.gui.spelliverse.SpelliverseContainer;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -15,6 +16,9 @@ public class ModContainers {
 
 	public static final RegistryObject<ContainerType<SpellBindingContainer>> SPELLBINDING = register("spellbinding",
 			() -> IForgeContainerType.create(SpellBindingContainer::new));
+	
+	public static final RegistryObject<ContainerType<SpelliverseContainer>> SPELLIVERSE = register("spelliverse",
+			() -> IForgeContainerType.create(SpelliverseContainer::new));
 	
 	public static final RegistryObject<ContainerType<GrimoireContainer>> GRIMOIRE = register("grimoire",
 			() -> IForgeContainerType.create(GrimoireContainer::new));

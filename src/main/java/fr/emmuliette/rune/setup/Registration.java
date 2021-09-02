@@ -11,6 +11,7 @@ import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireScreen;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
+import fr.emmuliette.rune.mod.gui.spelliverse.SpelliverseScreen;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.specialRecipes.RuneRecipe;
 import fr.emmuliette.rune.mod.specialRecipes.SocketableRecipe;
@@ -128,6 +129,7 @@ public class Registration {
 		ModTileEntityRenderer.register();
 		ScreenManager.register(ModContainers.SPELLBINDING.get(), SpellBindingScreen::new);
 		ScreenManager.register(ModContainers.GRIMOIRE.get(), GrimoireScreen::new);
+		ScreenManager.register(ModContainers.SPELLIVERSE.get(), SpelliverseScreen::new);
 		event.enqueueWork(() -> {
 			ModItemModelsProperties.register();
 		});

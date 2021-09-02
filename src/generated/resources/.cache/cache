@@ -9,6 +9,7 @@ e205d73601a0eb597f1d2859a5af99f6967ddb90 assets/rune/models/block/illusion_block
 ed645dd63fb0150790db46c7602a29edb1d67025 assets/rune/models/block/mana_ore_block.json
 d2c7137ebb68b748f31d21fc745e30d06f326b2c assets/rune/models/block/phased_block.json
 64025afc7daf387ba69591bc9528fa5a1f459683 assets/rune/models/block/spellbinding_block.json
+64025afc7daf387ba69591bc9528fa5a1f459683 assets/rune/models/block/spelliverse_block.json
 b5480e0a9e65c7e398d46c2fa226291470718915 assets/rune/models/item/anchor_block_rune.json
 3ba8bfecd2dedb14af62e6bc83f97c0cf65251cf assets/rune/models/item/blank_diamond_rune.json
 aa4a889978cbffdc0a4d211349df8d78c8e9b0c5 assets/rune/models/item/blank_golden_rune.json
@@ -63,7 +64,7 @@ e9b8e527e51b1bb2a1bdd1600ce84667f6695cea assets/rune/models/item/diamond_wand.js
 272ace4a5c41ba092cb602e544b4215930e6a51d assets/rune/models/item/diamond_wither_rune.json
 5d5edccf7790faaf1bde1ad675e36be2fb77b748 assets/rune/models/item/dig_slow_rune.json
 8c75d09da4ae9d37250da39e770f30c05c160c63 assets/rune/models/item/dig_speed_rune.json
-47376b609429605639ab76cf964518032bb5721e assets/rune/models/item/empty_socket.json
+d401f4febc9434b33e3137adeba834303b5ef9ba assets/rune/models/item/empty_socket.json
 0c7c2a0092ad5249a228dda229f565766b68b750 assets/rune/models/item/fire_resistance_rune.json
 86b22606326e59284b6ecd61640efff28b806b3e assets/rune/models/item/fire_rune.json
 29cab209b0ffff9b8b6b78e192fe00f0d65ae108 assets/rune/models/item/glow_rune.json
@@ -308,6 +309,7 @@ f0af950cf347c2c878dfc6070bca8af62ab22a8f data/rune/advancements/recipes/rune_ite
 edc5e9d4b2561f3aaf180cdd1f1c61194942caee data/rune/loot_tables/blocks/caster_block.json
 eaf30146a803ab3d7d802297d27ffe92518e9f0c data/rune/loot_tables/blocks/mana_ore_block.json
 1466dfa00d92aa63af30d295f3b2e261492c0272 data/rune/loot_tables/blocks/spellbinding_block.json
+562b177addeb2a371e273b1b8a0e1e8fa4813022 data/rune/loot_tables/blocks/spelliverse_block.json
 12048d596be3d6e8288031a461f80a6bc7498b1f data/rune/recipes/blank_diamond_rune.json
 ac48781caeb882c4b309021a31ff9c77862a2496 data/rune/recipes/blank_golden_rune.json
 d053085461cdee819ce8c79e3003b0617c05505d data/rune/recipes/blank_iron_rune.json
