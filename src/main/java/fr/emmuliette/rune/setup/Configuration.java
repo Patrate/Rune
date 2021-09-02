@@ -10,6 +10,7 @@ import fr.emmuliette.rune.RuneMain;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -38,6 +39,9 @@ public final class Configuration {
 	}
 
 	public static class Client {
+		public static enum ManaRenderMode {
+			STARS, BAR;
+		}
 
 		public static final ConfigImpl INSTANCE;
 		public static final ForgeConfigSpec SPEC;
@@ -45,6 +49,7 @@ public final class Configuration {
 		public static boolean autoUpdate;
 		public static boolean renderShortGrass;
 		public static Set<String> inactiveItem;
+		public static ManaRenderMode renderManaMode;
 
 		static {
 			final Pair<ConfigImpl, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ConfigImpl::new);
@@ -55,16 +60,21 @@ public final class Configuration {
 		public static void bake() {
 			autoUpdate = INSTANCE.autoUpdate.get();
 			inactiveItem = new HashSet<String>(INSTANCE.inactiveItemConfig.get());
+			renderManaMode = INSTANCE.renderManaMode.get();
 		}
 
 		static class ConfigImpl {
 			final BooleanValue autoUpdate;
 			final ConfigValue<List<String>> inactiveItemConfig;
+			final EnumValue<ManaRenderMode> renderManaMode;
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			private ConfigImpl(final ForgeConfigSpec.Builder builder) {
 				autoUpdate = builder.comment("Check for mod update on launch [false/true | default true]")
 						.translation(RuneMain.MOD_ID + ".config.autoUpdate").define("autoUpdate", true);
+				
+				renderManaMode = builder.comment("Rendering mode for mana (stars, bar)")
+						.translation(RuneMain.MOD_ID + ".config.renderManaMode").defineEnum("renderManaMode", ManaRenderMode.BAR);
 
 				inactiveItemConfig = ((ConfigValue) builder.comment("List of inactive items")
 						.translation(RuneMain.MOD_ID + ".config.inactiveItemConfig").defineList("inactiveItemConfig",
@@ -104,7 +114,7 @@ public final class Configuration {
 				inactiveItem = ((ConfigValue) builder.defineList("inactiveItem", ConfigHelper::getDefaultInactiveItem,
 						String.class::isInstance));
 				learnFromGrimoire = builder.comment("Spell must be learnt before being castable  [false/true | default true]")
-						.translation(RuneMain.MOD_ID + ".config.learnFromGrimoire").define("learnFromGrimoire", false);
+						.translation(RuneMain.MOD_ID + ".config.learnFromGrimoire").define("learnFromGrimoire", true);
 			}
 
 		}

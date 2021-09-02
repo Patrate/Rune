@@ -14,10 +14,10 @@ import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellStorage;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
+import fr.emmuliette.rune.mod.specialRecipes.SocketableRecipe;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -42,13 +42,7 @@ public class ModCapabilities {
 			event.addCapability(new ResourceLocation(RuneMain.MOD_ID, SpellCapability.SPELL_CAPABILITY_NAME),
 					new SpellCapability());
 		}
-		if(event.getObject().getItem() == Items.WOODEN_SWORD
-				|| event.getObject().getItem() == Items.STONE_SWORD
-				|| event.getObject().getItem() == Items.IRON_SWORD
-				|| event.getObject().getItem() == Items.GOLDEN_SWORD
-				|| event.getObject().getItem() == Items.DIAMOND_SWORD
-				|| event.getObject().getItem() == Items.NETHERITE_SWORD) {
-//		if (event.getObject().getItem().is(ModTags.Items.SOCKETABLE)) {
+		if (SocketableRecipe.isSocketable(event.getObject().getItem())) {
 			event.addCapability(new ResourceLocation(RuneMain.MOD_ID, SocketCapability.SOCKET_CAPABILITY_NAME),
 					new SocketCapability());
 		}

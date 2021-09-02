@@ -17,7 +17,10 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.data.loot.EntityLootTables;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootParameterSet;
 import net.minecraft.loot.LootParameterSets;
@@ -38,7 +41,8 @@ public class ModLootTableProvider extends LootTableProvider {
 
 	@Override
 	protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
-		return ImmutableList.of(Pair.of(ModBlockLootTables::new, LootParameterSets.BLOCK));
+		return ImmutableList.of(Pair.of(ModBlockLootTables::new, LootParameterSets.BLOCK),
+				Pair.of(ModEntityLootTables::new, LootParameterSets.ENTITY));
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public class ModLootTableProvider extends LootTableProvider {
 			dropSelf(ModBlocks.CASTER_BLOCK.get());
 			dropSelf(ModBlocks.SPELLBINDING_BLOCK.get());
 			dropSelf(ModBlocks.SPELLIVERSE_BLOCK.get());
-			
+
 			add(ModBlocks.MANA_ORE_BLOCK.get(), (block) -> {
 				return createSilkTouchDispatchTable(block,
 						applyExplosionDecay(block,
@@ -61,11 +65,46 @@ public class ModLootTableProvider extends LootTableProvider {
 										.apply(SetCount.setCount(RandomValueRange.between(1.0F, 3.0F)))
 										.apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))));
 			});
+
 		}
 
 		@Override
 		protected Iterable<Block> getKnownBlocks() {
 			return Registration.BLOCKS.getEntries().stream().map(RegistryObject::get).collect(Collectors.toList());
+		}
+	}
+
+	public static class ModEntityLootTables extends EntityLootTables {
+		@Override
+		protected void addTables() {
+			// TODO
+			addRuneTable(EntityType.COW, ModItems.TOUCH_RUNE.get());
+			/*
+			 * this.dropSelf(ModBlocks.CASTER_BLOCK.get());
+			 * dropSelf(ModBlocks.SPELLBINDING_BLOCK.get());
+			 * dropSelf(ModBlocks.SPELLIVERSE_BLOCK.get());
+			 * 
+			 * add(ModBlocks.MANA_ORE_BLOCK.get(), (block) -> { return
+			 * createSilkTouchDispatchTable(block, applyExplosionDecay(block,
+			 * ItemLootEntry.lootTableItem(ModItems.MANA_ORE.get())
+			 * .apply(SetCount.setCount(RandomValueRange.between(1.0F, 3.0F)))
+			 * .apply(ApplyBonus.addUniformBonusCount(Enchantments.BLOCK_FORTUNE)))); });
+			 */
+
+		}
+
+		private void addRuneTable(EntityType<?> entity, Item rune) {
+//			this.add(entity, LootTable.lootTable().
+//					LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantRange.exactly(1))
+//							.add(ItemLootEntry.lootTableItem(rune)
+//									.apply(SetCount.setCount(RandomValueRange.between(0.0F, 1.0F)))
+//									.apply(LootingEnchantBonus.lootingMultiplier(RandomValueRange.between(0.0F, 1.0F))))
+//							.when(KilledByPlayer.killedByPlayer())));
+		}
+
+		@Override
+		protected List<EntityType<?>> getKnownEntities() {
+			return Registration.ENTITIES.getEntries().stream().map(RegistryObject::get).collect(Collectors.toList());
 		}
 	}
 

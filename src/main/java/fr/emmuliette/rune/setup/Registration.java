@@ -13,6 +13,7 @@ import fr.emmuliette.rune.mod.gui.grimoire.GrimoireScreen;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import fr.emmuliette.rune.mod.gui.spelliverse.SpelliverseScreen;
 import fr.emmuliette.rune.mod.items.ModItems;
+import fr.emmuliette.rune.mod.specialRecipes.ParchmentCloningRecipe;
 import fr.emmuliette.rune.mod.specialRecipes.RuneRecipe;
 import fr.emmuliette.rune.mod.specialRecipes.SocketableRecipe;
 import fr.emmuliette.rune.mod.specialRecipes.SpellRecipe;
@@ -86,6 +87,15 @@ public class Registration {
 						@Override
 						public SocketableRecipe apply(ResourceLocation t) {
 							return new SocketableRecipe(t);
+						}
+					}));
+
+	public static final RegistryObject<SpecialRecipeSerializer<ParchmentCloningRecipe>> PARCHMENT_CLONING_RECIPE = Registration.RECIPE
+			.register("parchment_cloning", () -> new SpecialRecipeSerializer<ParchmentCloningRecipe>(
+					new Function<ResourceLocation, ParchmentCloningRecipe>() {
+						@Override
+						public ParchmentCloningRecipe apply(ResourceLocation t) {
+							return new ParchmentCloningRecipe(t);
 						}
 					}));
 

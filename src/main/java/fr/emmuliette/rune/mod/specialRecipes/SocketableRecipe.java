@@ -8,13 +8,24 @@ import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.setup.ModTags;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.AxeItem;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PickaxeItem;
+import net.minecraft.item.ShovelItem;
+import net.minecraft.item.SwordItem;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class SocketableRecipe extends SpecialRecipe {
+
+	public static boolean isSocketable(Item item) {
+		return (item instanceof SwordItem || item instanceof ShovelItem || item instanceof AxeItem
+				|| item instanceof HoeItem || item instanceof PickaxeItem);
+	}
 
 	public SocketableRecipe(ResourceLocation rl) {
 		super(rl);
@@ -29,7 +40,7 @@ public class SocketableRecipe extends SpecialRecipe {
 		for (int i = 0; i < inventory.getContainerSize(); ++i) {
 			ItemStack itemstack = inventory.getItem(i);
 			if (!itemstack.isEmpty()) {
-				if (itemstack.getItem().is(ModTags.Items.SOCKETABLE)) {
+				if (isSocketable(itemstack.getItem())) {
 					if (hasTool)
 						return false;
 					ISocket toolSocket = itemstack.getCapability(SocketCapability.SOCKET_CAPABILITY).orElse(null);
@@ -62,7 +73,7 @@ public class SocketableRecipe extends SpecialRecipe {
 		for (int i = 0; i < inventory.getContainerSize(); ++i) {
 			ItemStack itemstack = inventory.getItem(i);
 			if (!itemstack.isEmpty()) {
-				if (itemstack.getItem().is(ModTags.Items.SOCKETABLE)) {
+				if (isSocketable(itemstack.getItem())) {
 					if (tool != null)
 						return ItemStack.EMPTY;
 					ISocket toolSocket = itemstack.getCapability(SocketCapability.SOCKET_CAPABILITY).orElse(null);
