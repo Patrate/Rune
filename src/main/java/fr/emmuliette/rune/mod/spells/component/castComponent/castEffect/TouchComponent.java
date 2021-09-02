@@ -7,18 +7,20 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectC
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetBlock;
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetLivingEntity;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
+import fr.emmuliette.rune.mod.spells.tags.OtherTag;
 
 public class TouchComponent extends AbstractCastEffectComponent implements TargetBlock, TargetLivingEntity {
 
 	public TouchComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PropertyFactory.EMPTY_FACTORY.get(), parent);
+		this.addTag(OtherTag.SOCKETABLE);
 	}
 
 	@Override
 	public boolean internalCast(SpellContext context) {
-		if(context.getTargetType() == SpellContext.TargetType.BLOCK) {
+		if (context.getTargetType() == SpellContext.TargetType.BLOCK) {
 			return applyOnPosition(context.getWorld(), context.getItemUseContext().getClickedPos(), context);
-		} else if(context.getTargetType() == SpellContext.TargetType.ENTITY) {
+		} else if (context.getTargetType() == SpellContext.TargetType.ENTITY) {
 			return applyOnTarget(context.getTarget(), context);
 		} else {
 			return false;

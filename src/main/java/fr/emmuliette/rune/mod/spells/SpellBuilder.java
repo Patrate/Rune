@@ -10,6 +10,7 @@ import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
+import fr.emmuliette.rune.mod.spells.tags.OtherTag;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
@@ -42,10 +43,10 @@ public class SpellBuilder {
 					return null;
 				}
 			}
-			for(Tag tag:current.getTags().getTagSet()) {
-				if(tag instanceof SpellTag) {
+			for (Tag tag : current.getTags().getTagSet()) {
+				if (tag instanceof SpellTag) {
 					spellTags.add((SpellTag) tag);
-				} else if(tag instanceof RestrictionTag) {
+				} else if (tag instanceof RestrictionTag) {
 					// TODO
 				}
 			}
@@ -54,9 +55,9 @@ public class SpellBuilder {
 		if (requiredCastEffect && requiredEffect) {
 			return new Spell(name, start, componentList, spellTags);
 		}
-		if(!requiredCastEffect)
+		if (!requiredCastEffect)
 			RuneMain.LOGGER.info("[BUILD SPELL] No required Cast Effect");
-		if(!requiredEffect)
+		if (!requiredEffect)
 			RuneMain.LOGGER.info("[BUILD SPELL] No required Effect");
 		return null;
 	}
@@ -73,19 +74,18 @@ public class SpellBuilder {
 		return retour;
 	}
 
-	public static boolean parseSpell(List<RuneItem> runeList) {
-		return parseSpellComponents(runeListToComponents(runeList));
-	}
-	
-	public static boolean parseSpellComponents(List<AbstractSpellComponent> componentsList) {
+	public static boolean parseSpellComponents(List<AbstractSpellComponent> componentsList, boolean isSocket) {
 		if (componentsList.size() < 2) {
 			return false;
 		}
 		boolean requiredCastEffect = false, requiredEffect = false;
 		AbstractSpellComponent previous = null;
-		for (AbstractSpellComponent current:componentsList) {
+		for (AbstractSpellComponent current : componentsList) {
 			current.clear();
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
+				if (isSocket && !((AbstractCastEffectComponent) current).getTags().hasTag(OtherTag.SOCKETABLE)) {
+					return false;
+				}
 				requiredCastEffect = true;
 			}
 			if (!requiredEffect && current instanceof AbstractEffectComponent) {

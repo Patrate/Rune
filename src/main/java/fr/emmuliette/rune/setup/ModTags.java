@@ -29,6 +29,8 @@ public class ModTags {
 	public static final class Items {
 		public static final INamedTag<Item> CASTER_BLOCK = forge("storage_blocks/caster");
 		
+		public static final INamedTag<Item> SOCKETABLE = forge("socketable");
+		
 		public static final INamedTag<Item> BLANK_RUNE = forge("runes/blank");
 		public static final INamedTag<Item> PROJECTILE_RUNE = forge("runes/projectile");
 		public static final INamedTag<Item> FIRE_RUNE = forge("runes/fire");

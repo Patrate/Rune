@@ -138,7 +138,7 @@ dependencies {
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.3:7.+")
     
-    compile fg.deobf("com.github.lazyMods:Baubles:1.8.7.1-1.16.5:api")
+    compile fg.deobf('com.github.lazyMods:Baubles:1.8.7.1-1.16.5')
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

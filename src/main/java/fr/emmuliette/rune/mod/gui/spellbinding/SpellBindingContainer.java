@@ -8,6 +8,7 @@ import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -55,7 +56,8 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		this.addSlot(new Slot(this.craftSlots, 1, 138, 62) {
 			@Override
 			public boolean mayPlace(ItemStack iStack) {
-				return iStack.getItem() == Items.BOOK || iStack.getItem() == Items.PAPER;
+				return iStack.getItem() == Items.BOOK || iStack.getItem() == Items.PAPER
+						|| iStack.getItem() == ModItems.EMPTY_SOCKET.get();
 			}
 		});
 

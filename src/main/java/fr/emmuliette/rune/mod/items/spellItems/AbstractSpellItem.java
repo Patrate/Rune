@@ -16,7 +16,6 @@ import fr.emmuliette.rune.mod.event.StopCastingEvent;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
-import fr.emmuliette.rune.setup.Configuration;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -80,7 +79,7 @@ public abstract class AbstractSpellItem extends Item {
 	public boolean hurtEnemy(ItemStack itemStack, LivingEntity target, LivingEntity caster) {
 		// TODO on clic milieux, changer de mode si le spell est modal
 		final Result retour = new Result(itemStack);
-		if (!caster.level.isClientSide) {
+		if (!caster.level.isClientSide && itemStack.getItem() != ModItems.SOCKET.get()) {
 			try {
 				Spell spell = getSpell(itemStack, caster);
 				if (spell != null) {
@@ -134,23 +133,26 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity caster, LivingEntity target,
 			Hand hand) {
-		try {
-			Spell spell = getSpell(itemStack, caster);
-			if (learnSpell(itemStack, caster)) {
-				return ActionResultType.CONSUME;
-			} else {
-				spell.setCacheTarget(target);
-				Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null, hand);
-				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-					caster.startUsingItem(hand);
-					return ActionResultType.PASS;
-				}
-				return retour.resultType;
+		if (itemStack.getItem() != ModItems.SOCKET.get()) {
+			try {
+				Spell spell = getSpell(itemStack, caster);
+				if (learnSpell(itemStack, caster)) {
+					return ActionResultType.CONSUME;
+				} else {
+					spell.setCacheTarget(target);
+					Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null,
+							hand);
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						caster.startUsingItem(hand);
+						return ActionResultType.PASS;
+					}
+					return retour.resultType;
 
+				}
+			} catch (SpellCapabilityException e) {
+				e.printStackTrace();
 			}
-		} catch (SpellCapabilityException e) {
-			e.printStackTrace();
 		}
 		return ActionResultType.PASS;
 	}
@@ -159,21 +161,24 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public ActionResult<ItemStack> use(World world, PlayerEntity caster, Hand hand) {
 		ItemStack itemStack = caster.getItemInHand(hand);
-		try {
-			Spell spell = getSpell(itemStack, caster);
-			if (learnSpell(itemStack, caster)) {
-				return ActionResult.consume(itemStack);
-			} else {
-				Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null, hand);
-				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-					caster.startUsingItem(hand);
-					return ActionResult.pass(itemStack);
+		if (itemStack.getItem() != ModItems.SOCKET.get()) {
+			try {
+				Spell spell = getSpell(itemStack, caster);
+				if (learnSpell(itemStack, caster)) {
+					return ActionResult.consume(itemStack);
+				} else {
+					Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null,
+							hand);
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						caster.startUsingItem(hand);
+						return ActionResult.pass(itemStack);
+					}
+					return retour.result;
 				}
-				return retour.result;
+			} catch (SpellCapabilityException e) {
+				e.printStackTrace();
 			}
-		} catch (SpellCapabilityException e) {
-			e.printStackTrace();
 		}
 		return ActionResult.pass(itemStack);
 	}
@@ -182,24 +187,25 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public ActionResultType useOn(ItemUseContext itemUseContext) {
 		ItemStack itemStack = itemUseContext.getItemInHand();
-
-		try {
-			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-			if (learnSpell(itemStack, itemUseContext.getPlayer())) {
-				return ActionResultType.CONSUME;
-			} else {
-				spell.setCacheBlock(itemUseContext.getClickedPos());
-				Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
-						itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
-				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-					itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
-					return ActionResultType.PASS;
+		if (itemStack.getItem() != ModItems.SOCKET.get()) {
+			try {
+				Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
+				if (learnSpell(itemStack, itemUseContext.getPlayer())) {
+					return ActionResultType.CONSUME;
+				} else {
+					spell.setCacheBlock(itemUseContext.getClickedPos());
+					Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
+							itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
+						return ActionResultType.PASS;
+					}
+					return retour.resultType;
 				}
-				return retour.resultType;
+			} catch (SpellCapabilityException e) {
+				e.printStackTrace();
 			}
-		} catch (SpellCapabilityException e) {
-			e.printStackTrace();
 		}
 		return ActionResultType.PASS;
 	}

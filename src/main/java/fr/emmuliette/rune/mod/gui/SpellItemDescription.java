@@ -3,6 +3,8 @@ package fr.emmuliette.rune.mod.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.capabilities.socket.ISocket;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketCapability;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.items.spellItems.AbstractSpellItem;
@@ -20,12 +22,17 @@ public class SpellItemDescription {
 
 	@SubscribeEvent
 	public static void customTooltip(ItemTooltipEvent event) {
-		if (!(event.getItemStack().getItem() instanceof AbstractSpellItem))
-			return;
-		ISpell spell = event.getItemStack().getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if (spell == null || spell.getSpell() == null)
-			return;
-		event.getToolTip().addAll(spell.getSpell().getTooltips());
+		if (event.getItemStack().getItem() instanceof AbstractSpellItem) {
+			ISpell spell = event.getItemStack().getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
+			if (spell == null || spell.getSpell() == null)
+				return;
+			event.getToolTip().addAll(spell.getSpell().getTooltips());
+		} else {
+			ISocket socket = event.getItemStack().getCapability(SocketCapability.SOCKET_CAPABILITY).orElse(null);
+			if (socket != null && socket.getSpell() != null) {
+				event.getToolTip().addAll(socket.getSpell().getTooltips());
+			}
+		}
 	}
 
 	@SubscribeEvent

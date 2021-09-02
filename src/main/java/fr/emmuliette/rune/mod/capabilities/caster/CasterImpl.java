@@ -1,13 +1,18 @@
 package fr.emmuliette.rune.mod.capabilities.caster;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.items.magicItems.ManaSource;
 import fr.emmuliette.rune.mod.items.magicItems.PowerSource;
+import lazy.baubles.api.BaublesAPI;
+import lazy.baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -69,7 +74,7 @@ public class CasterImpl implements ICaster {
 	@Override
 	public float getPower() {
 		float equipmentPower = 0f;
-		for (ItemStack item : owner.getAllSlots()) {
+		for (ItemStack item : getEquipedItems()) {
 			if (item == ItemStack.EMPTY)
 				continue;
 			if (item.getItem() instanceof PowerSource)
@@ -86,7 +91,7 @@ public class CasterImpl implements ICaster {
 	@Override
 	public float getMana() {
 		float equipmentMana = 0f;
-		for (ItemStack item : owner.getAllSlots()) {
+		for (ItemStack item : getEquipedItems()) {
 			if (item == ItemStack.EMPTY)
 				continue;
 			if (item.getItem() instanceof ManaSource)
@@ -106,13 +111,32 @@ public class CasterImpl implements ICaster {
 	@Override
 	public float getMaxMana() {
 		float equipmentMana = 0f;
-		for (ItemStack item : owner.getAllSlots()) {
-			if (item == ItemStack.EMPTY)
-				continue;
+		for (ItemStack item : getEquipedItems()) {
 			if (item.getItem() instanceof ManaSource)
 				equipmentMana += ((ManaSource) item.getItem()).getMaxMana(item);
 		}
 		return this.maxMana + equipmentMana;
+	}
+	
+	private List<ItemStack> getEquipedItems(){
+		List<ItemStack> retour = new ArrayList<ItemStack>();
+		if (owner instanceof PlayerEntity) {
+			IBaublesItemHandler baub = BaublesAPI.getBaublesHandler((PlayerEntity) owner).orElse(null);
+			if (baub != null) {
+				for (int i = 0; i < baub.getSlots(); i++) {
+					ItemStack item = baub.getStackInSlot(i);
+					if (item == ItemStack.EMPTY)
+						continue;
+					retour.add(item);
+				}
+			}
+		}
+		for (ItemStack item : owner.getAllSlots()) {
+			if (item == ItemStack.EMPTY)
+				continue;
+			retour.add(item);
+		}
+		return retour;
 	}
 
 	@Override
@@ -127,7 +151,7 @@ public class CasterImpl implements ICaster {
 	public void delMana(float cost) throws NotEnoughManaException {
 		System.out.println("Paying cost of " + cost + " mana");
 		float remainder = cost;
-		for (ItemStack item : owner.getAllSlots()) {
+		for (ItemStack item : getEquipedItems()) {
 			if (item == ItemStack.EMPTY)
 				continue;
 			if (item.getItem() instanceof ManaSource) {

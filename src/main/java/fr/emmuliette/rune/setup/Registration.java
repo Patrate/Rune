@@ -13,6 +13,7 @@ import fr.emmuliette.rune.mod.gui.grimoire.GrimoireScreen;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.specialRecipes.RuneRecipe;
+import fr.emmuliette.rune.mod.specialRecipes.SocketableRecipe;
 import fr.emmuliette.rune.mod.specialRecipes.SpellRecipe;
 import fr.emmuliette.rune.mod.spells.entities.ModEntities;
 import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
@@ -78,6 +79,14 @@ public class Registration {
 					return new RuneRecipe(t);
 				}
 			}));
+	public static final RegistryObject<SpecialRecipeSerializer<SocketableRecipe>> SOCKET_RECIPE = Registration.RECIPE
+			.register("crafting_special_socket", () -> new SpecialRecipeSerializer<SocketableRecipe>(
+					new Function<ResourceLocation, SocketableRecipe>() {
+						@Override
+						public SocketableRecipe apply(ResourceLocation t) {
+							return new SocketableRecipe(t);
+						}
+					}));
 
 //	public static final RegistryObject<SpecialRecipeSerializer<SpellRecipe>> CRAFTING_SPELL_RECIPE = Registration.RECIPE
 //			.register("crafting_special_spell", () -> new SpecialRecipeSerializer<SpellRecipe>(new Function<ResourceLocation, SpellRecipe>() {
@@ -106,7 +115,7 @@ public class Registration {
 		ModEntities.register();
 		MainTag.register();
 	}
-	
+
 	public static void setup() {
 		ModCapabilities.register();
 		RuneRecipe.register();

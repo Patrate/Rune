@@ -95,6 +95,12 @@ public class MagicItem extends Item implements ManaSource, PowerSource {
 		private float maxMana = 10f;
 		private int chargeSpeed = 40;
 
+		public MagicItemProperties(float maxMana, int chargeSpeed, float power) {
+			this.chargeSpeed = chargeSpeed;
+			this.maxMana = maxMana;
+			this.power = power;
+		}
+
 		public MagicItem.MagicItemProperties chargeSpeed(int chargeSpeed) {
 			this.chargeSpeed = chargeSpeed;
 			return this;

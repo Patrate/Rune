@@ -5,6 +5,10 @@ import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterImpl;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterStorage;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
+import fr.emmuliette.rune.mod.capabilities.socket.ISocket;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketCapability;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketImpl;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketStorage;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
@@ -13,6 +17,7 @@ import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -27,6 +32,7 @@ public class ModCapabilities {
 	public static void register() {
 		RuneMain.LOGGER.info("Registering mod capabilities");
 		CapabilityManager.INSTANCE.register(ISpell.class, new SpellStorage(), SpellImpl::new);
+		CapabilityManager.INSTANCE.register(ISocket.class, new SocketStorage(), SocketImpl::new);
 		CapabilityManager.INSTANCE.register(ICaster.class, new CasterStorage(), CasterImpl::new);
 	}
 
@@ -35,6 +41,16 @@ public class ModCapabilities {
 		if (event.getObject().getItem() instanceof SpellItem) {
 			event.addCapability(new ResourceLocation(RuneMain.MOD_ID, SpellCapability.SPELL_CAPABILITY_NAME),
 					new SpellCapability());
+		}
+		if(event.getObject().getItem() == Items.WOODEN_SWORD
+				|| event.getObject().getItem() == Items.STONE_SWORD
+				|| event.getObject().getItem() == Items.IRON_SWORD
+				|| event.getObject().getItem() == Items.GOLDEN_SWORD
+				|| event.getObject().getItem() == Items.DIAMOND_SWORD
+				|| event.getObject().getItem() == Items.NETHERITE_SWORD) {
+//		if (event.getObject().getItem().is(ModTags.Items.SOCKETABLE)) {
+			event.addCapability(new ResourceLocation(RuneMain.MOD_ID, SocketCapability.SOCKET_CAPABILITY_NAME),
+					new SocketCapability());
 		}
 	}
 

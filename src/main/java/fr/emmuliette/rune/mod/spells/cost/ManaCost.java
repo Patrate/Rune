@@ -12,7 +12,7 @@ public class ManaCost extends Cost<Float> {
 	public ManaCost(float value) {
 		this(null, value);
 	}
-	
+
 	public ManaCost(Map<Class<? extends Cost<?>>, Cost<?>> internalCost, float value) {
 		super(internalCost);
 		this.value = value;
@@ -41,18 +41,30 @@ public class ManaCost extends Cost<Float> {
 
 	@Override
 	protected boolean internalPayCost(ICaster cap, SpellContext context) {
-		try {
-			cap.delMana(value);
-			return true;
-		} catch (NotEnoughManaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (context.getSocketItem() != null) {
+			int damage = context.getSocketItem().getDamageValue();
+			damage = (int) (damage - value);
+			if (damage >= 0) {
+				context.getSocketItem().setDamageValue(damage);
+				return true;
+			} else
+				return false;
+		} else {
+			try {
+				cap.delMana(value);
+				return true;
+			} catch (NotEnoughManaException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return false;
 		}
-		return false;
 	}
 
 	@Override
 	protected boolean internalCanPay(ICaster cap, SpellContext context) {
+		if (context.getSocketItem() != null)
+			return context.getSocketItem().getDamageValue() >= value;
 		return cap.getMana() >= value;
 	}
 }

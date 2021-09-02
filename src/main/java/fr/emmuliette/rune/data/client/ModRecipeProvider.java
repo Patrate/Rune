@@ -33,6 +33,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
 		SpellBindingRecipeBuilder.build(Registration.SPELL_RECIPE.get()).save(consumer, "spellbinding_spell_recipe");
 		CustomRecipeBuilder.special(Registration.RUNE_RECIPE.get()).save(consumer, "special_rune_recipe");
+		CustomRecipeBuilder.special(Registration.SOCKET_RECIPE.get()).save(consumer, "special_socket_recipe");
 
 		ShapedRecipeBuilder.shaped(ModItems.WOODEN_WAND.get()).define('#', Items.STICK).define('X', ItemTags.PLANKS)
 				.pattern("#").pattern("X").pattern("#").unlockedBy("has_stick", has(Items.STICK)).save(consumer);

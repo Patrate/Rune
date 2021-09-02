@@ -67,22 +67,32 @@ public class Spell {
 
 	public Boolean castSpecial(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext);
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext, null);
 		return startingComponent.specialCast(context);
 	}
 
 	public Boolean castable(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			BlockPos block, ItemUseContext itemUseContext, boolean channeling) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext);
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext, null);
 		Boolean retour = startingComponent.canCast(context);
 		return retour;
 	}
 
 	public Boolean cast(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			BlockPos block, ItemUseContext itemUseContext, boolean channeling) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext);
+		return castSocketItem(power, itemStack, target, world, caster, block, itemUseContext, channeling, null);
+	}
+
+	public Boolean castSocketItem(float power, ItemStack itemStack, LivingEntity target, World world,
+			LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, boolean channeling,
+			ItemStack socketItem) {
+		System.out.println("CASTING SOCKET");
+		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext,
+				socketItem);
 		Boolean canCast = startingComponent.canCast(context);
+		System.out.println("CANCAST == " + canCast);
 		if (canCast == null || canCast == true) {
+			System.out.println("CASTING");
 			return startingComponent.cast(context);
 		}
 		return false;

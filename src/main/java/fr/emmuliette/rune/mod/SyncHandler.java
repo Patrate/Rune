@@ -6,6 +6,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterPacket;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketPacket;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireGetSpellPacket;
 import fr.emmuliette.rune.mod.gui.spellbinding.CSpellBindingSlotPacket;
@@ -29,9 +30,9 @@ public class SyncHandler {
 	// PLAYER SERVER SYNC
 	private static final String PROTOCOL_VERSION = Integer.toString(1);
 	private static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
-			.named(new ResourceLocation(RuneMain.MOD_ID, "main"))
-			.clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals)
-			.networkProtocolVersion(() -> PROTOCOL_VERSION).simpleChannel();
+			.named(new ResourceLocation(RuneMain.MOD_ID, "main")).clientAcceptedVersions(PROTOCOL_VERSION::equals)
+			.serverAcceptedVersions(PROTOCOL_VERSION::equals).networkProtocolVersion(() -> PROTOCOL_VERSION)
+			.simpleChannel();
 
 	public static void register() {
 		int disc = 0;
@@ -39,11 +40,13 @@ public class SyncHandler {
 				SpellPacket.Handler::handle);
 		HANDLER.registerMessage(disc++, CasterPacket.class, CasterPacket::encode, CasterPacket::decode,
 				CasterPacket.Handler::handle);
-		
-		HANDLER.registerMessage(disc++, CSpellBindingSlotPacket.class, CSpellBindingSlotPacket::encode, CSpellBindingSlotPacket::decode,
-				CSpellBindingSlotPacket.Handler::handle);
-		HANDLER.registerMessage(disc++, CGrimoireGetSpellPacket.class, CGrimoireGetSpellPacket::encode, CGrimoireGetSpellPacket::decode,
-				CGrimoireGetSpellPacket.Handler::handle);
+		HANDLER.registerMessage(disc++, SocketPacket.class, SocketPacket::encode, SocketPacket::decode,
+				SocketPacket.Handler::handle);
+
+		HANDLER.registerMessage(disc++, CSpellBindingSlotPacket.class, CSpellBindingSlotPacket::encode,
+				CSpellBindingSlotPacket::decode, CSpellBindingSlotPacket.Handler::handle);
+		HANDLER.registerMessage(disc++, CGrimoireGetSpellPacket.class, CGrimoireGetSpellPacket::encode,
+				CGrimoireGetSpellPacket::decode, CGrimoireGetSpellPacket.Handler::handle);
 	}
 
 	/**

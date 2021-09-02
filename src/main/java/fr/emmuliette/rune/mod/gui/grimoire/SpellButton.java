@@ -18,7 +18,7 @@ public class SpellButton extends ImageButton {
 		super(x, y, 20, 18, 0, 0, 19, SPELL_BUTTON_LOCATION, (button) -> {
 			parent.getSpellServer(spellId);
 			// TODO
-			//parent.selectSpell(spellId);
+			// parent.selectSpell(spellId);
 		});
 		this.parent = parent;
 		this.grimoire = grimoire;

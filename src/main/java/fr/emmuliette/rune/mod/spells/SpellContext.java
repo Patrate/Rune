@@ -28,21 +28,22 @@ public class SpellContext {
 	private Set<ChannelEffect> channeled;
 	private Direction casterFacing;
 	private Direction blockDirection;
+	private ItemStack socketItem;
 
 	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
-			ItemUseContext itemUseContext) {
-		this(power, itemStack, target, world, caster, null, itemUseContext);
+			ItemUseContext itemUseContext, ItemStack socketItem) {
+		this(power, itemStack, target, world, caster, null, itemUseContext, socketItem);
 	}
 
 	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
-			BlockPos block, ItemUseContext itemUseContext) {
+			BlockPos block, ItemUseContext itemUseContext, ItemStack socketItem) {
 		if (target != null) {
 			setLivingEntityContext(power, itemStack, caster, target);
-		}
+		} else
 		// target block
 		if (itemUseContext != null) {
 			setBlockContext(power, itemUseContext);
-		}
+		} else
 		// target air
 		if (world != null) {
 			setAirContext(power, itemStack, world, caster);
@@ -54,6 +55,8 @@ public class SpellContext {
 			this.originalCaster = this.currentCaster;
 		}
 		this.casterFacing = this.currentCaster.getDirection();
+		if(socketItem != null)
+			this.socketItem = socketItem;
 	}
 
 	private void setBlockContext(float power, ItemUseContext itemUseContext) {
@@ -164,5 +167,9 @@ public class SpellContext {
 	
 	public Direction getBlockDirection() {
 		return blockDirection;
+	}
+	
+	public ItemStack getSocketItem() {
+		return socketItem;
 	}
 }

@@ -21,6 +21,13 @@ public class MainTag {
 		this.tags = new HashSet<Tag>();
 	}
 
+	public boolean hasTag(Tag tag) {
+		if (tag instanceof BuildTag)
+			return this.buildTag.equals(tag);
+		else
+			return this.tags.contains(tag);
+	}
+
 	public MainTag setTag(Tag tag) {
 		if (tag instanceof BuildTag)
 			this.buildTag = (BuildTag) tag;
@@ -41,5 +48,6 @@ public class MainTag {
 	public static void register() {
 		BuildTag.init();
 		SpellTag.init();
+		OtherTag.init();
 	}
 }

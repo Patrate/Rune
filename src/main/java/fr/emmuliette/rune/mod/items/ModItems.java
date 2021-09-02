@@ -3,6 +3,8 @@ package fr.emmuliette.rune.mod.items;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.items.baubles.AmuletItem;
+import fr.emmuliette.rune.mod.items.magicItems.MagicItem.MagicItemProperties;
 import fr.emmuliette.rune.mod.items.magicItems.WandItem;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
 import fr.emmuliette.rune.mod.spells.component.castComponent.castEffect.ProjectileComponent;
@@ -77,12 +79,23 @@ public enum ModItems {
 		}
 	}),
 
+	WOODEN_AMULET(new AdvancedModItem("wooden_amulet", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new AmuletItem(
+					(MagicItemProperties) new MagicItemProperties(10, 5, 1).tab(getGroup()).stacksTo(1));
+		}
+	}),
+
 	BLANK_WOODEN_RUNE(new ModItem("blank_wooden_rune", RuneMain.RUNE_GROUP)),
 	BLANK_STONE_RUNE(new ModItem("blank_stone_rune", RuneMain.RUNE_GROUP)),
 	BLANK_IRON_RUNE(new ModItem("blank_iron_rune", RuneMain.RUNE_GROUP)),
 	BLANK_GOLDEN_RUNE(new ModItem("blank_golden_rune", RuneMain.RUNE_GROUP)),
 	BLANK_DIAMOND_RUNE(new ModItem("blank_diamond_rune", RuneMain.RUNE_GROUP)),
 	BLANK_NETHERITE_RUNE(new ModItem("blank_netherite_rune", RuneMain.RUNE_GROUP)),
+
+	EMPTY_SOCKET(new ModItem("empty_socket", RuneMain.RUNE_GROUP)),
+
 	// Cast
 	PROJECTILE_RUNE(new RuneModItem("projectile_rune", RuneMain.RUNE_CAST_GROUP, ProjectileComponent.class)),
 	TOUCH_RUNE(new RuneModItem("touch_rune", RuneMain.RUNE_CAST_GROUP, TouchComponent.class)),

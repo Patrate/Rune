@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingInventory;
+import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
 import fr.emmuliette.rune.mod.spells.Spell;
@@ -23,12 +24,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<SpellBindingInventory> {
-	/*
-	 * public SpellRecipe(ResourceLocation id, String name, int p_i48162_3_, int
-	 * p_i48162_4_, NonNullList<Ingredient> ingredients, ItemStack result) {
-	 * super(id, name, p_i48162_3_, p_i48162_4_, ingredients, result); this.id = id;
-	 * }
-	 */
 
 	public SpellRecipe(ResourceLocation id) {
 		super(id);
@@ -62,10 +57,12 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 						return false;
 					}
 					hasPaper = true;
-					/*
-					 * } else if(itemstack.getItem() instanceof SocketItem) { if(hasPaper || hasBook
-					 * || hasSocket) { return false; } hasSocket = true;
-					 */
+
+				} else if (itemstack.getItem() == ModItems.EMPTY_SOCKET.get()) {
+					if (hasPaper || hasBook || hasSocket) {
+						return false;
+					}
+					hasSocket = true;
 				} else if (!(itemstack.getItem() instanceof RuneItem)) {
 					return false;
 				}
@@ -97,23 +94,23 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 						return ItemStack.EMPTY;
 					}
 					hasPaper = true;
-					/*
-					 * } else if(itemstack.getItem() instanceof SocketItem) { if(hasPaper || hasBook
-					 * || hasSocket) { return ItemStack.EMPTY; } hasSocket = true;
-					 */
+				} else if (itemstack.getItem() == ModItems.EMPTY_SOCKET.get()) {
+					if (hasPaper || hasBook || hasSocket) {
+						return ItemStack.EMPTY;
+					}
+					hasSocket = true;
 				} else if (!(item instanceof RuneItem)) {
 					return ItemStack.EMPTY;
 				} else {
 					list.add(spellBindingInventory.getComponent(i));
-//					list.add((RuneItem) item);
 				}
 			}
 		}
 
 		try {
-			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list)) {
+			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list, hasSocket)) {
 				Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
-				if(spell == null) {
+				if (spell == null) {
 					System.out.println("Error! buildSpell returned null");
 					return ItemStack.EMPTY;
 				}

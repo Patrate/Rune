@@ -14,6 +14,9 @@ import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.tileEntity.AnchoredTileEntity;
+import fr.emmuliette.rune.mod.tileEntity.IllusionTileEntity;
+import fr.emmuliette.rune.mod.tileEntity.PhasedTileEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -35,8 +38,14 @@ public class MoveBlockEffectComponent extends BlockEffectComponent {
 	protected boolean blockEffects(World world, BlockPos block, SpellContext context) {
 		Direction direction = Direction.byName(this.getEnumProperty(KEY_DIRECTION));
 		BlockGrid grid = this.getGridProperty(KEY_BLOCKS_LEVEL);
-		Direction dir = (context.getBlockDirection() == null)?context.getCasterFacing():context.getBlockDirection();
+		Direction dir = (context.getBlockDirection() == null) ? context.getCasterFacing() : context.getBlockDirection();
 		for (BlockPos newBlock : grid.getBlockPos(world, block, dir)) {
+			if (world.getBlockEntity(newBlock) != null) {
+				if (world.getBlockEntity(newBlock) instanceof PhasedTileEntity
+						|| world.getBlockEntity(newBlock) instanceof AnchoredTileEntity
+						|| world.getBlockEntity(newBlock) instanceof IllusionTileEntity)
+					continue;
+			}
 			System.out.println("Applying on " + newBlock.toShortString());
 			BlockPos blockpos = newBlock.relative(direction);
 			if (world.getBlockState(blockpos).getBlockState() == Blocks.AIR.defaultBlockState()) {
@@ -48,7 +57,7 @@ public class MoveBlockEffectComponent extends BlockEffectComponent {
 		}
 		return true;
 	}
-	
+
 	protected static final String KEY_DIRECTION = "direction";
 	private static final PropertyFactory PROPFACT = new PropertyFactory() {
 		@Override

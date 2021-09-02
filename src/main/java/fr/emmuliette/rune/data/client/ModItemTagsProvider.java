@@ -6,6 +6,7 @@ import fr.emmuliette.rune.setup.ModTags;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
+import net.minecraft.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -26,6 +27,13 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_GOLDEN_RUNE.get());
 		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_DIAMOND_RUNE.get());
 		tag(ModTags.Items.BLANK_RUNE).add(ModItems.BLANK_NETHERITE_RUNE.get());
+
+		tag(ModTags.Items.SOCKETABLE).add(Items.WOODEN_SWORD);
+		tag(ModTags.Items.SOCKETABLE).add(Items.STONE_SWORD);
+		tag(ModTags.Items.SOCKETABLE).add(Items.IRON_SWORD);
+		tag(ModTags.Items.SOCKETABLE).add(Items.GOLDEN_SWORD);
+		tag(ModTags.Items.SOCKETABLE).add(Items.DIAMOND_SWORD);
+		tag(ModTags.Items.SOCKETABLE).add(Items.NETHERITE_SWORD);
 	}
 
 }
