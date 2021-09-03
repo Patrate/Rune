@@ -13,7 +13,8 @@ public class TouchComponent extends AbstractCastEffectComponent implements Targe
 
 	public TouchComponent(AbstractSpellComponent parent) throws RunePropertiesException {
 		super(PropertyFactory.EMPTY_FACTORY.get(), parent);
-		this.addTag(OtherTag.SOCKETABLE);
+		this.addTag(OtherTag.SOCKETABLE).addTag(OtherTag.SOCKETABLE_TOOL).addTag(OtherTag.SOCKETABLE_ARMOR)
+				.addTag(OtherTag.SOCKETABLE_DISTANCE);
 	}
 
 	@Override

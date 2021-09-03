@@ -66,17 +66,19 @@ public abstract class Cost<T> {
 	}
 
 	public boolean canPay(ICaster cap, SpellContext context) {
-		if(cap.getOwner() instanceof PlayerEntity && ((PlayerEntity)cap.getOwner()).abilities.instabuild)
+		if (cap.getOwner() instanceof PlayerEntity && ((PlayerEntity) cap.getOwner()).abilities.instabuild)
 			return true;
 		for (Class<? extends Cost<?>> clazz : internalCost.keySet()) {
-			if (!(internalCost.get(clazz).internalCanPay(cap, context)))
+			if (!(internalCost.get(clazz).internalCanPay(cap, context))) {
+				System.out.println("Can't pay " + clazz.getName());
 				return false;
+			}
 		}
 		return true;
 	}
 
 	public boolean payCost(ICaster cap, SpellContext context) {
-		if(cap.getOwner() instanceof PlayerEntity && ((PlayerEntity)cap.getOwner()).abilities.instabuild)
+		if (cap.getOwner() instanceof PlayerEntity && ((PlayerEntity) cap.getOwner()).abilities.instabuild)
 			return true;
 		for (Class<? extends Cost<?>> clazz : internalCost.keySet()) {
 			if (!(internalCost.get(clazz).internalPayCost(cap, context)))

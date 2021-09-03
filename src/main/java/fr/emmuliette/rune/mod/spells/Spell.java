@@ -90,6 +90,7 @@ public class Spell {
 				socketItem);
 		Boolean canCast = startingComponent.canCast(context);
 		if (canCast == null || canCast == true) {
+			System.out.println("CASTING " + this.name);
 			return startingComponent.cast(context);
 		}
 		return false;
@@ -180,6 +181,10 @@ public class Spell {
 	public Cost<?> getTickCost() {
 		// TODO
 		return this.getCost();
+	}
+
+	public AbstractCastComponent<?> getStartingComponent() {
+		return startingComponent;
 	}
 
 	public Collection<? extends ITextComponent> getTooltips() {

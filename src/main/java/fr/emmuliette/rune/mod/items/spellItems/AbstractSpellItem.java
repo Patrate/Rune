@@ -307,7 +307,7 @@ public abstract class AbstractSpellItem extends Item {
 		return retour;
 	}
 
-	protected Spell getSpell(ItemStack iStack) throws SpellCapabilityException {
+	public static Spell getSpell(ItemStack iStack) throws SpellCapabilityException {
 		ISpell cap = iStack.getCapability(SpellCapability.SPELL_CAPABILITY)
 				.orElseThrow(new SpellCapabilityExceptionSupplier(iStack));
 		return cap.getSpell();
@@ -358,6 +358,19 @@ public abstract class AbstractSpellItem extends Item {
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
 			return 1f;
+		}
+	}
+
+	public static boolean hasTag(ItemStack item, SpellTag tag) {
+		Spell spell;
+		try {
+			spell = getSpell(item);
+			if (spell == null)
+				return false;
+			return spell.hasTag(tag);
+		} catch (SpellCapabilityException e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 }

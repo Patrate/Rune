@@ -139,6 +139,7 @@ public class MagicEntityComponent<T extends AbstractSpellComponent> extends Abst
 
 	@Override
 	public void clearChildrens() {
-		this.children.clear();
+		if (this.children != null)
+			this.children.clear();
 	}
 }

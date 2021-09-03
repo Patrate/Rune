@@ -43,7 +43,7 @@ public class ManaCost extends Cost<Float> {
 	protected boolean internalPayCost(ICaster cap, SpellContext context) {
 		if (context.getSocketItem() != null) {
 			int damage = context.getSocketItem().getDamageValue();
-			damage = (int) (damage - value);
+			damage = (int) (damage + value);
 			if (damage >= 0) {
 				context.getSocketItem().setDamageValue(damage);
 				return true;
@@ -63,8 +63,13 @@ public class ManaCost extends Cost<Float> {
 
 	@Override
 	protected boolean internalCanPay(ICaster cap, SpellContext context) {
-		if (context.getSocketItem() != null)
-			return context.getSocketItem().getDamageValue() >= value;
+		if (context.getSocketItem() != null) {
+			System.out.println("MAX DAMAGE: " + context.getSocketItem().getMaxDamage() + ", damage value: "
+					+ context.getSocketItem().getDamageValue() + "  ("
+					+ (context.getSocketItem().getMaxDamage() - context.getSocketItem().getDamageValue()) + " >= "
+					+ value + ") ?");
+			return (context.getSocketItem().getMaxDamage() - context.getSocketItem().getDamageValue()) >= value;
+		}
 		return cap.getMana() >= value;
 	}
 }

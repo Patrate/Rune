@@ -40,6 +40,8 @@ public class SpellBuilder {
 			} else {
 				current.setParent(previous);
 				if (!previous.validate(current) || !previous.addNextPart(current)) {
+					RuneMain.LOGGER.info("[BUILD SPELL] components " + current.getClass().getSimpleName()
+							+ " can't go after " + previous.getClass().getSimpleName());
 					return null;
 				}
 			}

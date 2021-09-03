@@ -83,10 +83,10 @@ public class ProjectileComponent extends AbstractCastEffectComponent
 					speedLevels.put(Grade.WOOD, 2);
 					speedLevels.put(Grade.IRON, 3);
 					speedLevels.put(Grade.NETHERITE, 7);
-					
+
 					this.addNewProperty(new LevelProperty(KEY_SPEED, speedLevels, () -> new ManaCost(1), true)
 							.setDescription("Vitesse du projectile"));
-					
+
 					this.addNewProperty(new BoolProperty(KEY_GRAVITY, Grade.IRON, () -> new ManaCost(10))
 							.setDescription("Gravité affecte le projectile"));
 				}
