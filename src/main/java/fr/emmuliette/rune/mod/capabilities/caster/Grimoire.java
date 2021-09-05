@@ -33,11 +33,17 @@ public class Grimoire {
 	}
 
 	public ISpell getSpell(Integer spellId) {
+		if (spellId < 0 || spellId > spellList.size())
+			return null;
 		return spellList.get(spellId);
 	}
 
 	public List<ISpell> getSpells() {
 		return spellList;
+	}
+
+	public int grimoireSize() {
+		return spellList.size();
 	}
 
 	public ItemStack getItem(Integer spellId) {

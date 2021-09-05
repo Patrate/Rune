@@ -85,13 +85,11 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 					.orElseThrow(new CasterCapabilityExceptionSupplier(context.getCaster()));
 			Boolean checkCd = checkCooldown(cap, context);
 			if (checkCd == null || !checkCd) {
-				System.out.println("BAD COOLDOWN");
 				return checkCd;
 			}
 
 			Boolean checkManaCost = checkCost(cap, context);
 			if (checkManaCost == null || !checkManaCost) {
-				System.out.println("BAD MANA COST");
 				return checkManaCost;
 			}
 
@@ -102,7 +100,6 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 				checkCastType = chechCastType(context);
 
 			if (checkCastType == null || !checkCastType) {
-				System.out.println("BAD CAST TYPE");
 				return checkCastType;
 			}
 

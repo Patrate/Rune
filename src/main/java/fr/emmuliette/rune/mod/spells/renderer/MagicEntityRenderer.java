@@ -43,7 +43,7 @@ public class MagicEntityRenderer<T extends MagicEntity> extends EntityRenderer<T
 		entity.render();
 		// boat renderer !
 
-//		mStack.pushPose();
+		mStack.pushPose();
 		mStack.translate(0.0D, 0.375D, 0.0D);
 		mStack.mulPose(Vector3f.YP.rotationDegrees(180.0F - p_225623_2_));
 

@@ -1,6 +1,7 @@
-package fr.emmuliette.rune.mod.gui.manaBar;
+package fr.emmuliette.rune.mod.gui.playerGui;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.Random;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -42,7 +43,7 @@ public class GuiManaBar {
 
 	@SubscribeEvent
 	public static void renderManaBar(RenderGameOverlayEvent.Post event) {
-		if (event.getType() != ElementType.HEALTH) {
+		if (event.getType() != ElementType.ARMOR) {
 			return;
 		}
 		Minecraft minecraft = Minecraft.getInstance();
@@ -105,6 +106,12 @@ public class GuiManaBar {
 
 		int left = screenWidth / 2 - 91;
 		int top = screenHeight - ForgeIngameGui.left_height;
+		List<? extends Integer> configPos = Configuration.Client.manaBarPosition;
+		if (configPos != null && configPos.size() == 2) {
+			left = configPos.get(0);
+			top = configPos.get(1);
+		}
+
 		ForgeIngameGui.left_height += rowHeight;
 		if (rowHeight != 10)
 			ForgeIngameGui.left_height += 10 - rowHeight;
@@ -127,7 +134,7 @@ public class GuiManaBar {
 		int manaGold = MathHelper.ceil(((mana + bonusMana) - 20f) / 20f);
 
 		minecraft.getProfiler().push("manaValue");
-		x = left - ((int) Math.log10(manaGold) + 1) * 8;
+		x = left - ((int) Math.log10(mana) + 1) * 8;
 		y = top;
 		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x + 1, y + 2, Color.BLUE.getRGB());
 		drawString(mStack, minecraft.font, new StringTextComponent("" + mana), x, y + 1, Color.WHITE.getRGB());

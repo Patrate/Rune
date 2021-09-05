@@ -1,8 +1,10 @@
 package fr.emmuliette.rune.setup;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -50,6 +52,8 @@ public final class Configuration {
 		public static boolean renderShortGrass;
 		public static Set<String> inactiveItem;
 		public static ManaRenderMode renderManaMode;
+		public static List<? extends Integer> manaBarPosition;
+		public static List<? extends Integer> wandSpellPosition;
 
 		static {
 			final Pair<ConfigImpl, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ConfigImpl::new);
@@ -61,24 +65,48 @@ public final class Configuration {
 			autoUpdate = INSTANCE.autoUpdate.get();
 			inactiveItem = new HashSet<String>(INSTANCE.inactiveItemConfig.get());
 			renderManaMode = INSTANCE.renderManaMode.get();
+			manaBarPosition = INSTANCE.manaBarPosition.get();
+			wandSpellPosition = INSTANCE.wandSpellPosition.get();
 		}
 
 		static class ConfigImpl {
 			final BooleanValue autoUpdate;
 			final ConfigValue<List<String>> inactiveItemConfig;
 			final EnumValue<ManaRenderMode> renderManaMode;
+			final ConfigValue<List<? extends Integer>> manaBarPosition;
+
+			final ConfigValue<List<? extends Integer>> wandSpellPosition;
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			private ConfigImpl(final ForgeConfigSpec.Builder builder) {
 				autoUpdate = builder.comment("Check for mod update on launch [false/true | default true]")
 						.translation(RuneMain.MOD_ID + ".config.autoUpdate").define("autoUpdate", true);
-				
+
 				renderManaMode = builder.comment("Rendering mode for mana (stars, bar)")
-						.translation(RuneMain.MOD_ID + ".config.renderManaMode").defineEnum("renderManaMode", ManaRenderMode.BAR);
+						.translation(RuneMain.MOD_ID + ".config.renderManaMode")
+						.defineEnum("renderManaMode", ManaRenderMode.BAR);
 
 				inactiveItemConfig = ((ConfigValue) builder.comment("List of inactive items")
 						.translation(RuneMain.MOD_ID + ".config.inactiveItemConfig").defineList("inactiveItemConfig",
 								ConfigHelper::getDefaultInactiveItem, String.class::isInstance));
+
+				manaBarPosition = builder.comment("Screen position of mana bar as [x, y], [] for default position")
+						.translation(RuneMain.MOD_ID + ".config.manaBarPosition").defineList("manaBarPosition",
+								Arrays.asList(new Integer[] {}), new Predicate<Object>() {
+									@Override
+									public boolean test(Object t) {
+										return true;
+									}
+								});
+
+				wandSpellPosition = builder.comment("Screen position of wand spell as [x, y], [] for default positon")
+						.translation(RuneMain.MOD_ID + ".config.wandSpellPosition").defineList("wandSpellPosition",
+								Arrays.asList(new Integer[] { 0, 0 }), new Predicate<Object>() {
+									@Override
+									public boolean test(Object t) {
+										return true;
+									}
+								});
 			}
 
 		}
@@ -92,7 +120,7 @@ public final class Configuration {
 
 		public static Set<String> inactiveItem;
 		public static boolean learnFromGrimoire;
-		
+
 		static {
 			final Pair<ConfigImpl, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(ConfigImpl::new);
 			SPEC = specPair.getRight();
@@ -113,7 +141,8 @@ public final class Configuration {
 			private ConfigImpl(final ForgeConfigSpec.Builder builder) {
 				inactiveItem = ((ConfigValue) builder.defineList("inactiveItem", ConfigHelper::getDefaultInactiveItem,
 						String.class::isInstance));
-				learnFromGrimoire = builder.comment("Spell must be learnt before being castable  [false/true | default true]")
+				learnFromGrimoire = builder
+						.comment("Spell must be learnt before being castable  [false/true | default true]")
 						.translation(RuneMain.MOD_ID + ".config.learnFromGrimoire").define("learnFromGrimoire", true);
 			}
 

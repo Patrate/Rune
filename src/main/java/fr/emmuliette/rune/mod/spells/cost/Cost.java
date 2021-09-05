@@ -70,7 +70,6 @@ public abstract class Cost<T> {
 			return true;
 		for (Class<? extends Cost<?>> clazz : internalCost.keySet()) {
 			if (!(internalCost.get(clazz).internalCanPay(cap, context))) {
-				System.out.println("Can't pay " + clazz.getName());
 				return false;
 			}
 		}
