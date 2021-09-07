@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.capabilities.socket;
+package fr.emmuliette.rune.mod.packets;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

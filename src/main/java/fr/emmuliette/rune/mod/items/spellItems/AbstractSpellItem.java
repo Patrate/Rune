@@ -13,9 +13,11 @@ import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
+import fr.emmuliette.rune.mod.gui.grimoireItem.GrimoireItemScreen;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -136,7 +138,7 @@ public abstract class AbstractSpellItem extends Item {
 		if (itemStack.getItem() != ModItems.SOCKET.get()) {
 			try {
 				Spell spell = getSpell(itemStack, caster);
-				if (learnSpell(itemStack, caster)) {
+				if (openGrimoireGui(itemStack, caster)) {
 					return ActionResultType.CONSUME;
 				} else {
 					spell.setCacheTarget(target);
@@ -164,7 +166,7 @@ public abstract class AbstractSpellItem extends Item {
 		if (itemStack.getItem() != ModItems.SOCKET.get()) {
 			try {
 				Spell spell = getSpell(itemStack, caster);
-				if (learnSpell(itemStack, caster)) {
+				if (openGrimoireGui(itemStack, caster)) {
 					return ActionResult.consume(itemStack);
 				} else {
 					Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null,
@@ -190,7 +192,7 @@ public abstract class AbstractSpellItem extends Item {
 		if (itemStack.getItem() != ModItems.SOCKET.get()) {
 			try {
 				Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-				if (learnSpell(itemStack, itemUseContext.getPlayer())) {
+				if (openGrimoireGui(itemStack, itemUseContext.getPlayer())) {
 					return ActionResultType.CONSUME;
 				} else {
 					spell.setCacheBlock(itemUseContext.getClickedPos());
@@ -210,25 +212,27 @@ public abstract class AbstractSpellItem extends Item {
 		return ActionResultType.PASS;
 	}
 
-	protected boolean learnSpell(ItemStack item, Entity caster) {
+	protected boolean openGrimoireGui(ItemStack item, Entity caster) {
 //		if (Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.get())
-		if (item.getItem() == ModItems.GRIMOIRE.get())
-			return learnFromGrimoire(item, caster);
+		if (item.getItem() == ModItems.GRIMOIRE.get() && caster instanceof PlayerEntity) {
+			Minecraft.getInstance().setScreen(new GrimoireItemScreen(item, (PlayerEntity) caster));
+			return true;
+		}
 		return false;
 	}
 
-	private boolean learnFromGrimoire(ItemStack itemStack, Entity caster) {
-		ICaster icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
-		ISpell grimoireSpell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
-		if (icaster == null || grimoireSpell == null)
-			return false;
-		if (!caster.level.isClientSide) {
-			icaster.getGrimoire().addSpell(grimoireSpell);
-			icaster.sync();
-		}
-		itemStack.shrink(1);
-		return true;
-	}
+//	private boolean learnFromGrimoire(ItemStack itemStack, Entity caster) {
+//		ICaster icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
+//		ISpell grimoireSpell = itemStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
+//		if (icaster == null || grimoireSpell == null)
+//			return false;
+//		if (!caster.level.isClientSide) {
+//			icaster.getGrimoire().addSpell(grimoireSpell);
+//			icaster.sync();
+//		}
+//		itemStack.shrink(1);
+//		return true;
+//	}
 
 	// On release using
 	@Override

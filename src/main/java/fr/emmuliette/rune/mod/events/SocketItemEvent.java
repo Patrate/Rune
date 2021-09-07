@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.capabilities.socket.ISocket;
-import fr.emmuliette.rune.mod.capabilities.socket.SocketCapability;
+import fr.emmuliette.rune.mod.packets.ISocket;
+import fr.emmuliette.rune.mod.packets.SocketCapability;
 import fr.emmuliette.rune.mod.specialRecipes.SocketableRecipe;
 import lazy.baubles.api.BaublesAPI;
 import lazy.baubles.api.cap.IBaublesItemHandler;

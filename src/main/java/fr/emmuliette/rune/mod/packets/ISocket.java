@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.capabilities.socket;
+package fr.emmuliette.rune.mod.packets;
 
 import fr.emmuliette.rune.mod.spells.Spell;
 import net.minecraft.item.ItemStack;

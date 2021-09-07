@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.capabilities.socket;
+package fr.emmuliette.rune.mod.packets;
 
 import java.util.function.Supplier;
 
