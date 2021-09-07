@@ -12,7 +12,7 @@ public class SpellButton extends ImageButton {
 			"textures/gui/recipe_button.png");
 	private final GrimoireScreen parent;
 	private final Grimoire grimoire;
-	private final int spellId;
+	private int spellId;
 
 	public SpellButton(GrimoireScreen parent, Grimoire grimoire, int spellId, int x, int y) {
 		super(x, y, 20, 18, 0, 0, 19, SPELL_BUTTON_LOCATION, (button) -> {
@@ -27,6 +27,8 @@ public class SpellButton extends ImageButton {
 
 	@Override
 	public void render(MatrixStack mStack, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+		if(spellId == -1)
+			return;
 		mStack.pushPose();
 		parent.getMinecraft().getTextureManager().bind(GrimoireScreen.GRIMOIRE_LOCATION);
 		this.blit(mStack, x, y, 0, 222, 18, 18);
@@ -36,5 +38,9 @@ public class SpellButton extends ImageButton {
 		parent.getFont().draw(mStack, item.getItem().getName(item), x + 20, y + 2, 4210752);
 		mStack.popPose();
 		super.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
+	}
+
+	public void setSpellId(int spellId) {
+		this.spellId = spellId;
 	}
 }

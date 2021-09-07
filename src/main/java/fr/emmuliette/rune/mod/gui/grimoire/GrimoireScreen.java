@@ -1,5 +1,8 @@
 package fr.emmuliette.rune.mod.gui.grimoire;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -23,11 +26,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 
 public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implements IContainerListener {
 	public static final ResourceLocation GRIMOIRE_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/grimoire.png");
+
+	private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation(
+			"textures/gui/container/creative_inventory/tabs.png");
 
 //	private final GrimoireGui grimoireGui = new GrimoireGui();
 //	private GrimoireContainer container;
@@ -35,10 +42,15 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	private Grimoire grimoire;
 	ISpell selectedSpell;
 	private int spellCount;
+	private List<SpellButton> spellButtons;
 	GrimoireSpellPage spellPage = new GrimoireSpellPage();
+
+	private float scrollOffs;
+	private boolean scrolling;
 
 	public GrimoireScreen(GrimoireContainer container, PlayerInventory playerInventory, ITextComponent textComp) {
 		super(container, playerInventory, textComp);
+		spellButtons = new ArrayList<SpellButton>(VIEW_SIZE);
 	}
 
 	public int getSpellCount() {
@@ -74,6 +86,8 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		initSpellPage();
 		this.menu.addSlotListener(this);
 		this.setInitialFocus(this.spellPage);
+		this.scrollOffs = 0.0F;
+		this.scrollTo(0.0F);
 		minecraft.player.containerMenu = menu;
 	}
 
@@ -106,6 +120,13 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		mStack.pushPose();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.blit(mStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
+
+		this.minecraft.getTextureManager().bind(CREATIVE_INVENTORY_TABS);
+		i = this.leftPos + 175;
+		j = this.topPos + 18;
+		int k = j + 112;
+		this.blit(mStack, i, j + (int) ((float) (k - j - 17) * this.scrollOffs), 232 + (this.canScroll() ? 0 : 12), 0,
+				12, 15);
 		mStack.popPose();
 	}
 
@@ -131,24 +152,81 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	@Override
-	public boolean mouseClicked(double p_231044_1_, double p_231044_3_, int p_231044_5_) {
+	public boolean mouseClicked(double x, double y, int p_231044_5_) {
+		if (this.insideScrollbar(x, y)) {
+			this.scrolling = this.canScroll();
+			return true;
+		}
 //		if (this.grimoireGui.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_)) {
 //			this.setFocused(this.grimoireGui);
 //			return true;
 //		} else {
-		return super.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_);
+		return super.mouseClicked(x, y, p_231044_5_);
 //		}
+	}
+
+	public boolean mouseReleased(double x, double y, int mouseButton) {
+		if (mouseButton == 0) {
+			this.scrolling = false;
+		}
+		return super.mouseReleased(x, y, mouseButton);
+	}
+
+	public boolean mouseScrolled(double x, double y, double z) {
+		if (!this.canScroll()) {
+			return false;
+		} else {
+			int i = (this.spellCount + 9 - 1) / 9 - 5;
+			this.scrollOffs = (float) ((double) this.scrollOffs - z / (double) i);
+			this.scrollOffs = MathHelper.clamp(this.scrollOffs, 0.0F, 1.0F);
+			this.scrollTo(this.scrollOffs);
+			return true;
+		}
+	}
+
+	public boolean mouseDragged(double a, double b, int c, double d, double e) {
+		if (this.scrolling) {
+			int i = this.topPos + 18;
+			int j = i + 112;
+			this.scrollOffs = ((float) b - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
+			this.scrollOffs = MathHelper.clamp(this.scrollOffs, 0.0F, 1.0F);
+			this.scrollTo(this.scrollOffs);
+			return true;
+		} else {
+			return super.mouseDragged(a, b, c, d, e);
+		}
+	}
+
+	protected boolean insideScrollbar(double x, double y) {
+		int i = this.leftPos;
+		int j = this.topPos;
+		int k = i + 175;
+		int l = j + 18;
+		int i1 = k + 14;
+		int j1 = l + 112;
+		return x >= (double) k && y >= (double) l && x < (double) i1 && y < (double) j1;
+	}
+
+	public void scrollTo(float dest) {
+		int i = this.spellCount - VIEW_SIZE;
+		int j = (int) ((double) (dest * (float) i) + 0.5D);
+		if (j < 0) {
+			j = 0;
+		}
+
+		for (int k = 0; k < VIEW_SIZE; k++) {
+			this.spellButtons.get(k).setSpellId(j + k);
+		}
+	}
+
+	private boolean canScroll() {
+		return this.spellCount > VIEW_SIZE;
 	}
 
 	@Override
 	protected boolean hasClickedOutside(double p_195361_1_, double p_195361_3_, int p_195361_5_, int p_195361_6_,
 			int p_195361_7_) {
 		return super.hasClickedOutside(p_195361_1_, p_195361_3_, p_195361_5_, p_195361_6_, p_195361_7_);
-//		boolean flag = p_195361_1_ < (double) p_195361_5_ || p_195361_3_ < (double) p_195361_6_
-//				|| p_195361_1_ >= (double) (p_195361_5_ + this.imageWidth)
-//				|| p_195361_3_ >= (double) (p_195361_6_ + this.imageHeight);
-//		return this.grimoireGui.hasClickedOutside(p_195361_1_, p_195361_3_, this.leftPos, this.topPos, this.imageWidth,
-//				this.imageHeight, p_195361_7_) && flag;
 	}
 
 	@Override
@@ -160,26 +238,30 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		if (this.minecraft.player != null && this.minecraft.player.inventory != null) {
 			this.minecraft.player.inventoryMenu.removeSlotListener(this);
 		}
-//		this.grimoireGui.removed();
 		super.removed();
 	}
 
 	public void refreshContainer(Container p_71110_1_, NonNullList<ItemStack> p_71110_2_) {
 		this.buttons.clear();
+		spellButtons.clear();
 		try {
 			ICaster cap = this.inventory.player.getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(this.inventory.player));
 			grimoire = cap.getGrimoire();
 			spellCount = grimoire.getSpells().size();
 
-			for (int i = 0; i < spellCount; i++) {
-				this.addButton(new SpellButton(this, grimoire, i, this.leftPos + 16, this.topPos + 16 + 16 * i));
+			for (int i = 0; i < VIEW_SIZE; i++) {
+				SpellButton b = new SpellButton(this, grimoire, i, this.leftPos + 16, this.topPos + 16 + 16 * i);
+				this.addButton(b);
+				spellButtons.add(b);
 			}
 
 		} catch (CasterCapabilityException e) {
 			e.printStackTrace();
 		}
 	}
+
+	private static final int VIEW_SIZE = 4;
 
 	public void slotChanged(Container container, int slot, ItemStack item) {
 	}
