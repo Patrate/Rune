@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.gui.grimoireItem;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
-import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -38,6 +38,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class GrimoireItemScreen extends Screen {
 	public static final ResourceLocation BOOK_LOCATION = new ResourceLocation("textures/gui/book.png");
+
+	public static final ITextComponent GUI_CANCEL = new TranslationTextComponent("gui.cancel");
+	public static final ITextComponent GUI_LEARN = new TranslationTextComponent("gui.learn");
+	public static final ITextComponent GUI_COST = new TranslationTextComponent("gui.cost");
 //	private GrimoireItemScreen.IBookInfo bookAccess;
 	private int currentPage;
 	private List<IReorderingProcessor> cachedPageComponents = Collections.emptyList();
@@ -47,24 +51,36 @@ public class GrimoireItemScreen extends Screen {
 	private ChangePageButton backButton;
 	private ItemStack grimoireItem;
 	private PlayerEntity caster;
+	private ICaster icaster;
+	private ISpell spell;
 
-	private int pageCount;
+	private List<ITextProperties> pages;
 
 	public GrimoireItemScreen(ItemStack grimoireItem, PlayerEntity caster) {
 		super(NarratorChatListener.NO_TITLE);
 		this.grimoireItem = grimoireItem;
 		this.caster = caster;
-		// TODO
-		this.pageCount = 1;
+		this.spell = grimoireItem.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
+		this.icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
+		this.pages = new ArrayList<ITextProperties>();
+		if (icaster == null || spell == null)
+			// TODO throw exception
+			;
+		else {
+			StringTextComponent current = new StringTextComponent(spell.getSpell().getName());
+			current.append("\nCost " + (int) spell.getSpell().getCost().getManaCost() + " levels to learn");
+			pages.add(current);
+			for (ITextComponent a : spell.getSpell().getTooltips()) {
+				pages.add(a);
+			}
+		}
 	}
 
 	private boolean learn() {
-		ICaster icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
-		ISpell grimoireSpell = grimoireItem.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
-		if (icaster == null || grimoireSpell == null || caster.experienceLevel < getSpellCost())
+		if (caster.experienceLevel < getSpellCost())
 			return false;
 		if (!caster.level.isClientSide) {
-			icaster.getGrimoire().addSpell(grimoireSpell);
+			icaster.getGrimoire().addSpell(spell);
 			icaster.sync();
 			caster.experienceLevel -= getSpellCost();
 		}
@@ -73,7 +89,7 @@ public class GrimoireItemScreen extends Screen {
 	}
 
 	private int getSpellCost() {
-		return 10;
+		return (int) Math.ceil(spell.getSpell().getCost().getManaCost());
 	}
 
 	public void setBookAccess() {
@@ -95,7 +111,7 @@ public class GrimoireItemScreen extends Screen {
 	}
 
 	protected int getPageCount() {
-		return this.pageCount;
+		return this.pages.size();
 	}
 
 	protected boolean forcePage(int p_214153_1_) {
@@ -110,14 +126,13 @@ public class GrimoireItemScreen extends Screen {
 	private Button learnButton;
 
 	protected void createMenuControls() {
-		this.addButton(new Button(this.width / 2 - 100, 196, 98, 20, DialogTexts.GUI_CANCEL, (p_214161_1_) -> {
+		this.addButton(new Button(this.width / 2 - 100, 196, 98, 20, GUI_CANCEL, (p_214161_1_) -> {
 			this.minecraft.setScreen((Screen) null);
 		}));
-		learnButton = this
-				.addButton(new Button(this.width / 2 + 2, 196, 98, 20, DialogTexts.GUI_PROCEED, (p_214204_1_) -> {
-					learn();
-					this.minecraft.setScreen((Screen) null);
-				}));
+		learnButton = this.addButton(new Button(this.width / 2 + 2, 196, 98, 20, GUI_LEARN, (p_214204_1_) -> {
+			learn();
+			this.minecraft.setScreen((Screen) null);
+		}));
 		this.learnButton.active = caster.experienceLevel >= getSpellCost();
 	}
 
@@ -132,10 +147,6 @@ public class GrimoireItemScreen extends Screen {
 		this.updateButtonVisibility();
 	}
 
-	private int getNumPages() {
-		return this.getPageCount();
-	}
-
 	protected void pageBack() {
 		if (this.currentPage > 0) {
 			--this.currentPage;
@@ -145,7 +156,7 @@ public class GrimoireItemScreen extends Screen {
 	}
 
 	protected void pageForward() {
-		if (this.currentPage < this.getNumPages() - 1) {
+		if (this.currentPage < this.getPageCount() - 1) {
 			++this.currentPage;
 		}
 
@@ -153,16 +164,16 @@ public class GrimoireItemScreen extends Screen {
 	}
 
 	private void updateButtonVisibility() {
-		this.forwardButton.visible = this.currentPage < this.getNumPages() - 1;
+		this.forwardButton.visible = this.currentPage < this.getPageCount() - 1;
 		this.backButton.visible = this.currentPage > 0;
 		this.learnButton.active = caster.experienceLevel >= getSpellCost();
 	}
 
-	public boolean keyPressed(int p_231046_1_, int p_231046_2_, int p_231046_3_) {
-		if (super.keyPressed(p_231046_1_, p_231046_2_, p_231046_3_)) {
+	public boolean keyPressed(int a, int b, int c) {
+		if (super.keyPressed(a, b, c)) {
 			return true;
 		} else {
-			switch (p_231046_1_) {
+			switch (a) {
 			case 266:
 				this.backButton.onPress();
 				return true;
@@ -176,40 +187,40 @@ public class GrimoireItemScreen extends Screen {
 	}
 
 	private ITextProperties getPage(int page) {
-		return new StringTextComponent("Bonjour");
+		return pages.get(page);
 	}
 
 	@SuppressWarnings("deprecation")
-	public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-		this.renderBackground(p_230430_1_);
+	public void render(MatrixStack mStack, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+		this.renderBackground(mStack);
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.minecraft.getTextureManager().bind(BOOK_LOCATION);
 		int i = (this.width - 192) / 2;
 //		int j = 2;
-		this.blit(p_230430_1_, i, 2, 0, 0, 192, 192);
+		this.blit(mStack, i, 2, 0, 0, 192, 192);
 		if (this.cachedPage != this.currentPage) {
 			ITextProperties itextproperties = this.getPage(this.currentPage);
 			this.cachedPageComponents = this.font.split(itextproperties, 114);
 			this.pageMsg = new TranslationTextComponent("book.pageIndicator", this.currentPage + 1,
-					Math.max(this.getNumPages(), 1));
+					Math.max(this.getPageCount(), 1));
 		}
 
 		this.cachedPage = this.currentPage;
 		int i1 = this.font.width(this.pageMsg);
-		this.font.draw(p_230430_1_, this.pageMsg, (float) (i - i1 + 192 - 44), 18.0F, 0);
+		this.font.draw(mStack, this.pageMsg, (float) (i - i1 + 192 - 44), 18.0F, 0);
 		int k = Math.min(128 / 9, this.cachedPageComponents.size());
 
 		for (int l = 0; l < k; ++l) {
 			IReorderingProcessor ireorderingprocessor = this.cachedPageComponents.get(l);
-			this.font.draw(p_230430_1_, ireorderingprocessor, (float) (i + 36), (float) (32 + l * 9), 0);
+			this.font.draw(mStack, ireorderingprocessor, (float) (i + 36), (float) (32 + l * 9), 0);
 		}
 
 		Style style = this.getClickedComponentStyleAt((double) p_230430_2_, (double) p_230430_3_);
 		if (style != null) {
-			this.renderComponentHoverEffect(p_230430_1_, style, p_230430_2_, p_230430_3_);
+			this.renderComponentHoverEffect(mStack, style, p_230430_2_, p_230430_3_);
 		}
 
-		super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+		super.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
 	}
 
 	public boolean mouseClicked(double p_231044_1_, double p_231044_3_, int p_231044_5_) {

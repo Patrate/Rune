@@ -23,7 +23,6 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 public class Spell {
@@ -93,14 +92,16 @@ public class Spell {
 				socketItem);
 		Boolean canCast = startingComponent.canCast(context);
 		if (canCast == null || canCast == true) {
-			if(caster != null)
+			if (caster != null)
 				drawEffect(caster);
 			return startingComponent.cast(context);
 		}
 		return false;
 	}
 
-	private static final Color[] colorList = new Color[] {Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW};
+	private static final Color[] colorList = new Color[] { Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA,
+			Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW };
+
 	private void drawEffect(LivingEntity entity) {
 		for (int i = 0; i < 2; ++i) {
 			float f1 = entity.getRandom().nextFloat() * ((float) Math.PI * 2F);
@@ -210,7 +211,7 @@ public class Spell {
 
 	public Collection<? extends ITextComponent> getTooltips() {
 		List<ITextComponent> toolTip = new ArrayList<ITextComponent>();
-		toolTip.add(new StringTextComponent("" + (int) this.getCost().getManaCost()));
+//		toolTip.add(new StringTextComponent("" + (int) this.getCost().getManaCost()));
 		for (AbstractSpellComponent component : this.components) {
 			toolTip.addAll(component.getTooltips());
 		}
