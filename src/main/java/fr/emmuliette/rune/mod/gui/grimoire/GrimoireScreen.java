@@ -71,7 +71,6 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	void selectSpell(int spellId) {
 		selectedSpell = grimoire.getSpell(spellId);
 		this.leftPos = this.spellPage.updateScreenPosition(this.widthTooNarrow, this.width, this.imageWidth);
-		System.out.println("Selected spell is now " + selectedSpell.getSpell().getName());
 	}
 
 	public void getSpellServer(final int spellId) {

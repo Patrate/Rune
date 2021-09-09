@@ -49,6 +49,7 @@ public class CLearnSpellPacket {
 					caster.getGrimoire().addSpell(spell);
 					player.experienceLevel -= msg.nbt.getInt(COST_NBT);
 					caster.sync();
+					itemstack.shrink(1);
 //					WritableBookItem
 				} else {
 					System.err.println("THERE IS A PROBLEM");
