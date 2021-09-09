@@ -59,7 +59,7 @@ public class GrimoireItemScreen extends Screen {
 
 	private List<ITextProperties> pages;
 
-	public GrimoireItemScreen(Hand hand, ItemStack grimoireItem, PlayerEntity caster) {
+	public GrimoireItemScreen(Hand hand, ItemStack grimoireItem, PlayerEntity caster) throws GrimoireItemScreenException {
 		super(NarratorChatListener.NO_TITLE);
 		this.hand = hand;
 		this.grimoireItem = grimoireItem;
@@ -68,8 +68,7 @@ public class GrimoireItemScreen extends Screen {
 		this.icaster = caster.getCapability(CasterCapability.CASTER_CAPABILITY).orElse((ICaster) null);
 		this.pages = new ArrayList<ITextProperties>();
 		if (icaster == null || spell == null)
-			// TODO throw exception
-			;
+			throw new GrimoireItemScreenException();
 		else {
 			StringTextComponent current = new StringTextComponent(spell.getSpell().getName());
 			current.append("\nCost " + (int) spell.getSpell().getCost().getManaCost() + " levels to learn");
