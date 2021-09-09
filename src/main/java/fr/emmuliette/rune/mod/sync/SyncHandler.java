@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod;
+package fr.emmuliette.rune.mod.sync;
 
 import java.util.List;
 
@@ -6,10 +6,12 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterPacket;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
+import fr.emmuliette.rune.mod.capabilities.packets.SocketPacket;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireGetSpellPacket;
+import fr.emmuliette.rune.mod.gui.grimoireItem.CLearnSpellPacket;
+import fr.emmuliette.rune.mod.gui.grimoireItem.SOpenGrimoirePacket;
 import fr.emmuliette.rune.mod.gui.spellbinding.CSpellBindingSlotPacket;
-import fr.emmuliette.rune.mod.packets.SocketPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -47,6 +49,10 @@ public class SyncHandler {
 				CSpellBindingSlotPacket::decode, CSpellBindingSlotPacket.Handler::handle);
 		HANDLER.registerMessage(disc++, CGrimoireGetSpellPacket.class, CGrimoireGetSpellPacket::encode,
 				CGrimoireGetSpellPacket::decode, CGrimoireGetSpellPacket.Handler::handle);
+		HANDLER.registerMessage(disc++, SOpenGrimoirePacket.class, SOpenGrimoirePacket::encode,
+				SOpenGrimoirePacket::decode, SOpenGrimoirePacket.Handler::handle);
+		HANDLER.registerMessage(disc++, CLearnSpellPacket.class, CLearnSpellPacket::encode, CLearnSpellPacket::decode,
+				CLearnSpellPacket.Handler::handle);
 	}
 
 	/**

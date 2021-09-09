@@ -22,6 +22,10 @@ public class Grimoire {
 		spellList = new ArrayList<ISpell>();
 	}
 
+	private void expeditiveSpellRemoval(int spellId) {
+
+	}
+
 	public boolean addSpell(ISpell spell) {
 		addSpellInternal(spell);
 		return true;
@@ -33,7 +37,7 @@ public class Grimoire {
 	}
 
 	public ISpell getSpell(Integer spellId) {
-		if (spellId < 0 || spellId > spellList.size())
+		if (spellId < 0 || spellId >= spellList.size())
 			return null;
 		return spellList.get(spellId);
 	}
@@ -49,19 +53,15 @@ public class Grimoire {
 	public ItemStack getItem(Integer spellId) {
 		ISpell spell = this.getSpell(spellId);
 		if (spell == null) {
-			System.out.println("Spell is null");
+			System.out.println("Spell is null for id " + spellId);
 			return ItemStack.EMPTY;
 		}
 		if (spell.getSpell() == null) {
-			System.out.println("Spell.getSpell() is null");
+			expeditiveSpellRemoval(spellId);
+			System.out.println("Spell.getSpell() is null for id " + spellId);
 			return ItemStack.EMPTY;
 		}
 		return SpellItem.buildSpellItem(spell.getSpell(), ItemType.SPELL);
-//		SpellItem spellitem;
-//		spellitem = (SpellItem) ModItems.SPELL.get();
-//		ItemStack itemStack = new ItemStack(spellitem);
-//		itemStack.addTagElement(AbstractSpellItem.SPELL_ID, IntNBT.valueOf(spellId));
-//		return itemStack;
 	}
 
 	private void removeSpellInternal(int spellId) {

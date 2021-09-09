@@ -1,12 +1,12 @@
 package fr.emmuliette.rune.mod.specialRecipes;
 
 import fr.emmuliette.rune.exception.SpellCapabilityException;
+import fr.emmuliette.rune.mod.capabilities.socket.ISocket;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketCapability;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.items.spellItems.AbstractSpellItem;
-import fr.emmuliette.rune.mod.packets.ISocket;
-import fr.emmuliette.rune.mod.packets.SocketCapability;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.tags.OtherTag;
 import fr.emmuliette.rune.setup.Registration;

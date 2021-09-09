@@ -3,7 +3,6 @@ package fr.emmuliette.rune.setup;
 import java.util.function.Function;
 
 import fr.emmuliette.rune.RuneMain;
-import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeSerializer;
@@ -20,6 +19,7 @@ import fr.emmuliette.rune.mod.specialRecipes.SpellRecipe;
 import fr.emmuliette.rune.mod.spells.entities.ModEntities;
 import fr.emmuliette.rune.mod.spells.renderer.ModRenderer;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
+import fr.emmuliette.rune.mod.sync.SyncHandler;
 import fr.emmuliette.rune.mod.tileEntity.ModTileEntity;
 import fr.emmuliette.rune.mod.tileEntityRenderer.ModTileEntityRenderer;
 import net.minecraft.block.Block;

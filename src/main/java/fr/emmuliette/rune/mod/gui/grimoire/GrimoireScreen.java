@@ -9,12 +9,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.CasterCapabilityException;
 import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
-import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.gui.grimoire.spellPage.GrimoireSpellPage;
+import fr.emmuliette.rune.mod.sync.SyncHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,7 +28,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implements IContainerListener {
 	public static final ResourceLocation GRIMOIRE_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/grimoire.png");
@@ -72,7 +75,6 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	public void getSpellServer(final int spellId) {
-		System.out.println("Getting spell in slot " + spellId);
 		CompoundNBT nbt = new CompoundNBT();
 		nbt.putInt(CGrimoireGetSpellPacket.SPELL_ID, spellId);
 		SyncHandler.sendToServer(new CGrimoireGetSpellPacket(nbt));
@@ -122,9 +124,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		this.blit(mStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
 		this.minecraft.getTextureManager().bind(CREATIVE_INVENTORY_TABS);
-		i = this.leftPos + 175;
-		j = this.topPos + 18;
-		int k = j + 112;
+		i = this.leftPos + 175 - 18;
+		j = this.topPos + 18 - 11;
+		int k = j + 112 - 29;
 		this.blit(mStack, i, j + (int) ((float) (k - j - 17) * this.scrollOffs), 232 + (this.canScroll() ? 0 : 12), 0,
 				12, 15);
 		mStack.popPose();
@@ -177,7 +179,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 			return false;
 		} else {
 			int i = (this.spellCount + 9 - 1) / 9 - 5;
-			this.scrollOffs = (float) ((double) this.scrollOffs - z / (double) i);
+			this.scrollOffs = (float) ((double) this.scrollOffs + z / (double) i);
 			this.scrollOffs = MathHelper.clamp(this.scrollOffs, 0.0F, 1.0F);
 			this.scrollTo(this.scrollOffs);
 			return true;
@@ -242,6 +244,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	public void refreshContainer(Container p_71110_1_, NonNullList<ItemStack> p_71110_2_) {
+		System.out.println("Refreshing i guess");
 		this.buttons.clear();
 		spellButtons.clear();
 		try {
@@ -251,7 +254,8 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 			spellCount = grimoire.getSpells().size();
 
 			for (int i = 0; i < VIEW_SIZE; i++) {
-				SpellButton b = new SpellButton(this, grimoire, i, this.leftPos + 16, this.topPos + 16 + 16 * i);
+				SpellButton b = new SpellButton(this, grimoire, (i < spellCount) ? i : -1, this.leftPos + 16,
+						this.topPos + 16 + 16 * i);
 				this.addButton(b);
 				spellButtons.add(b);
 			}

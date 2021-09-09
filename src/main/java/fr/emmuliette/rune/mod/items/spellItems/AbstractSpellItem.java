@@ -13,14 +13,15 @@ import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.event.StopCastingEvent;
-import fr.emmuliette.rune.mod.gui.grimoireItem.GrimoireItemScreen;
+import fr.emmuliette.rune.mod.gui.grimoireItem.SOpenGrimoirePacket;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
-import net.minecraft.client.Minecraft;
+import fr.emmuliette.rune.mod.sync.SyncHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -31,6 +32,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -47,22 +50,21 @@ public abstract class AbstractSpellItem extends Item {
 
 	@Override
 	public ITextComponent getName(ItemStack iStack) {
-		String base;
+		TextComponent retour;
 		if (iStack.getItem() == ModItems.PARCHMENT.get()) {
-			// TODO translation
-			base = "Parchemin de ";
+			retour = new TranslationTextComponent("gui.parchment_of");
 		} else if (iStack.getItem() == ModItems.GRIMOIRE.get()) {
-			// TODO translation
-			base = "Grimoire de ";
+			retour = new TranslationTextComponent("gui.grimoire_of");
 		} else if (iStack.getItem() == ModItems.SOCKET.get()) {
-			// TODO translation
-			base = "Socket de ";
+			retour = new TranslationTextComponent("gui.socket_of");
 		} else {
-			base = "";
+			retour = new StringTextComponent("");
 		}
 		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if (iSpell != null && iSpell.getSpell() != null)
-			return new StringTextComponent(base + iSpell.getSpell().getName());
+		if (iSpell != null && iSpell.getSpell() != null) {
+			retour.append(new StringTextComponent(iSpell.getSpell().getName()));
+			return retour;
+		}
 		return super.getName(iStack);
 	}
 
@@ -106,31 +108,6 @@ public abstract class AbstractSpellItem extends Item {
 		return super.hurtEnemy(itemStack, target, caster);
 	}
 
-	// @Override
-	// public boolean hurtEnemy(ItemStack itemStack, LivingEntity target,
-	// LivingEntity caster) {
-	// TODO on clic milieux, changer de mode si le spell est modal
-	/*
-	 * final Result retour = new Result(itemStack); if (!caster.level.isClientSide)
-	 * { try { ISpell cap =
-	 * itemStack.getCapability(SpellCapability.SPELL_CAPABILITY) .orElseThrow(new
-	 * SpellCapabilityExceptionSupplier(itemStack)); Spell spell = cap.getSpell();
-	 * if (spell != null) { if (spell.castSpecial(itemStack, target, caster.level,
-	 * caster, null)) { try { retour.consume = (itemStack.getItem() ==
-	 * ModObjects.PARCHMENT.getModItem()); } catch (NotAnItemException e) {
-	 * e.printStackTrace(); } if (retour.consume) { retour.resultType =
-	 * ActionResultType.CONSUME; retour.result = ActionResult.consume(itemStack); }
-	 * else { retour.resultType = ActionResultType.SUCCESS; retour.result =
-	 * ActionResult.success(itemStack); } } else { retour.resultType =
-	 * ActionResultType.PASS; } } } catch (SpellCapabilityException e) {
-	 * e.printStackTrace(); } } // if(retour.resultType)
-	 */
-	// return super.hurtEnemy(itemStack, target, caster);
-	// }
-
-	// ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
-	// ItemUseContext itemUseContext, Hand hand
-
 	// On clic droit living entity
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity caster, LivingEntity target,
@@ -138,8 +115,8 @@ public abstract class AbstractSpellItem extends Item {
 		if (itemStack.getItem() != ModItems.SOCKET.get()) {
 			try {
 				Spell spell = getSpell(itemStack, caster);
-				if (openGrimoireGui(itemStack, caster)) {
-					return ActionResultType.CONSUME;
+				if (openGrimoireGui(itemStack, caster, hand)) {
+					return ActionResultType.SUCCESS;
 				} else {
 					spell.setCacheTarget(target);
 					Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null,
@@ -166,8 +143,8 @@ public abstract class AbstractSpellItem extends Item {
 		if (itemStack.getItem() != ModItems.SOCKET.get()) {
 			try {
 				Spell spell = getSpell(itemStack, caster);
-				if (openGrimoireGui(itemStack, caster)) {
-					return ActionResult.consume(itemStack);
+				if (openGrimoireGui(itemStack, caster, hand)) {
+					return ActionResult.success(itemStack);
 				} else {
 					Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null,
 							hand);
@@ -192,8 +169,8 @@ public abstract class AbstractSpellItem extends Item {
 		if (itemStack.getItem() != ModItems.SOCKET.get()) {
 			try {
 				Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-				if (openGrimoireGui(itemStack, itemUseContext.getPlayer())) {
-					return ActionResultType.CONSUME;
+				if (openGrimoireGui(itemStack, itemUseContext.getPlayer(), itemUseContext.getHand())) {
+					return ActionResultType.SUCCESS;
 				} else {
 					spell.setCacheBlock(itemUseContext.getClickedPos());
 					Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
@@ -212,10 +189,13 @@ public abstract class AbstractSpellItem extends Item {
 		return ActionResultType.PASS;
 	}
 
-	protected boolean openGrimoireGui(ItemStack item, Entity caster) {
+	protected boolean openGrimoireGui(ItemStack item, Entity caster, Hand hand) {
 //		if (Configuration.Server.learnFromGrimoire && item.getItem() == ModItems.GRIMOIRE.get())
 		if (item.getItem() == ModItems.GRIMOIRE.get() && caster instanceof PlayerEntity) {
-			Minecraft.getInstance().setScreen(new GrimoireItemScreen(item, (PlayerEntity) caster));
+			if (caster instanceof ServerPlayerEntity) {
+				SyncHandler.sendTo(new SOpenGrimoirePacket(SOpenGrimoirePacket.buildNBT(hand)),
+						(ServerPlayerEntity) caster);
+			}
 			return true;
 		}
 		return false;

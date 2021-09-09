@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.items.ModItems;
+import fr.emmuliette.rune.mod.sync.SyncHandler;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -113,9 +113,10 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		nbt.putString(CSpellBindingSlotPacket.NAME_NBT, this.getSpellName());
 		System.out.println("Sending to server: " + nbt.toString());
 		SyncHandler.sendToServer(new CSpellBindingSlotPacket(nbt));
-		this.access.execute((world, blockPos) -> {
-			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
-		});
+	}
+
+	public void slotChangedCraftingGrid() {
+		slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftSlots, this.resultSlots);
 	}
 
 	public void updateProperties(INBT nbt) {

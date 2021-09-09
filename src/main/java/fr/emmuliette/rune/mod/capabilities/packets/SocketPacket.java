@@ -1,8 +1,9 @@
-package fr.emmuliette.rune.mod.packets;
+package fr.emmuliette.rune.mod.capabilities.packets;
 
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;

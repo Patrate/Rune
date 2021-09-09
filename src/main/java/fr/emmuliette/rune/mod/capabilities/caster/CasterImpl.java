@@ -6,9 +6,9 @@ import java.util.List;
 
 import fr.emmuliette.rune.exception.NotEnoughManaException;
 import fr.emmuliette.rune.exception.RunePropertiesException;
-import fr.emmuliette.rune.mod.SyncHandler;
 import fr.emmuliette.rune.mod.items.magicItems.ManaSource;
 import fr.emmuliette.rune.mod.items.magicItems.PowerSource;
+import fr.emmuliette.rune.mod.sync.SyncHandler;
 import lazy.baubles.api.BaublesAPI;
 import lazy.baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.entity.Entity;

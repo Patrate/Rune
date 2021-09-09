@@ -15,6 +15,7 @@ import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
+import fr.emmuliette.rune.mod.sync.SyncHandler;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -23,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -53,11 +55,13 @@ public class GrimoireItemScreen extends Screen {
 	private PlayerEntity caster;
 	private ICaster icaster;
 	private ISpell spell;
+	private Hand hand;
 
 	private List<ITextProperties> pages;
 
-	public GrimoireItemScreen(ItemStack grimoireItem, PlayerEntity caster) {
+	public GrimoireItemScreen(Hand hand, ItemStack grimoireItem, PlayerEntity caster) {
 		super(NarratorChatListener.NO_TITLE);
+		this.hand = hand;
 		this.grimoireItem = grimoireItem;
 		this.caster = caster;
 		this.spell = grimoireItem.getCapability(SpellCapability.SPELL_CAPABILITY).orElse((ISpell) null);
@@ -79,10 +83,11 @@ public class GrimoireItemScreen extends Screen {
 	private boolean learn() {
 		if (caster.experienceLevel < getSpellCost())
 			return false;
-		if (!caster.level.isClientSide) {
+		SyncHandler.sendToServer(new CLearnSpellPacket(hand, getSpellCost()));
+		if (icaster != null && spell != null) {
 			icaster.getGrimoire().addSpell(spell);
-			icaster.sync();
 			caster.experienceLevel -= getSpellCost();
+			icaster.sync();
 		}
 		grimoireItem.shrink(1);
 		return true;

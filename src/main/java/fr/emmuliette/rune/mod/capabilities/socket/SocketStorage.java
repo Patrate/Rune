@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.packets;
+package fr.emmuliette.rune.mod.capabilities.socket;
 
 import java.lang.reflect.InvocationTargetException;
 

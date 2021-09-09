@@ -4,8 +4,6 @@ import java.util.function.Supplier;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class CSpellBindingSlotPacket {
@@ -27,23 +25,18 @@ public class CSpellBindingSlotPacket {
 
 	public static class Handler {
 		public static void handle(final CSpellBindingSlotPacket msg, Supplier<NetworkEvent.Context> ctx) {
-			ctx.get().enqueueWork(() -> {
-				DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientHandler.handlePacket(msg, ctx));
-			});
 
-			ctx.get().setPacketHandled(true);
-		}
-	}
-
-	public static class ClientHandler {
-		public static void handlePacket(CSpellBindingSlotPacket msg, Supplier<NetworkEvent.Context> ctx) {
 			if (ctx.get().getSender().containerMenu instanceof SpellBindingContainer) {
 				SpellBindingContainer container = (SpellBindingContainer) ctx.get().getSender().containerMenu;
 				container.setSpellNameNoUpdate(msg.nbt.getString(NAME_NBT));
 				container.updateProperties(msg.nbt.get(PROPERTIES_NBT));
+				container.slotChangedCraftingGrid();
 			} else {
 				System.out.println(ctx.get().getSender().containerMenu.getClass().getSimpleName());
 			}
+
+			ctx.get().setPacketHandled(true);
 		}
+
 	}
 }

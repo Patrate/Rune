@@ -3,11 +3,11 @@ package fr.emmuliette.rune.mod.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.capabilities.socket.ISocket;
+import fr.emmuliette.rune.mod.capabilities.socket.SocketCapability;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.items.spellItems.AbstractSpellItem;
-import fr.emmuliette.rune.mod.packets.ISocket;
-import fr.emmuliette.rune.mod.packets.SocketCapability;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
