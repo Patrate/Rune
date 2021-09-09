@@ -28,7 +28,7 @@ public class MagicTieredItem extends TieredItem implements ManaSource, PowerSour
 	}
 
 	@Override
-	public void inventoryTick(ItemStack item, World world, Entity entity, int jsp, boolean jspnonplus) {
+	public void inventoryTick(ItemStack item, World world, Entity entity, int inventoryIndex, boolean selected) {
 		MagicTieredItem mItem = (MagicTieredItem) item.getItem();
 		CompoundNBT tags = item.getOrCreateTagElement(MANA_SOURCE_TAG);
 		int tick = 0;
@@ -36,9 +36,8 @@ public class MagicTieredItem extends TieredItem implements ManaSource, PowerSour
 			tick = tags.getInt(TICK);
 		if (tick < mItem.getMaxTick(item)) {
 			mItem.setManaTick(item, tick + 1);
-			tags.put(TICK, IntNBT.valueOf(tick + 1));
 		}
-		super.inventoryTick(item, world, entity, jsp, jspnonplus);
+		super.inventoryTick(item, world, entity, inventoryIndex, selected);
 	}
 
 	@Override
@@ -60,15 +59,13 @@ public class MagicTieredItem extends TieredItem implements ManaSource, PowerSour
 		float currentMana = getMana(item);
 		if (amount > currentMana)
 			return false;
-
-		delManaTick(item, (int) amount * this.getChargeSpeed(item));
+		delManaTick(item, (int) (amount * this.getChargeSpeed(item)));
 		return true;
 	}
 
 	protected void delManaTick(ItemStack item, int amount) {
 		CompoundNBT tags = item.getOrCreateTagElement(MANA_SOURCE_TAG);
 		tags.putInt(TICK, tags.getInt(TICK) - amount);
-//		manaItems.add(item);
 	}
 
 	protected void setManaTick(ItemStack item, int amount) {

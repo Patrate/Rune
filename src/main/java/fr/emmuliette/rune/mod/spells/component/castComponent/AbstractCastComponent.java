@@ -49,7 +49,8 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		try {
 			if (payCost)
 				payCost(context);
-			return internalCast(context);
+			internalCast(context);
+			return true;
 		} catch (NotEnoughManaException | CasterCapabilityException e) {
 			e.printStackTrace();
 		}

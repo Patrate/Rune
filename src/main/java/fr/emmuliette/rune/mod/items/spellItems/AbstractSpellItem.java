@@ -112,26 +112,25 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack itemStack, PlayerEntity caster, LivingEntity target,
 			Hand hand) {
-		if (itemStack.getItem() != ModItems.SOCKET.get()) {
-			try {
-				Spell spell = getSpell(itemStack, caster);
-				if (openGrimoireGui(itemStack, caster, hand)) {
-					return ActionResultType.SUCCESS;
-				} else {
-					spell.setCacheTarget(target);
-					Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null,
-							hand);
-					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-						caster.startUsingItem(hand);
-						return ActionResultType.PASS;
-					}
-					return retour.resultType;
-
+		if (itemStack.getItem() == ModItems.SOCKET.get()) {
+			return ActionResultType.PASS;
+		}
+		try {
+			Spell spell = getSpell(itemStack, caster);
+			if (openGrimoireGui(itemStack, caster, hand)) {
+				return ActionResultType.SUCCESS;
+			} else {
+				spell.setCacheTarget(target);
+				Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null, hand);
+				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+					caster.startUsingItem(hand);
+					return ActionResultType.PASS;
 				}
-			} catch (SpellCapabilityException e) {
-				e.printStackTrace();
+				return retour.resultType;
 			}
+		} catch (SpellCapabilityException e) {
+			e.printStackTrace();
 		}
 		return ActionResultType.PASS;
 	}
@@ -140,24 +139,24 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public ActionResult<ItemStack> use(World world, PlayerEntity caster, Hand hand) {
 		ItemStack itemStack = caster.getItemInHand(hand);
-		if (itemStack.getItem() != ModItems.SOCKET.get()) {
-			try {
-				Spell spell = getSpell(itemStack, caster);
-				if (openGrimoireGui(itemStack, caster, hand)) {
-					return ActionResult.success(itemStack);
-				} else {
-					Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null,
-							hand);
-					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-						caster.startUsingItem(hand);
-						return ActionResult.pass(itemStack);
-					}
-					return retour.result;
+		if (itemStack.getItem() == ModItems.SOCKET.get()) {
+			return ActionResult.pass(itemStack);
+		}
+		try {
+			Spell spell = getSpell(itemStack, caster);
+			if (openGrimoireGui(itemStack, caster, hand)) {
+				return ActionResult.success(itemStack);
+			} else {
+				Result retour = castSpell(spell, getPower(caster), itemStack, null, world, caster, null, null, hand);
+				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+					caster.startUsingItem(hand);
+					return ActionResult.pass(itemStack);
 				}
-			} catch (SpellCapabilityException e) {
-				e.printStackTrace();
+				return retour.result;
 			}
+		} catch (SpellCapabilityException e) {
+			e.printStackTrace();
 		}
 		return ActionResult.pass(itemStack);
 	}
@@ -166,25 +165,26 @@ public abstract class AbstractSpellItem extends Item {
 	@Override
 	public ActionResultType useOn(ItemUseContext itemUseContext) {
 		ItemStack itemStack = itemUseContext.getItemInHand();
-		if (itemStack.getItem() != ModItems.SOCKET.get()) {
-			try {
-				Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
-				if (openGrimoireGui(itemStack, itemUseContext.getPlayer(), itemUseContext.getHand())) {
-					return ActionResultType.SUCCESS;
-				} else {
-					spell.setCacheBlock(itemUseContext.getClickedPos());
-					Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
-							itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
-					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-						itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
-						return ActionResultType.PASS;
-					}
-					return retour.resultType;
+		if (itemStack.getItem() == ModItems.SOCKET.get()) {
+			return ActionResultType.PASS;
+		}
+		try {
+			Spell spell = getSpell(itemStack, itemUseContext.getPlayer());
+			if (openGrimoireGui(itemStack, itemUseContext.getPlayer(), itemUseContext.getHand())) {
+				return ActionResultType.SUCCESS;
+			} else {
+				spell.setCacheBlock(itemUseContext.getClickedPos());
+				Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
+						itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
+				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+					itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
+					return ActionResultType.PASS;
 				}
-			} catch (SpellCapabilityException e) {
-				e.printStackTrace();
+				return retour.resultType;
 			}
+		} catch (SpellCapabilityException e) {
+			e.printStackTrace();
 		}
 		return ActionResultType.PASS;
 	}

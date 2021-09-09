@@ -117,8 +117,8 @@ public class CasterImpl implements ICaster {
 		}
 		return this.maxMana + equipmentMana;
 	}
-	
-	private List<ItemStack> getEquipedItems(){
+
+	private List<ItemStack> getEquipedItems() {
 		List<ItemStack> retour = new ArrayList<ItemStack>();
 		if (owner instanceof PlayerEntity) {
 			IBaublesItemHandler baub = BaublesAPI.getBaublesHandler((PlayerEntity) owner).orElse(null);
@@ -149,7 +149,6 @@ public class CasterImpl implements ICaster {
 
 	@Override
 	public void delMana(float cost) throws NotEnoughManaException {
-		System.out.println("Paying cost of " + cost + " mana");
 		float remainder = cost;
 		for (ItemStack item : getEquipedItems()) {
 			if (item == ItemStack.EMPTY)
@@ -161,7 +160,7 @@ public class CasterImpl implements ICaster {
 					remainder -= equipmentMana;
 					manaSource.useMana(item, equipmentMana);
 				} else {
-					manaSource.useMana(item, equipmentMana - remainder);
+					manaSource.useMana(item, remainder);
 					remainder = 0f;
 				}
 			}
