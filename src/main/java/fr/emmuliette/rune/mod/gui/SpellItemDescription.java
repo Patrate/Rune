@@ -1,5 +1,7 @@
 package fr.emmuliette.rune.mod.gui;
 
+import java.util.Arrays;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.RuneMain;
@@ -8,6 +10,8 @@ import fr.emmuliette.rune.mod.capabilities.socket.SocketCapability;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.items.spellItems.AbstractSpellItem;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -26,11 +30,14 @@ public class SpellItemDescription {
 			ISpell spell = event.getItemStack().getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
 			if (spell == null || spell.getSpell() == null)
 				return;
+			event.getToolTip().add(new StringTextComponent(""));
 			event.getToolTip().addAll(spell.getSpell().getTooltips());
 		} else {
 			ISocket socket = event.getItemStack().getCapability(SocketCapability.SOCKET_CAPABILITY).orElse(null);
 			if (socket != null && socket.getSpell() != null) {
-				event.getToolTip().addAll(socket.getSpell().getTooltips());
+				ITextComponent list[] = new ITextComponent[] {// new StringTextComponent(""),
+						new StringTextComponent("§7Socket: §r§6" + socket.getSpell().getName()) };
+				event.getToolTip().addAll(Arrays.asList(list));
 			}
 		}
 	}
@@ -47,7 +54,7 @@ public class SpellItemDescription {
 	}
 
 	private static void drawCost(int cost, MatrixStack mStack, int x, int y) {
-		x += 6 * Math.ceil(Math.log10(cost + 1));
+//		x += 6 * Math.ceil(Math.log10(cost + 1));
 		mStack.pushPose();
 		StarHelper.start();
 		int i;

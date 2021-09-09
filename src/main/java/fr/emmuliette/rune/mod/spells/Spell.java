@@ -211,7 +211,6 @@ public class Spell {
 
 	public Collection<? extends ITextComponent> getTooltips() {
 		List<ITextComponent> toolTip = new ArrayList<ITextComponent>();
-//		toolTip.add(new StringTextComponent("" + (int) this.getCost().getManaCost()));
 		for (AbstractSpellComponent component : this.components) {
 			toolTip.addAll(component.getTooltips());
 		}

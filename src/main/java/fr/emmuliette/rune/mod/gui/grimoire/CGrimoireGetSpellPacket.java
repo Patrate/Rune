@@ -38,7 +38,6 @@ public class CGrimoireGetSpellPacket {
 			else {
 				int spellId = msg.nbt.getInt(SPELL_ID);
 				ItemStack itemstack = AbstractSpellItem.getGrimoireSpell(caster.getGrimoire(), spellId);
-//				player.inventory.setCarried(itemstack);
 				player.addItem(itemstack);
 				player.inventoryMenu.setSynched(player, true);
 				player.inventoryMenu.broadcastChanges();
@@ -51,21 +50,21 @@ public class CGrimoireGetSpellPacket {
 		}
 	}
 
-	public static class ClientHandler {
-		public static void handlePacket(CGrimoireGetSpellPacket msg, Supplier<NetworkEvent.Context> ctx) {
-			ServerPlayerEntity player = ctx.get().getSender();
-
-			ICaster caster = player.getCapability(CasterCapability.CASTER_CAPABILITY).orElse(null);
-			if (caster == null)
-				System.out.println("CASTER IS NULL");
-			else {
-				int spellId = msg.nbt.getInt(SPELL_ID);
-				ItemStack itemstack = AbstractSpellItem.getGrimoireSpell(caster.getGrimoire(), spellId);
-//				player.inventory.setCarried(itemstack);
-				player.addItem(itemstack);
-				player.inventoryMenu.setSynched(player, true);
-				player.inventoryMenu.broadcastChanges();
-			}
-		}
-	}
+//	public static class ClientHandler {
+//		public static void handlePacket(CGrimoireGetSpellPacket msg, Supplier<NetworkEvent.Context> ctx) {
+//			ServerPlayerEntity player = ctx.get().getSender();
+//
+//			ICaster caster = player.getCapability(CasterCapability.CASTER_CAPABILITY).orElse(null);
+//			if (caster == null)
+//				System.out.println("CASTER IS NULL");
+//			else {
+//				int spellId = msg.nbt.getInt(SPELL_ID);
+//				ItemStack itemstack = AbstractSpellItem.getGrimoireSpell(caster.getGrimoire(), spellId);
+////				player.inventory.setCarried(itemstack);
+//				player.addItem(itemstack);
+//				player.inventoryMenu.setSynched(player, true);
+//				player.inventoryMenu.broadcastChanges();
+//			}
+//		}
+//	}
 }

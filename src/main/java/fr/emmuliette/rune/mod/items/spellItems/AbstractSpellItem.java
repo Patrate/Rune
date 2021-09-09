@@ -62,7 +62,7 @@ public abstract class AbstractSpellItem extends Item {
 		}
 		ISpell iSpell = iStack.getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
 		if (iSpell != null && iSpell.getSpell() != null) {
-			retour.append(new StringTextComponent(iSpell.getSpell().getName()));
+			retour.append(new StringTextComponent("§6" + iSpell.getSpell().getName()));
 			return retour;
 		}
 		return super.getName(iStack);
