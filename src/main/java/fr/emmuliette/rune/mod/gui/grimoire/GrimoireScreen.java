@@ -45,7 +45,8 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	private Grimoire grimoire;
 	ISpell selectedSpell;
 	private int spellCount;
-	private List<SpellButton> spellButtons;
+//	private List<SpellButton> spellButtons;
+	private List<SpellWidget> spellWidgets;
 	GrimoireSpellPage spellPage = new GrimoireSpellPage();
 
 	private float scrollOffs;
@@ -53,7 +54,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 
 	public GrimoireScreen(GrimoireContainer container, PlayerInventory playerInventory, ITextComponent textComp) {
 		super(container, playerInventory, textComp);
-		spellButtons = new ArrayList<SpellButton>(VIEW_SIZE);
+		spellWidgets = new ArrayList<SpellWidget>(VIEW_SIZE);
 	}
 
 	public int getSpellCount() {
@@ -103,6 +104,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		super.tick();
 	}
 
+	@Override
 	public void render(MatrixStack mStack, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
 		this.renderBackground(mStack);
 		super.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
@@ -216,7 +218,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		}
 
 		for (int k = 0; k < VIEW_SIZE; k++) {
-			this.spellButtons.get(k).setSpellId(j + k);
+			this.spellWidgets.get(k).setSpellId(j + k);
 		}
 	}
 
@@ -243,9 +245,8 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	public void refreshContainer(Container p_71110_1_, NonNullList<ItemStack> p_71110_2_) {
-		System.out.println("Refreshing i guess");
 		this.buttons.clear();
-		spellButtons.clear();
+		spellWidgets.clear();
 		try {
 			ICaster cap = this.inventory.player.getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(this.inventory.player));
@@ -253,10 +254,10 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 			spellCount = grimoire.getSpells().size();
 
 			for (int i = 0; i < VIEW_SIZE; i++) {
-				SpellButton b = new SpellButton(this, grimoire, (i < spellCount) ? i : -1, this.leftPos + 16,
+				SpellWidget w = new SpellWidget(this, grimoire, (i < spellCount) ? i : -1, this.leftPos + 16,
 						this.topPos + 16 + 16 * i);
-				this.addButton(b);
-				spellButtons.add(b);
+				this.addButton(w);
+				spellWidgets.add(w);
 			}
 
 		} catch (CasterCapabilityException e) {
