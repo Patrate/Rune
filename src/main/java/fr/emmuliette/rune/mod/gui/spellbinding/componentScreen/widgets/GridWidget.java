@@ -7,9 +7,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import fr.emmuliette.rune.mod.gui.spellbinding.componentScreen.ComponentGui;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.properties.BlockGrid;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.GridProperty;
+import fr.emmuliette.rune.mod.spells.properties.blockGrid.BlockGrid;
+import fr.emmuliette.rune.mod.spells.properties.blockGrid.GridProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.ToggleWidget;
 import net.minecraft.util.text.StringTextComponent;

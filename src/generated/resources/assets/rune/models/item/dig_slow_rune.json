@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "rune:item/no_texture"
+    "layer0": "rune:item/dig_slow_rune"
   },
   "overrides": [
     {

@@ -11,13 +11,13 @@ public class BuildTag extends Tag {
 	public static BuildTag ENTITY_AI = new BuildTag();
 	public static BuildTag POST_CAST = new BuildTag();
 	public static BuildTag NULL = new BuildTag();
-	
+
 	private Set<BuildTag> allowedNext;
-	
+
 	private BuildTag() {
 		allowedNext = new HashSet<BuildTag>();
 	}
-	
+
 	static void init() {
 		CAST_MOD.init(CAST);
 		CAST.init(EFFECT, MAGIC_ENTITY);
@@ -25,13 +25,13 @@ public class BuildTag extends Tag {
 		MAGIC_ENTITY.init(ENTITY_AI, CAST);
 		ENTITY_AI.init(ENTITY_AI, CAST);
 	}
-	
-	private void init(BuildTag ... possibleNext) {
-		for(BuildTag bt:possibleNext) {
+
+	private void init(BuildTag... possibleNext) {
+		for (BuildTag bt : possibleNext) {
 			allowedNext.add(bt);
 		}
 	}
-	
+
 	public boolean isAllowedAsNext(BuildTag other) {
 		return allowedNext.contains(other);
 	}

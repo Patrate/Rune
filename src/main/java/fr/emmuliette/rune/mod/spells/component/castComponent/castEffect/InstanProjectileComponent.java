@@ -11,11 +11,11 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectC
 import fr.emmuliette.rune.mod.spells.component.castComponent.targets.TargetAir;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
-import fr.emmuliette.rune.mod.spells.properties.EnumElement;
-import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.spells.properties.common.EnumElement;
+import fr.emmuliette.rune.mod.spells.properties.common.EnumProperty;
 
 public class InstanProjectileComponent extends AbstractCastEffectComponent implements TargetAir {
 	public InstanProjectileComponent(AbstractSpellComponent parent) throws RunePropertiesException {

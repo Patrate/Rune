@@ -7,7 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import fr.emmuliette.rune.mod.gui.StarHelper;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
+import fr.emmuliette.rune.mod.spells.properties.common.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;

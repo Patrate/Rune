@@ -80,33 +80,21 @@ public abstract class AbstractSpellItem extends Item {
 		}
 	}
 
-	public boolean hurtEnemy(ItemStack itemStack, LivingEntity target, LivingEntity caster) {
-		// TODO on clic milieux, changer de mode si le spell est modal
-		final Result retour = new Result(itemStack);
-		if (!caster.level.isClientSide && itemStack.getItem() != ModItems.SOCKET.get()) {
-			try {
-				Spell spell = getSpell(itemStack, caster);
-				if (spell != null) {
-					if (spell.castSpecial(getPower(caster), itemStack, target, caster.level, caster, null)) {
-						retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.get());
-						if (retour.consume) {
-							retour.resultType = ActionResultType.CONSUME;
-							retour.result = ActionResult.consume(itemStack);
-						} else {
-							retour.resultType = ActionResultType.SUCCESS;
-							retour.result = ActionResult.success(itemStack);
-						}
-					} else {
-						retour.resultType = ActionResultType.PASS;
-					}
-				}
-			} catch (SpellCapabilityException e) {
-				e.printStackTrace();
-			}
-		}
-		// if(retour.resultType)
-		return super.hurtEnemy(itemStack, target, caster);
-	}
+	/*
+	 * public boolean hurtEnemy(ItemStack itemStack, LivingEntity target,
+	 * LivingEntity caster) { // TODO on clic milieux, changer de mode si le spell
+	 * est modal final Result retour = new Result(itemStack); if
+	 * (!caster.level.isClientSide && itemStack.getItem() != ModItems.SOCKET.get())
+	 * { try { Spell spell = getSpell(itemStack, caster); if (spell != null) { if
+	 * (spell.castSpecial(getPower(caster), itemStack, target, caster.level, caster,
+	 * null)) { retour.consume = (itemStack.getItem() == ModItems.PARCHMENT.get());
+	 * if (retour.consume) { retour.resultType = ActionResultType.CONSUME;
+	 * retour.result = ActionResult.consume(itemStack); } else { retour.resultType =
+	 * ActionResultType.SUCCESS; retour.result = ActionResult.success(itemStack); }
+	 * } else { retour.resultType = ActionResultType.PASS; } } } catch
+	 * (SpellCapabilityException e) { e.printStackTrace(); } } //
+	 * if(retour.resultType) return super.hurtEnemy(itemStack, target, caster); }
+	 */
 
 	// On clic droit living entity
 	@Override
@@ -120,14 +108,19 @@ public abstract class AbstractSpellItem extends Item {
 			if (openGrimoireGui(itemStack, caster, hand)) {
 				return ActionResultType.SUCCESS;
 			} else {
-				spell.setCacheTarget(target);
-				Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null, hand);
-				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-					caster.startUsingItem(hand);
-					return ActionResultType.PASS;
+				if (caster.isShiftKeyDown() && spell.setVariableProperty(target.getType())) {
+					return ActionResultType.SUCCESS;
+				} else {
+					spell.setCacheTarget(target);
+					Result retour = castSpell(spell, getPower(caster), itemStack, target, null, caster, null, null,
+							hand);
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						caster.startUsingItem(hand);
+						return ActionResultType.PASS;
+					}
+					return retour.resultType;
 				}
-				return retour.resultType;
 			}
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();
@@ -173,15 +166,21 @@ public abstract class AbstractSpellItem extends Item {
 			if (openGrimoireGui(itemStack, itemUseContext.getPlayer(), itemUseContext.getHand())) {
 				return ActionResultType.SUCCESS;
 			} else {
-				spell.setCacheBlock(itemUseContext.getClickedPos());
-				Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
-						itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
-				if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
-						|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
-					itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
-					return ActionResultType.PASS;
+				if (itemUseContext.getPlayer().isShiftKeyDown()
+						&& (spell.setVariableProperty(itemUseContext.getClickedPos().above()) || spell.setVariableProperty(
+								itemUseContext.getLevel().getBlockState(itemUseContext.getClickedPos())))) {
+					return ActionResultType.SUCCESS;
+				} else {
+					spell.setCacheBlock(itemUseContext.getClickedPos());
+					Result retour = castSpell(spell, getPower(itemUseContext.getPlayer()), itemStack, null, null,
+							itemUseContext.getPlayer(), null, itemUseContext, itemUseContext.getHand());
+					if ((spell.hasTag(SpellTag.CHARGING) || spell.hasTag(SpellTag.LOADING)
+							|| spell.hasTag(SpellTag.CHANNELING)) && retour.resultType == ActionResultType.SUCCESS) {
+						itemUseContext.getPlayer().startUsingItem(itemUseContext.getHand());
+						return ActionResultType.PASS;
+					}
+					return retour.resultType;
 				}
-				return retour.resultType;
 			}
 		} catch (SpellCapabilityException e) {
 			e.printStackTrace();

@@ -13,7 +13,14 @@ import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.Property;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
+import fr.emmuliette.rune.mod.spells.properties.variable.BlockPosProperty;
+import fr.emmuliette.rune.mod.spells.properties.variable.BlockTypeProperty;
+import fr.emmuliette.rune.mod.spells.properties.variable.VariableProperty;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -120,6 +127,46 @@ public class Spell {
 
 	public void setPropertyValue(int componentId, String key, Object value) {
 		components.get(componentId).setPropertyValue(key, value);
+	}
+
+	public boolean setVariableProperty(BlockPos val) {
+		return _setVariableProperty(val);
+	}
+
+	public boolean setVariableProperty(BlockState val) {
+		return _setVariableProperty(val);
+	}
+
+	public boolean setVariableProperty(EntityType<?> val) {
+		return _setVariableProperty(val);
+	}
+
+	private boolean _setVariableProperty(Object val) {
+		boolean retour = false;
+		for (AbstractSpellComponent c : components) {
+			for (Property<?> prop : c.getProperties().getProperties()) {
+				if (prop instanceof VariableProperty && ((VariableProperty<?>) prop).isVariable()) {
+					try {
+						if (val instanceof BlockPos && prop instanceof BlockPosProperty) {
+							((BlockPosProperty) prop).setValue((BlockPos) val);
+							retour = true;
+						} else if (val instanceof BlockState && prop instanceof BlockTypeProperty) {
+							((BlockTypeProperty) prop).setValue((BlockState) val);
+							retour = true;
+						} else if (val instanceof EntityType) {// && prop instanceof BlockTypeProperty) {
+							// TODO
+							return false;
+//							((EntityTypeProperty) prop).setValue((EntityType) val);
+//							retour = true;
+						}
+					} catch (PropertyException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		}
+		return retour;
 	}
 
 	/*

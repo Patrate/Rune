@@ -47,11 +47,8 @@ public class ModItemModelProvider extends ItemModelProvider {
 
 	private ItemModelBuilder builder(ModelFile itemGenerated, AbstractModObject entity, String tname) {
 		String name = entity.getName();
-		String a = "Name=" + name + ", group="
-				+ ((entity.getGroup() == null) ? "null" : entity.getGroup().getDisplayName().getString());
 		if (entity.getGroup() != null
 				&& (entity.getGroup() == RuneMain.RUNE_EFFECT_GROUP || entity.getGroup() == RuneMain.RUNE_CAST_GROUP)) {
-			System.out.println("IT'S A RUNE: " + a);
 			String[] grades = { "wooden", "stone", "iron", "golden", "diamond", "netherite" };
 
 			ItemModelBuilder base = getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + tname);
@@ -63,7 +60,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 			}
 			return base;
 		} else {
-			System.out.println("NOT A RUNE: " + a);
 			return getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + name);
 		}
 	}

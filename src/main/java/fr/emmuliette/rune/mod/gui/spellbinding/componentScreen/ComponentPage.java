@@ -72,6 +72,10 @@ public class ComponentPage {
 			System.out.println("Adding " + property.getName());
 			PropertyWidget<?> widget = PropertyWidget.buildWidget(this, grade, property, currentComponent, i,
 					j + (k % COMP_PER_PAGE) * height);
+			if (widget == null) {
+				System.err.println("No widget for " + property.getName());
+				continue;
+			}
 			if (widget.getSize() + k > COMP_PER_PAGE) {
 				System.out.println("Too big for this page");
 				widget.y = j;

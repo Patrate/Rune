@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.properties;
+package fr.emmuliette.rune.mod.spells.properties.common;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.StringNBT;

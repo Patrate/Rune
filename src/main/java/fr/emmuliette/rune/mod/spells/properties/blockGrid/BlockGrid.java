@@ -1,4 +1,4 @@
-package fr.emmuliette.rune.mod.spells.properties;
+package fr.emmuliette.rune.mod.spells.properties.blockGrid;
 
 import java.util.ArrayList;
 import java.util.HashSet;

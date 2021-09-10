@@ -1,4 +1,6 @@
-package fr.emmuliette.rune.mod.spells.properties;
+package fr.emmuliette.rune.mod.spells.properties.common;
+
+import fr.emmuliette.rune.mod.spells.properties.Grade;
 
 public class EnumElement{
 	private String value;

@@ -2,6 +2,6 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "rune:item/blank_golden_rune",
-    "layer1": "rune:item/no_texture"
+    "layer1": "rune:item/move_speed_rune"
   }
 }

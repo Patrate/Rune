@@ -12,6 +12,7 @@ public class SpellTag extends OtherTag {
 	private boolean unique;
 
 	private SpellTag(boolean unique) {
+		super();
 		this.unique = unique;
 	}
 

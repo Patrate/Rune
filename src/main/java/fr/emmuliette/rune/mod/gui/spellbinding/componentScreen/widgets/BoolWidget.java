@@ -4,8 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.mod.gui.StarHelper;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
-import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.common.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 
 public class BoolWidget extends PropertyWidget<BoolProperty> {

@@ -14,9 +14,9 @@ import fr.emmuliette.rune.mod.spells.component.structureComponent.AI.AbstractAIC
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
 import fr.emmuliette.rune.mod.spells.entities.MagicEntity;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
-import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.spells.properties.common.LevelProperty;
 import fr.emmuliette.rune.mod.spells.tags.BuildTag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;

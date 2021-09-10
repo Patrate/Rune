@@ -5,7 +5,7 @@ import fr.emmuliette.rune.mod.spells.SpellContext;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.cost.Cost;
 import fr.emmuliette.rune.mod.spells.cost.ManaCost;
-import fr.emmuliette.rune.mod.spells.properties.BlockGrid;
+import fr.emmuliette.rune.mod.spells.properties.blockGrid.BlockGrid;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
