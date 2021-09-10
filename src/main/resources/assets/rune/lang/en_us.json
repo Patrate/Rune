@@ -21,7 +21,7 @@
 	"container.spellbinding": "Spell binder",
 	"effect.rune.silenced": "Silenced",
 	"gui.spellbindingscreen.spell_name": "Spell name",
-	"gui.parchemnt_of": "Parchment of ",
+	"gui.parchment_of": "Parchment of ",
 	"gui.grimoire_of": "Grimoire of ",
 	"gui.socket_of": "Socket of "
 }

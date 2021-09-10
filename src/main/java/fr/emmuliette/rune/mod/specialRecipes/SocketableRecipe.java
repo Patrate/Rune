@@ -62,11 +62,9 @@ public class SocketableRecipe extends SpecialRecipe {
 						return false;
 					ISocket toolSocket = itemstack.getCapability(SocketCapability.SOCKET_CAPABILITY).orElse(null);
 					if (toolSocket == null) {
-						// TODO throw error;
 						return false;
 					}
 					if (toolSocket.getSpell() != null) {
-						// TODO warn ?
 						return false;
 					}
 					tool = itemstack;

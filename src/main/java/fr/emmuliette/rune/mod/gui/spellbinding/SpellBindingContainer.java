@@ -2,8 +2,6 @@ package fr.emmuliette.rune.mod.gui.spellbinding;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
@@ -15,12 +13,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.RecipeBookContainer;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -31,7 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInventory> {
+public class SpellBindingContainer extends Container {
 	private final int WIDTH = 5;
 	private final int HEIGHT = 3;
 	private final SpellBindingInventory craftSlots = new SpellBindingInventory(this, WIDTH, HEIGHT);
@@ -140,12 +136,12 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 		this.resultSlots.clearContent();
 	}
 
-	@Override
-	public boolean recipeMatches(IRecipe<? super SpellBindingInventory> recipe) {
-		if (StringUtils.isBlank(this.getSpellName()))
-			return false;
-		return recipe.matches(this.getCraftSlots(), this.player.level);
-	}
+//	@Override
+//	public boolean recipeMatches(IRecipe<? super SpellBindingInventory> recipe) {
+//		if (StringUtils.isBlank(this.getSpellName()))
+//			return false;
+//		return recipe.matches(this.getCraftSlots(), this.player.level);
+//	}
 
 	public void removed(PlayerEntity player) {
 		super.removed(player);
@@ -232,12 +228,6 @@ public class SpellBindingContainer extends RecipeBookContainer<SpellBindingInven
 	@OnlyIn(Dist.CLIENT)
 	public int getSize() {
 		return getGridWidth() * getGridHeight();
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	public RecipeBookCategory getRecipeBookType() {
-		return RecipeBookCategory.CRAFTING;
-		// TODO changer reciupeBook !
 	}
 
 	public SpellBindingInventory getCraftSlots() {

@@ -16,7 +16,7 @@ import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.fml.RegistryObject;
 
 public class ModEffects extends Effect {
-	// TODO
+	// TODO mod potion effects
 	public static final RegistryObject<? extends Effect> MANA_GAIN = register("instant_mana_gain",
 			() -> new ModInstantEffect(EffectType.BENEFICIAL, 16262179));
 	public static final RegistryObject<? extends Effect> MANA_LOSS = register("instant_mana_loss",

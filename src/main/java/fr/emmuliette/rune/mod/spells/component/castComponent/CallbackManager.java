@@ -26,13 +26,11 @@ public class CallbackManager {
 
 	public static void register(Callback cb) {
 		if (cb.getTriggerTick() <= currentTick && cb.getTriggerTick() != -1) {
-			// TODO throw badTickException
 			RuneMain.LOGGER.error(
 					"WARNING registering on bad tick ! trigger " + cb.getTriggerTick() + " vs current " + currentTick);
 			return;
 		}
 		if (cb.isListening() && listeningCB.contains(cb)) {
-			// TODO throw alreadyRegisteredException
 			RuneMain.LOGGER.error("WARNING CallBack already registered !");
 			return;
 		}
@@ -64,15 +62,15 @@ public class CallbackManager {
 		currentTick = getCurrentTick() + 1;
 		Iterator<Callback> cbIt = listeningCB.iterator();
 		Set<Callback> finalize = new HashSet<Callback>();
-		while(cbIt.hasNext()) {
+		while (cbIt.hasNext()) {
 			Callback cb = cbIt.next();
-			if(cb.tick() == false) {
+			if (cb.tick() == false) {
 				cbIt.remove();
 				finalize.add(cb);
 			}
 		}
-		if(!finalize.isEmpty()) {
-			for(Callback cb:finalize) {
+		if (!finalize.isEmpty()) {
+			for (Callback cb : finalize) {
 				cb.finalize(false);
 			}
 		}

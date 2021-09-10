@@ -56,7 +56,7 @@ public class Circle {
 			float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
 			int j = (int) (f1 * 255.0F) << 24;
 
-			// TODO wip
+			// TODO wip cercle magique
 			renderer.getDispatcher().textureManager.bind(IMAGE_LOCATION);
 			FontRenderer fontrenderer = renderer.getFont();
 			float f2 = (float) (-fontrenderer.width(text) / 2); // Centering I guess ?

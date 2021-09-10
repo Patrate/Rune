@@ -1,10 +1,7 @@
 package fr.emmuliette.rune.mod.gui.spellbinding.componentScreen;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -18,12 +15,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.IRenderable;
-import net.minecraft.client.gui.recipebook.RecipeList;
-import net.minecraft.client.util.ClientRecipeBook;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.crafting.RecipeBookCategory;
 import net.minecraft.item.crafting.RecipeItemHelper;
-import net.minecraft.network.play.client.CUpdateRecipeBookStatusPacket;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,7 +30,6 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 	private int height;
 	protected SpellBindingContainer menu;
 	protected Minecraft minecraft;
-	private ClientRecipeBook book;
 	private final ComponentPage componentPage = new ComponentPage();
 	private final RecipeItemHelper stackedContents = new RecipeItemHelper();
 	private int timesInventoryChanged;
@@ -49,7 +41,6 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		this.menu = menu;
 		minecraft.player.containerMenu = menu;
 		this.componentPage.menu = menu;
-		this.book = minecraft.player.getRecipeBook();
 		this.timesInventoryChanged = minecraft.player.inventory.getTimesChanged();
 		if (this.isVisible()) {
 			this.initVisuals(initVisuals);
@@ -66,7 +57,7 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		this.minecraft.player.inventory.fillStackedContents(this.stackedContents);
 		this.menu.fillCraftSlotsStackedContents(this.stackedContents);
 		this.componentPage.init(this.minecraft, i, j);
-		this.updateCollections(false);
+//		this.updateCollections(false);
 	}
 
 	@Override
@@ -93,15 +84,15 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		return true;
 	}
 
-	public void setVisible() {
-		boolean p_193006_1_ = true;
-		this.book.setOpen(this.menu.getRecipeBookType(), p_193006_1_);
-		if (!p_193006_1_) {
-			this.componentPage.setInvisible();
-		}
-
-		this.sendUpdateSettings();
-	}
+//	public void setVisible() {
+//		boolean p_193006_1_ = true;
+//		this.book.setOpen(this.menu.getRecipeBookType(), p_193006_1_);
+//		if (!p_193006_1_) {
+//			this.componentPage.setInvisible();
+//		}
+//
+//		this.sendUpdateSettings();
+//	}
 
 	public void slotClicked(@Nullable Slot slot) {
 		updateSlotComponent(slot);
@@ -129,19 +120,19 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		componentPage.setComponent(grade, component);
 	}
 
-	private void updateCollections(boolean p_193003_1_) {
-		List<RecipeList> list = this.book.getCollection(this.menu.getRecipeBookCategories().get(0));
-		list.forEach((p_193944_1_) -> {
-			p_193944_1_.canCraft(this.stackedContents, this.menu.getGridWidth(), this.menu.getGridHeight(), this.book);
-		});
-		List<RecipeList> list1 = Lists.newArrayList(list);
-		list1.removeIf((p_193952_0_) -> {
-			return !p_193952_0_.hasKnownRecipes();
-		});
-		list1.removeIf((p_193953_0_) -> {
-			return !p_193953_0_.hasFitting();
-		});
-	}
+//	private void updateCollections(boolean p_193003_1_) {
+//		List<RecipeList> list = this.book.getCollection(this.menu.getRecipeBookCategories().get(0));
+//		list.forEach((p_193944_1_) -> {
+//			p_193944_1_.canCraft(this.stackedContents, this.menu.getGridWidth(), this.menu.getGridHeight(), this.book);
+//		});
+//		List<RecipeList> list1 = Lists.newArrayList(list);
+//		list1.removeIf((p_193952_0_) -> {
+//			return !p_193952_0_.hasKnownRecipes();
+//		});
+//		list1.removeIf((p_193953_0_) -> {
+//			return !p_193953_0_.hasFitting();
+//		});
+//	}
 
 	public void tick() {
 		if (this.isVisible()) {
@@ -225,15 +216,15 @@ public class ComponentGui extends AbstractGui implements IRenderable, IGuiEventL
 		return IGuiEventListener.super.isMouseOver(p_231047_1_, p_231047_3_);
 	}
 
-	protected void sendUpdateSettings() {
-		if (this.minecraft.getConnection() != null) {
-			RecipeBookCategory recipebookcategory = this.menu.getRecipeBookType();
-			boolean flag = this.book.getBookSettings().isOpen(recipebookcategory);
-			boolean flag1 = this.book.getBookSettings().isFiltering(recipebookcategory);
-			this.minecraft.getConnection().send(new CUpdateRecipeBookStatusPacket(recipebookcategory, flag, flag1));
-		}
-
-	}
+//	protected void sendUpdateSettings() {
+//		if (this.minecraft.getConnection() != null) {
+//			RecipeBookCategory recipebookcategory = this.menu.getRecipeBookType();
+//			boolean flag = this.book.getBookSettings().isOpen(recipebookcategory);
+//			boolean flag1 = this.book.getBookSettings().isFiltering(recipebookcategory);
+//			this.minecraft.getConnection().send(new CUpdateRecipeBookStatusPacket(recipebookcategory, flag, flag1));
+//		}
+//
+//	}
 
 	public SpellBindingRuneSlot getCurrentSelectedSlot() {
 		return currentSelectedSlot;

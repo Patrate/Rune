@@ -34,7 +34,7 @@ public class SocketItemEvent {
 		if (socketable != null) {
 			if (SocketableRecipe.isToolSocketable(tool.getItem())) {
 				if (socketable.getSpell() != null) {
-					socketable.getSpell().castSocketItem(0f, // power TODO
+					socketable.getSpell().castSocketItem(0f, // power TODO socket spell power
 							tool, // item
 							(LivingEntity) event.getTarget(), // target
 							event.getEntityLiving().level, // world
@@ -56,15 +56,15 @@ public class SocketItemEvent {
 		ISocket socketable = arrow.getCapability(SocketCapability.SOCKET_CAPABILITY).orElse(null);
 		if (socketable != null) {
 			if (socketable.getSpell() != null) {
-				socketable.getSpell().castSocketItem(0f, // power TODO
+				socketable.getSpell().castSocketItem(0f, // power TODO socket spell power
 						null, // item TODO maybe add the bow ?
 						(event.getEntity() instanceof LivingEntity) ? (LivingEntity) event.getEntity() : null, // target
 						arrow.level, // world
-						null, // caster get throwwer TODO
+						null, // caster get throwwer TODO get thrower
 						null, // blockPos
 						null, // context
 						false, // channeling
-						null); // SocketItem get bow TODO
+						null); // SocketItem get bow TODO get bow 
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public class SocketItemEvent {
 								&& event.getSource().getEntity() instanceof LivingEntity) {
 							target = (LivingEntity) event.getSource().getEntity();
 						}
-						socketable.getSpell().castSocketItem(0f, // power TODO
+						socketable.getSpell().castSocketItem(0f, // power TODO socket spell power
 								tool, // item
 								target, // target
 								event.getEntityLiving().level, // world
@@ -108,7 +108,7 @@ public class SocketItemEvent {
 		if (socketable != null) {
 			if (SocketableRecipe.isToolSocketable(tool.getItem())) {
 				if (socketable.getSpell() != null) {
-					socketable.getSpell().castSocketItem(0f, // power TODO
+					socketable.getSpell().castSocketItem(0f, // power TODO socket spell power
 							tool, // item
 							null, // target
 							event.getEntityLiving().level, // world

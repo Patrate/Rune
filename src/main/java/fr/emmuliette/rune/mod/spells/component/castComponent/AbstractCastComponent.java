@@ -69,7 +69,6 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		if (context.getSocketItem() != null) {
 			ISocket socket = context.getSocketItem().getCapability(SocketCapability.SOCKET_CAPABILITY).orElse(null);
 			if (socket == null) {
-				// TODO throw exception
 				return;
 			}
 			// TODO add socket cooldown

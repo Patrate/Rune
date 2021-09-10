@@ -13,6 +13,8 @@ import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
 import fr.emmuliette.rune.mod.effects.ModEffects;
+import fr.emmuliette.rune.mod.items.magicItems.WandItem;
+import fr.emmuliette.rune.mod.spells.Spell;
 import fr.emmuliette.rune.setup.Configuration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -89,12 +91,24 @@ public class GuiManaBar {
 		float manaMax = (float) iplayer.getMaxMana();
 		float bonusMana = 0;
 		int manaCost = 0;
-		ISpell spellCap = player.getItemInHand(Hand.MAIN_HAND).getCapability(SpellCapability.SPELL_CAPABILITY)
-				.orElse(null);
-		if (spellCap == null)
-			spellCap = player.getItemInHand(Hand.OFF_HAND).getCapability(SpellCapability.SPELL_CAPABILITY).orElse(null);
-		if (spellCap != null && spellCap.getSpell() != null)
-			manaCost = MathHelper.ceil(spellCap.getSpell().getCost().getManaCost());
+
+		Spell spell = null;
+		if (player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof WandItem) {
+			spell = WandItem.getCurrentSpell(player.getItemInHand(Hand.MAIN_HAND), player);
+		} else if (player.getItemInHand(Hand.OFF_HAND).getItem() instanceof WandItem) {
+			spell = WandItem.getCurrentSpell(player.getItemInHand(Hand.OFF_HAND), player);
+		} else {
+			ISpell spellCap = player.getItemInHand(Hand.MAIN_HAND).getCapability(SpellCapability.SPELL_CAPABILITY)
+					.orElse(null);
+			if (spellCap == null)
+				spellCap = player.getItemInHand(Hand.OFF_HAND).getCapability(SpellCapability.SPELL_CAPABILITY)
+						.orElse(null);
+			if (spellCap != null)
+				spell = spellCap.getSpell();
+		}
+
+		if (spell != null)
+			manaCost = MathHelper.ceil(spell.getCost().getManaCost());
 
 		boolean overpriced = (manaCost > (bonusMana + mana));
 		float bonusRemaining = bonusMana;
@@ -116,7 +130,7 @@ public class GuiManaBar {
 		if (rowHeight != 10)
 			ForgeIngameGui.left_height += 10 - rowHeight;
 
-		// TODO:
+		// TODO mana bar gui effects
 		boolean silenced = player.hasEffect(ModEffects.SILENCED.get());
 //		boolean mana_regen = player.hasEffect(ModEffect.MANA_REGENERATION.get());
 //		boolean mana_poison = player.hasEffect(ModEffect.MANA_POISON.get());

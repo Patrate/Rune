@@ -15,8 +15,7 @@ public abstract class AbstractModObject {
 	}
 
 	public boolean isActive() {
-		// TODO maybe check the side ?
-		return Configuration.Client.inactiveItem.contains(name);
+		return Configuration.Server.inactiveItem.contains(name);
 	}
 	
 	public String getName() {

@@ -196,12 +196,12 @@ public class Spell {
 	}
 
 	public float getMaxPower() {
-		// TODO
+		// TODO maxPower
 		return 1f;
 	}
 
 	public Cost<?> getTickCost() {
-		// TODO
+		// TODO tickCost
 		return this.getCost();
 	}
 

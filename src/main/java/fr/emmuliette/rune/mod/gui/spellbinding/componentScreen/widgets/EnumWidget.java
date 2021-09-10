@@ -9,6 +9,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
@@ -35,9 +36,13 @@ public class EnumWidget extends PropertyWidget<EnumProperty> {
 	@Override
 	protected void internalClic(double x, double y) {
 		System.out.println("CLIC ! " + this.getProperty());
-		if(internalValues.isEmpty())
+		if (internalValues.isEmpty())
 			return;
 		internalId = (internalId + 1) % internalValues.size();
-		this.getProperty().setValue(internalValues.get(internalId));
+		try {
+			this.getProperty().setValue(internalValues.get(internalId));
+		} catch (PropertyException e) {
+			e.printStackTrace();
+		}
 	}
 }

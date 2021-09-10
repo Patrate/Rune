@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
 
@@ -38,10 +39,10 @@ public final class LevelProperty extends Property<Integer> {
 	}
 
 	@Override
-	public void setValueInternal(Integer val) {
+	public void setValueInternal(Integer val) throws PropertyException {
 		if (val <= getMaxLevel() && val >= 1)
 			super.setValueInternal(val);
-		// TODO throw exception
+		throw new PropertyException("val " + val + " out of bound [1, " + getMaxLevel() + "] for property " + this.getName());
 	}
 
 	public int getMaxLevel() {

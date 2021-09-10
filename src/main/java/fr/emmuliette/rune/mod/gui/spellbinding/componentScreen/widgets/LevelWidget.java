@@ -8,6 +8,7 @@ import fr.emmuliette.rune.mod.gui.StarHelper;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
 import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
@@ -29,9 +30,8 @@ public class LevelWidget extends PropertyWidget<LevelProperty> {
 		Minecraft minecraft = Minecraft.getInstance();
 
 		mStack.pushPose();
-		ForgeIngameGui.drawString(mStack, minecraft.font,
-				new StringTextComponent(level + "/" + maxLevel), this.x + this.width - 50, this.y + 5,
-				Color.WHITE.getRGB());
+		ForgeIngameGui.drawString(mStack, minecraft.font, new StringTextComponent(level + "/" + maxLevel),
+				this.x + this.width - 50, this.y + 5, Color.WHITE.getRGB());
 		mStack.popPose();
 
 		mStack.pushPose();
@@ -73,6 +73,10 @@ public class LevelWidget extends PropertyWidget<LevelProperty> {
 		}
 		if (newLevel < 1)
 			newLevel = this.getProperty().getMaxLevel();
-		this.getProperty().setValueInternal(newLevel);
+		try {
+			this.getProperty().setValueInternal(newLevel);
+		} catch (PropertyException e) {
+			e.printStackTrace();
+		}
 	}
 }

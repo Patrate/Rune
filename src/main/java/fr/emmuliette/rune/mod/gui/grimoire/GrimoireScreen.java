@@ -14,7 +14,6 @@ import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.gui.grimoire.spellPage.GrimoireSpellPage;
-import fr.emmuliette.rune.mod.sync.SyncHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,7 +22,6 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -39,13 +37,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	private static final ResourceLocation CREATIVE_INVENTORY_TABS = new ResourceLocation(
 			"textures/gui/container/creative_inventory/tabs.png");
 
-//	private final GrimoireGui grimoireGui = new GrimoireGui();
-//	private GrimoireContainer container;
 	private boolean widthTooNarrow;
 	private Grimoire grimoire;
 	ISpell selectedSpell;
-	private int spellCount;
-//	private List<SpellButton> spellButtons;
 	private List<SpellWidget> spellWidgets;
 	GrimoireSpellPage spellPage = new GrimoireSpellPage();
 
@@ -58,7 +52,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	public int getSpellCount() {
-		return spellCount;
+		return grimoire.grimoireSize();
 	}
 
 	public ISpell getSelectedSpell() {
@@ -72,12 +66,6 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	void selectSpell(int spellId) {
 		selectedSpell = grimoire.getSpell(spellId);
 		this.leftPos = this.spellPage.updateScreenPosition(this.widthTooNarrow, this.width, this.imageWidth);
-	}
-
-	public void getSpellServer(final int spellId) {
-		CompoundNBT nbt = new CompoundNBT();
-		nbt.putInt(CGrimoireGetSpellPacket.SPELL_ID, spellId);
-		SyncHandler.sendToServer(new CGrimoireGetSpellPacket(nbt));
 	}
 
 	protected void init() {
@@ -124,13 +112,16 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.blit(mStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
-		this.minecraft.getTextureManager().bind(CREATIVE_INVENTORY_TABS);
-		i = this.leftPos + 175 - 18;
-		j = this.topPos + 18 - 11;
-		int k = j + 112 - 29;
-		this.blit(mStack, i, j + (int) ((float) (k - j - 17) * this.scrollOffs), 232 + (this.canScroll() ? 0 : 12), 0,
-				12, 15);
+		if (canScroll()) {
+			this.minecraft.getTextureManager().bind(CREATIVE_INVENTORY_TABS);
+			i = this.leftPos + 175 - 18;
+			j = this.topPos + 18 - 11;
+			int k = j + 112 - 29;
+			this.blit(mStack, i, j + (int) ((float) (k - j - 17) * this.scrollOffs), 232 + (this.canScroll() ? 0 : 12),
+					0, 12, 15);
+		}
 		mStack.popPose();
+
 	}
 
 	protected void renderSpellPage(MatrixStack mStack, int mouseX, int mouseY, float useless) {
@@ -179,7 +170,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 		if (!this.canScroll()) {
 			return false;
 		} else {
-			int i = (this.spellCount + 9 - 1) / 9 - 5;
+			int i = (this.getSpellCount() + 9 - 1) / 9 - 5;
 			this.scrollOffs = (float) ((double) this.scrollOffs + z / (double) i);
 			this.scrollOffs = MathHelper.clamp(this.scrollOffs, 0.0F, 1.0F);
 			this.scrollTo(this.scrollOffs);
@@ -211,7 +202,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	public void scrollTo(float dest) {
-		int i = this.spellCount - VIEW_SIZE;
+		int i = this.getSpellCount() - VIEW_SIZE;
 		int j = (int) ((double) (dest * (float) i) + 0.5D);
 		if (j < 0) {
 			j = 0;
@@ -223,7 +214,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	private boolean canScroll() {
-		return this.spellCount > VIEW_SIZE;
+		return this.getSpellCount() > VIEW_SIZE;
 	}
 
 	@Override
@@ -251,10 +242,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 			ICaster cap = this.inventory.player.getCapability(CasterCapability.CASTER_CAPABILITY)
 					.orElseThrow(new CasterCapabilityExceptionSupplier(this.inventory.player));
 			grimoire = cap.getGrimoire();
-			spellCount = grimoire.getSpells().size();
 
 			for (int i = 0; i < VIEW_SIZE; i++) {
-				SpellWidget w = new SpellWidget(this, grimoire, (i < spellCount) ? i : -1, this.leftPos + 16,
+				SpellWidget w = new SpellWidget(this, grimoire, (i < getSpellCount()) ? i : -1, this.leftPos + 16,
 						this.topPos + 16 + 16 * i);
 				this.addButton(w);
 				spellWidgets.add(w);

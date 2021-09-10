@@ -322,7 +322,6 @@ public abstract class AbstractSpellItem extends Item {
 				return UseAction.BOW;
 			}
 		} catch (SpellCapabilityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

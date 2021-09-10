@@ -54,7 +54,6 @@ public class ManaCost extends Cost<Float> {
 				cap.delMana(value);
 				return true;
 			} catch (NotEnoughManaException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return false;

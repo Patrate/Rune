@@ -54,7 +54,7 @@ public class SpelliverseScreen extends ContainerScreen<SpelliverseContainer> imp
 //		      this.searchBox.setValue(s);
 		this.tabButtons.clear();
 
-		// TODO
+		// TODO spelliverse
 		for (SpelliverseTab spelliverseTab : SpelliverseTabToggleWidget.SpelliverseTab.values()) {
 			this.tabButtons.add(new SpelliverseTabToggleWidget(spelliverseTab));
 		}

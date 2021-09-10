@@ -8,7 +8,7 @@ import fr.emmuliette.rune.mod.capabilities.caster.CasterPacket;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.packets.SocketPacket;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellPacket;
-import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireGetSpellPacket;
+import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireSpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoireItem.CLearnSpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoireItem.SOpenGrimoirePacket;
 import fr.emmuliette.rune.mod.gui.spellbinding.CSpellBindingSlotPacket;
@@ -47,8 +47,8 @@ public class SyncHandler {
 
 		HANDLER.registerMessage(disc++, CSpellBindingSlotPacket.class, CSpellBindingSlotPacket::encode,
 				CSpellBindingSlotPacket::decode, CSpellBindingSlotPacket.Handler::handle);
-		HANDLER.registerMessage(disc++, CGrimoireGetSpellPacket.class, CGrimoireGetSpellPacket::encode,
-				CGrimoireGetSpellPacket::decode, CGrimoireGetSpellPacket.Handler::handle);
+		HANDLER.registerMessage(disc++, CGrimoireSpellPacket.class, CGrimoireSpellPacket::encode,
+				CGrimoireSpellPacket::decode, CGrimoireSpellPacket.Handler::handle);
 		HANDLER.registerMessage(disc++, SOpenGrimoirePacket.class, SOpenGrimoirePacket::encode,
 				SOpenGrimoirePacket::decode, SOpenGrimoirePacket.Handler::handle);
 		HANDLER.registerMessage(disc++, CLearnSpellPacket.class, CLearnSpellPacket::encode, CLearnSpellPacket::decode,

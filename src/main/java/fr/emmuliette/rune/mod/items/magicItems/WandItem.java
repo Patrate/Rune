@@ -35,6 +35,10 @@ public class WandItem extends MagicTieredItem {
 			if (!tag.contains(CURRENT_SPELL))
 				tag.putInt(CURRENT_SPELL, 0);
 			int spellId = tag.getInt(CURRENT_SPELL);
+			if(caster.getGrimoire().getSpell(spellId) == null) {
+				tag.putInt(CURRENT_SPELL, 0);
+				spellId = 0;
+			}
 			return caster.getGrimoire().getSpell(spellId).getSpell();
 		}
 		return (Spell) null;

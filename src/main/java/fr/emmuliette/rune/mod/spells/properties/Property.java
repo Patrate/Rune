@@ -1,6 +1,7 @@
 package fr.emmuliette.rune.mod.spells.properties;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 
@@ -43,11 +44,11 @@ public abstract class Property<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void setValue(Object val) {
+	public void setValue(Object val) throws PropertyException {
 		setValueInternal((T) val);
 	}
 
-	protected void setValueInternal(T val) {
+	protected void setValueInternal(T val) throws PropertyException {
 		currentValue = val;
 	}
 
@@ -66,7 +67,7 @@ public abstract class Property<T> {
 		return retour;
 	}
 
-	public abstract Cost<?> getCost();
+	public abstract Cost<?> getCost() throws PropertyException;
 
 	public boolean isVisible(Grade grade) {
 		return grade.getLevel() >= gradeVisible.getLevel();

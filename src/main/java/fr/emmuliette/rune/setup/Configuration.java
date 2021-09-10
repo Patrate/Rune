@@ -50,7 +50,6 @@ public final class Configuration {
 
 		public static boolean autoUpdate;
 		public static boolean renderShortGrass;
-		public static Set<String> inactiveItem;
 		public static ManaRenderMode renderManaMode;
 		public static List<? extends Integer> manaBarPosition;
 		public static List<? extends Integer> wandSpellPosition;
@@ -63,7 +62,6 @@ public final class Configuration {
 
 		public static void bake() {
 			autoUpdate = INSTANCE.autoUpdate.get();
-			inactiveItem = new HashSet<String>(INSTANCE.inactiveItemConfig.get());
 			renderManaMode = INSTANCE.renderManaMode.get();
 			manaBarPosition = INSTANCE.manaBarPosition.get();
 			wandSpellPosition = INSTANCE.wandSpellPosition.get();
@@ -71,13 +69,11 @@ public final class Configuration {
 
 		static class ConfigImpl {
 			final BooleanValue autoUpdate;
-			final ConfigValue<List<String>> inactiveItemConfig;
 			final EnumValue<ManaRenderMode> renderManaMode;
 			final ConfigValue<List<? extends Integer>> manaBarPosition;
 
 			final ConfigValue<List<? extends Integer>> wandSpellPosition;
 
-			@SuppressWarnings({ "unchecked", "rawtypes" })
 			private ConfigImpl(final ForgeConfigSpec.Builder builder) {
 				autoUpdate = builder.comment("Check for mod update on launch [false/true | default true]")
 						.translation(RuneMain.MOD_ID + ".config.autoUpdate").define("autoUpdate", true);
@@ -86,22 +82,18 @@ public final class Configuration {
 						.translation(RuneMain.MOD_ID + ".config.renderManaMode")
 						.defineEnum("renderManaMode", ManaRenderMode.BAR);
 
-				inactiveItemConfig = ((ConfigValue) builder.comment("List of inactive items")
-						.translation(RuneMain.MOD_ID + ".config.inactiveItemConfig").defineList("inactiveItemConfig",
-								ConfigHelper::getDefaultInactiveItem, String.class::isInstance));
-
 				manaBarPosition = builder.comment("Screen position of mana bar as [x, y], [] for default position")
-						.translation(RuneMain.MOD_ID + ".config.manaBarPosition").defineList("manaBarPosition",
-								Arrays.asList(new Integer[] {}), new Predicate<Object>() {
-									@Override
-									public boolean test(Object t) {
-										return true;
-									}
-								});
+						.translation(RuneMain.MOD_ID + ".config.manaBarPosition")
+						.defineList("manaBarPosition", Arrays.asList(new Integer[] {}), new Predicate<Object>() {
+							@Override
+							public boolean test(Object t) {
+								return true;
+							}
+						});
 
 				wandSpellPosition = builder.comment("Screen position of wand spell as [x, y], [] for default positon")
 						.translation(RuneMain.MOD_ID + ".config.wandSpellPosition").defineList("wandSpellPosition",
-								Arrays.asList(new Integer[] { 0, 0 }), new Predicate<Object>() {
+								Arrays.asList(new Integer[] { 2, 2 }), new Predicate<Object>() {
 									@Override
 									public boolean test(Object t) {
 										return true;

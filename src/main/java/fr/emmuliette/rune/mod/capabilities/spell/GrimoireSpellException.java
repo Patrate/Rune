@@ -16,7 +16,6 @@ public class GrimoireSpellException extends SpellCapabilityException {
 
 	public GrimoireSpellException(ItemStack e) {
 		super(e);
-		// TODO Auto-generated constructor stub
 	}
 
 }

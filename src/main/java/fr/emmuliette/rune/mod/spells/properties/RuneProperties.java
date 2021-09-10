@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.emmuliette.rune.RuneMain;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -25,7 +26,12 @@ public abstract class RuneProperties {
 
 	public void sync(RuneProperties other) {
 		for (String key : getKeys()) {
-			this.getProperty(key).setValue(other.getProperty(key).getValue());
+			try {
+				this.getProperty(key).setValue(other.getProperty(key).getValue());
+			} catch (PropertyException e) {
+				RuneMain.LOGGER.error("Couldn't copy properties: " + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -33,21 +39,21 @@ public abstract class RuneProperties {
 		properties.put(property.getName(), property);
 		return this;
 	}
-	
+
 	public void addAll(RuneProperties other) {
-		for(Property<?> prop:other.properties.values()) {
+		for (Property<?> prop : other.properties.values()) {
 			addNewProperty(prop);
 		}
 	}
-	
+
 	public Collection<Property<?>> getProperties() {
 		return properties.values();
 	}
 
 	public Collection<Property<?>> getProperties(Grade grade) {
 		Collection<Property<?>> retour = new ArrayList<Property<?>>();
-		for(Property<?> property:properties.values()) {
-			if(property.isVisible(grade))
+		for (Property<?> property : properties.values()) {
+			if (property.isVisible(grade))
 				retour.add(property);
 		}
 		return retour;

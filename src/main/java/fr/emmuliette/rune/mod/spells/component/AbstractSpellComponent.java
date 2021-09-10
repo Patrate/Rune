@@ -17,6 +17,7 @@ import fr.emmuliette.rune.mod.spells.properties.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.Property;
 import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
@@ -129,10 +130,13 @@ public abstract class AbstractSpellComponent {
 	}
 
 	public <T> void setPropertyValue(String key, T newVal) {
-		if (properties.getProperty(key) != null) {
-			properties.getProperty(key).setValue(newVal);
-		} else {
-			RuneMain.LOGGER.error("unknown property " + key + " in component " + this.getClass().getSimpleName());
+		try {
+			if (properties.getProperty(key) != null)
+				properties.getProperty(key).setValue(newVal);
+			else
+				RuneMain.LOGGER.error("unknown property " + key + " in component " + this.getClass().getSimpleName());
+		} catch (PropertyException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -164,7 +168,6 @@ public abstract class AbstractSpellComponent {
 
 	public boolean validate(AbstractSpellComponent other) {
 		if (getTags().getBuildTag() == null) {
-			// TODO throw exception
 			RuneMain.LOGGER.error("BuildTag is null for component " + this.getClass().getSimpleName());
 			return false;
 		}
@@ -222,7 +225,11 @@ public abstract class AbstractSpellComponent {
 		Cost<?> retour = Cost.ZERO_COST.get();
 		Collection<Property<?>> propList = this.properties.getProperties();
 		for (Property<?> prop : propList) {
-			retour.add(prop.getCost());
+			try {
+				retour.add(prop.getCost());
+			} catch (PropertyException e) {
+				e.printStackTrace();
+			}
 		}
 		return retour;
 	}

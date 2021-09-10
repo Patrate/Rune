@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.INBT;
 
 public final class GridProperty extends Property<BlockGrid> {
@@ -28,12 +29,10 @@ public final class GridProperty extends Property<BlockGrid> {
 	}
 
 	@Override
-	public void setValueInternal(BlockGrid val) {
+	public void setValueInternal(BlockGrid val) throws PropertyException {
 		if (val.getSize() <= getMaxBlocks())
 			super.setValueInternal(val);
-		// TODO throw exception
-		System.out.println("Size too big ! ");
-		super.setValueInternal(val);
+		throw new PropertyException("Size too big for property " + this.getName());
 	}
 
 	public int getMaxBlocks() {
@@ -58,7 +57,12 @@ public final class GridProperty extends Property<BlockGrid> {
 
 	@Override
 	public BlockGrid nBTtoValue(INBT inbt) {
-		return BlockGrid.fromNBT(inbt);
+		try {
+			return BlockGrid.fromNBT(inbt);
+		} catch (PropertyException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public Map<Grade, Integer> getLevels() {

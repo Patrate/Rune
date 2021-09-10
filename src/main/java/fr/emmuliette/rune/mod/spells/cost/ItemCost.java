@@ -58,6 +58,7 @@ public class ItemCost extends Cost<Map<Item, Integer>> {
 
 	@Override
 	protected boolean internalPayCost(ICaster cap, SpellContext context) {
+		// TODO pay the item cost of the spell
 		if(context.getCaster() instanceof PlayerEntity) {
 			PlayerEntity pCaster = (PlayerEntity) context.getCaster();
 			for(ItemStack is:pCaster.inventory.items) {
@@ -77,7 +78,7 @@ public class ItemCost extends Cost<Map<Item, Integer>> {
 
 	@Override
 	protected boolean internalCanPay(ICaster cap, SpellContext context) {
-		// TODO Auto-generated method stub
+		// TODO check if caster has the item to pay for this
 		return false;
 	}
 }

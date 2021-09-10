@@ -32,6 +32,4 @@ public class IllusionBlockEffectComponent extends BlockEffectComponent {
 		}
 		return true;
 	}
-	
-	// TODO ajouter un type de bloc à phaser
 }

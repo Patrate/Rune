@@ -6,6 +6,7 @@ import fr.emmuliette.rune.mod.gui.StarHelper;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.properties.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.Grade;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 
 public class BoolWidget extends PropertyWidget<BoolProperty> {
 
@@ -34,6 +35,10 @@ public class BoolWidget extends PropertyWidget<BoolProperty> {
 	@Override
 	protected void internalClic(double x, double y) {
 		System.out.println("CLIC ! " + this.getProperty());
-		this.getProperty().setValueInternal(!this.getProperty().getValue());
+		try {
+			this.getProperty().setValueInternal(!this.getProperty().getValue());
+		} catch (PropertyException e) {
+			e.printStackTrace();
+		}
 	}
 }

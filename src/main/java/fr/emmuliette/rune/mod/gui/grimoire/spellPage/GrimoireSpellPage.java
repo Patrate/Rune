@@ -35,7 +35,7 @@ public class GrimoireSpellPage extends AbstractGui implements IRenderable, IGuiE
 	private ImageButton getSpellButton;
 	private int totalPages;
 	private int currentPage;
-	private int spellId;
+//	private int spellId;
 	protected GrimoireScreen menu;
 
 	public FontRenderer getFont() {
@@ -45,13 +45,13 @@ public class GrimoireSpellPage extends AbstractGui implements IRenderable, IGuiE
 	public GrimoireSpellPage() {
 	}
 
-	public void getSpell() {
-		menu.getSpellServer(spellId);
-	}
+//	public void getSpell() {
+//		menu.getSpellServer(spellId);
+//	}
 
-	public void setSpell(int spellId) {
-		this.spellId = spellId;
-	}
+//	public void setSpell(int spellId) {
+//		this.spellId = spellId;
+//	}
 
 	private void updateArrowButtons() {
 		this.forwardButton.visible = this.totalPages > 1 && this.currentPage < this.totalPages - 1;
@@ -92,7 +92,6 @@ public class GrimoireSpellPage extends AbstractGui implements IRenderable, IGuiE
 		this.backButton = new ToggleWidget(38, 137, 12, 17, true);
 		this.backButton.initTextureValues(153, 29, 13, 18, ComponentGui.COMPONENT_PAGE_LOCATION);
 		this.getSpellButton = new ImageButton(32, 32, 20, 18, 0, 0, 19, SPELL_BUTTON_LOCATION, (button) -> {
-			getSpell();
 		});
 		updateArrowButtons();
 		minecraft.keyboardHandler.setSendRepeatsToGui(true);

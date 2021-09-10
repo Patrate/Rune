@@ -49,7 +49,7 @@ public class SpellBuilder {
 				if (tag instanceof SpellTag) {
 					spellTags.add((SpellTag) tag);
 				} else if (tag instanceof RestrictionTag) {
-					// TODO
+					// TODO restriction tags
 				}
 			}
 			previous = current;

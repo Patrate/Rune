@@ -28,14 +28,14 @@ public class InstanProjectileComponent extends AbstractCastEffectComponent imple
 //		List<Object> targets;
 		switch (mode) {
 		case ("eclair"):
-			// TODO
+			// TODO éclair cast
 			// Targets list = get all valid target in range, kinda around where we looking
 			// tho ?
 			// for now, all livingentity != caster
 			break;
 		default:
 		case ("laser"):
-			// TODO
+			// TODO laser cast
 			// Targets list = get all valid target between player & next solid block
 			// (limited range tho)
 			// Also get next solid block.

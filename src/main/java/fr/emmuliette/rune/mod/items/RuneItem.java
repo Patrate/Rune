@@ -26,12 +26,6 @@ public class RuneItem extends Item {
 	}
 
 	@Override
-	public void onCraftedBy(ItemStack stack, World world, PlayerEntity player) {
-		// TODO ?
-		super.onCraftedBy(stack, world, player);
-	}
-
-	@Override
 	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		if (player.isCreative()) {
 			ItemStack item = player.getItemInHand(hand);

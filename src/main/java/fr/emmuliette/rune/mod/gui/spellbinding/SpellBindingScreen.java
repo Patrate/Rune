@@ -71,7 +71,7 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 
 	private void initComponentGui() {
 		this.componentGui.initVisuals(this.widthTooNarrow);
-		this.componentGui.setVisible();
+//		this.componentGui.setVisible();
 		this.leftPos = this.componentGui.updateScreenPosition(this.widthTooNarrow, this.width, this.imageWidth);
 	}
 

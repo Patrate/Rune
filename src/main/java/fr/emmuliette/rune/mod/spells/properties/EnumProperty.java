@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.StringNBT;
 
@@ -29,14 +30,14 @@ public final class EnumProperty extends Property<String> {
 	}
 
 	@Override
-	public void setValueInternal(String s) {
+	public void setValueInternal(String s) throws PropertyException {
 		for (EnumElement e : this.tagNCost.keySet()) {
 			if (e.getValue().equals(s)) {
 				super.setValueInternal(s);
 				return;
 			}
 		}
-		// TODO throw error
+		throw new PropertyException(s + " is not a possible value for property " + this.getName());
 	}
 
 	@Override
@@ -45,13 +46,12 @@ public final class EnumProperty extends Property<String> {
 	}
 
 	@Override
-	public Cost<?> getCost() {
+	public Cost<?> getCost() throws PropertyException {
 		for (EnumElement e : this.tagNCost.keySet()) {
 			if (e.getValue().equals(this.getValue()))
 				return tagNCost.get(e).get();
 		}
-		// TODO throw error
-		return Cost.ZERO_COST.get();
+		throw new PropertyException(this.getValue() + " is not a correct value for property " + this.getName());
 	}
 
 	@Override

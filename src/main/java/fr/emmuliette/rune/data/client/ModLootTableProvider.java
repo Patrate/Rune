@@ -77,8 +77,11 @@ public class ModLootTableProvider extends LootTableProvider {
 	public static class ModEntityLootTables extends EntityLootTables {
 		@Override
 		protected void addTables() {
-			// TODO
-			addRuneTable(EntityType.COW, ModItems.TOUCH_RUNE.get());
+			// TODO loot tables
+			addRuneTable(EntityType.ZOMBIE, ModItems.TOUCH_RUNE.get(), ModItems.DAMAGE_RUNE.get());
+			addRuneTable(EntityType.SKELETON, ModItems.PROJECTILE_RUNE.get());
+//			addRuneTable(EntityType.CREEPER, ModItems..get());
+			addRuneTable(EntityType.ENDERMAN, ModItems.TELEPORT_RUNE.get());
 			/*
 			 * this.dropSelf(ModBlocks.CASTER_BLOCK.get());
 			 * dropSelf(ModBlocks.SPELLBINDING_BLOCK.get());
@@ -93,7 +96,8 @@ public class ModLootTableProvider extends LootTableProvider {
 
 		}
 
-		private void addRuneTable(EntityType<?> entity, Item rune) {
+		private void addRuneTable(EntityType<?> entity, Item... runes) {
+			// TODO Rune loot tables
 //			this.add(entity, LootTable.lootTable().
 //					LootTable.lootTable().withPool(LootPool.lootPool().setRolls(ConstantRange.exactly(1))
 //							.add(ItemLootEntry.lootTableItem(rune)

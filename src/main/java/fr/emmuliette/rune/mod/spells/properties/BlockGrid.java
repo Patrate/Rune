@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -130,14 +131,14 @@ public class BlockGrid {
 		return retour;
 	}
 
-	public static BlockGrid fromNBT(INBT nbt) {
+	public static BlockGrid fromNBT(INBT nbt) throws PropertyException {
 		if (!(nbt instanceof ListNBT))
-			return null; // TODO throw error !
+			throw new PropertyException("Invalid nbt for blockGrid: no ListNBT");
 		ListNBT list = (ListNBT) nbt;
 		BlockGrid retour = new BlockGrid();
 		for (INBT data : list) {
 			if (!(data instanceof CompoundNBT)) {
-				return retour; // TODO throw error !
+				throw new PropertyException("Invalid nbt for blockGrid: data not instance of CompoundNBT");
 			}
 			CompoundNBT cdata = (CompoundNBT) data;
 			retour.internalGrid.add(retour.new Coord3D(cdata.getInt("x"), cdata.getInt("y"), cdata.getInt("z")));

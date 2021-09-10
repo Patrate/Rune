@@ -3,6 +3,7 @@ package fr.emmuliette.rune.mod.spells.properties;
 import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.spells.cost.Cost;
+import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.StringNBT;
 
@@ -24,7 +25,7 @@ public final class BoolProperty extends Property<Boolean> {
 	}
 
 	@Override
-	public void setValueInternal(Boolean val) {
+	public void setValueInternal(Boolean val) throws PropertyException {
 		if (val != null)
 			super.setValueInternal(val);
 	}
