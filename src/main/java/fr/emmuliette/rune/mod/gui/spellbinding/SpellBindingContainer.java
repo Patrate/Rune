@@ -1,5 +1,7 @@
 package fr.emmuliette.rune.mod.gui.spellbinding;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
@@ -24,6 +26,8 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,7 +40,7 @@ public class SpellBindingContainer extends Container {
 	private final CraftResultInventory resultSlots = new CraftResultInventory();
 	private final IWorldPosCallable access;
 	private final PlayerEntity player;
-	String errorMessage;
+	TextComponent errorMessage;
 
 	public SpellBindingContainer(int containerId, PlayerInventory playerInventory, PacketBuffer data) {
 		this(containerId, playerInventory, IWorldPosCallable.NULL);
@@ -136,17 +140,24 @@ public class SpellBindingContainer extends Container {
 	}
 
 	private void updateErrorMessage() {
-		if(!this.player.level.isClientSide)
+		if (!this.player.level.isClientSide)
 			return;
+		List<String> errors = new ArrayList<String>();
 		if (this.craftSlots.getSpellName().isEmpty()) {
-			errorMessage = "Must have a spell name";
-		} else {
-			errorMessage = SpellRecipe.validate(this.craftSlots);
+			errors.add("Must have a spell name\n");
 		}
-		System.out.println("[ERROR] " + errorMessage);
+		errors.addAll(SpellRecipe.validate(this.craftSlots));
+		if (errors.isEmpty())
+			this.errorMessage = null;
+		else {
+			this.errorMessage = new StringTextComponent("");
+			for (String error : errors) {
+				this.errorMessage.append(new StringTextComponent(error + "\n"));
+			}
+		}
 	}
 
-	public String getErrorMessage() {
+	public TextComponent getErrorMessage() {
 		return errorMessage;
 	}
 

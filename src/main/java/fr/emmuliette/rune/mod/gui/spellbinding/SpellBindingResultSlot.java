@@ -15,8 +15,8 @@ public class SpellBindingResultSlot extends Slot {
 //	private SpellBindingContainer cnt;
 
 	public SpellBindingResultSlot(SpellBindingContainer cnt, PlayerEntity player, SpellBindingInventory craftSlots,
-			IInventory inventaire, int p_i45790_4_, int p_i45790_5_, int p_i45790_6_) {
-		super(inventaire, p_i45790_4_, p_i45790_5_, p_i45790_6_);
+			IInventory inventaire, int slotId, int x, int y) {
+		super(inventaire, slotId, x, y);
 		this.player = player;
 		this.craftSlots = craftSlots;
 //		this.cnt = cnt;

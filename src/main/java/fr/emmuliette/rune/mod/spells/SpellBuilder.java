@@ -77,17 +77,15 @@ public class SpellBuilder {
 		return retour;
 	}
 
-	public static String parseSpellComponents(List<AbstractSpellComponent> componentsList, boolean isSocket) {
-		if (componentsList.size() < 2) {
-			return "Must contain at least 2 components";
-		}
+	public static List<String> parseSpellComponents(List<AbstractSpellComponent> componentsList, boolean isSocket) {
+		List<String> errors = new ArrayList<String>();
 		boolean requiredCastEffect = false, requiredEffect = false;
 		AbstractSpellComponent previous = null;
 		for (AbstractSpellComponent current : componentsList) {
 			current.clear();
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
 				if (isSocket && !((AbstractCastEffectComponent) current).getTags().hasTag(OtherTag.SOCKETABLE)) {
-					return "This casting rune can't be socketed";
+					errors.add("This casting rune can't be socketed");
 				}
 				requiredCastEffect = true;
 			}
@@ -96,25 +94,25 @@ public class SpellBuilder {
 			}
 			if (previous == null) {
 				if (!(current instanceof AbstractCastComponent<?>)) {
-					return "First rune must be cast rune or cast mod rune";
+					errors.add("First rune must be cast rune or cast mod rune");
 				}
 			} else {
 				current.setParent(previous);
 				if (!previous.validate(current, Context.BUILD)) {
-					return current.getClass().getSimpleName() + " isn't valide";
+					errors.add(current.getClass().getSimpleName() + " isn't valid");
 				}
 				if(!previous.addNextPart(current)) {
-					return current.getClass().getSimpleName() + " can't be after a " + previous.getClass().getSimpleName();
+					errors.add(current.getClass().getSimpleName() + " can't be after a " + previous.getClass().getSimpleName());
 				}
 			}
 			previous = current;
 		}
 		if(!requiredCastEffect)
-			return "Require a cast rune";
+			errors.add("Require a cast rune");
 		
 		if(!requiredEffect)
-			return "Require at least one effect rune";
+			errors.add("Require at least one effect rune");
 		
-		return null;
+		return errors;
 	}
 }

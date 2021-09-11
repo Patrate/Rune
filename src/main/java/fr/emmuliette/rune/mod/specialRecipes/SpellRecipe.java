@@ -1,5 +1,6 @@
 package fr.emmuliette.rune.mod.specialRecipes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -38,9 +39,12 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 		return Registration.SPELLBINDING_RECIPE;
 	}
 
-	public static String validate(SpellBindingInventory spellBindingInventory) {
+	public static List<String> validate(SpellBindingInventory spellBindingInventory) {
 		List<AbstractSpellComponent> list = Lists.newArrayList();
+		List<String> retour = new ArrayList<String>();
 		boolean hasPaper = false, hasBook = false, hasSocket = false;
+		
+		boolean hasMultiple = false;
 
 		for (int i = 0; i < spellBindingInventory.getContainerSize(); ++i) {
 			ItemStack itemstack = spellBindingInventory.getItem(i);
@@ -48,45 +52,49 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 				Item item = itemstack.getItem();
 				if (itemstack.getItem() instanceof BookItem) {
 					if (hasPaper || hasBook || hasSocket) {
-						return "book already present";
+						hasMultiple = true;
 					}
 					hasBook = true;
 					continue;
 					// Comparer à un papier et un socket
 				} else if (itemstack.getItem().getItem() == Items.PAPER) {
 					if (hasPaper || hasBook || hasSocket) {
-						return "paper already present";
+						hasMultiple = true;
 					}
 					hasPaper = true;
 				} else if (itemstack.getItem() == ModItems.EMPTY_SOCKET.get()) {
 					if (hasPaper || hasBook || hasSocket) {
-						return "socket already present";
+						hasMultiple = true;
 					}
 					hasSocket = true;
 				} else if (!(item instanceof RuneItem)) {
-					return "Must contain only runes";
+					retour.add("Item " + itemstack.getDisplayName().getString() + " isn't a rune");
 				} else {
 					list.add(spellBindingInventory.getComponent(i));
 				}
 			}
 		}
 		if (!hasPaper && !hasBook && !hasSocket) {
-			return "Add a book, a paper or a socket";
+			retour.add("Add a book, a paper or a socket");
+		} else if(hasMultiple) {
+			retour.add("Multiple book, paper or socket, need only one");
 		}
-		String errorMessage = SpellBuilder.parseSpellComponents(list, hasSocket);
-		if (errorMessage != null)
-			return errorMessage;
-
-		try {
-			Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
-			if (spell == null) {
-				return "Erreur dans le sort";
+		
+		List<String> errorMessage = SpellBuilder.parseSpellComponents(list, hasSocket);
+		if (!errorMessage.isEmpty()) {
+			retour.addAll(errorMessage);
+		} else {
+			try {
+				Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
+				if (spell == null) {
+					retour.add("Erreur dans le sort");
+				}
+			} catch (RunePropertiesException e) {
+				e.printStackTrace();
+				retour.add("Erreur: " + e.getMessage());
 			}
-		} catch (RunePropertiesException e) {
-			e.printStackTrace();
-			return "Erreur: " + e.getMessage();
 		}
-		return null;
+		return retour;
 	}
 
 	public boolean matches(SpellBindingInventory spellBindingInventory, World world) {
@@ -159,7 +167,7 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 		}
 
 		try {
-			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list, hasSocket) == null) {
+			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list, hasSocket).isEmpty()) {
 				Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
 				if (spell == null) {
 					System.out.println("Error! buildSpell returned null");

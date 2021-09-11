@@ -7,6 +7,7 @@ import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.gui.spellbinding.componentScreen.ComponentGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
@@ -23,17 +24,44 @@ import net.minecraft.util.text.TranslationTextComponent;
 public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> implements IContainerListener {
 	public static final ResourceLocation SPELLBINDER_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/spellbinder.png");
-
 	private static final ITextComponent SPELL_NAME_HINT = (new TranslationTextComponent(
 			"gui.spellbindingscreen.spell_name")).withStyle(TextFormatting.ITALIC).withStyle(TextFormatting.GRAY);
-	/*
-	 * private static final ResourceLocation RECIPE_BUTTON_LOCATION = new
-	 * ResourceLocation( "textures/gui/recipe_button.png");
-	 */
+	private static final ResourceLocation ERROR_BUTTON_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
+			"textures/gui/spell_buttons.png");
+
 	private final ComponentGui componentGui = new ComponentGui();
 	private boolean widthTooNarrow;
 	private TextFieldWidget spellNameBox;
 	private int textBoxX = 118, textBoxY = 7;
+	private ErrorIcon errorWidget;
+
+	private class ErrorIcon extends ImageButton {
+		private SpellBindingScreen screen;
+
+		public ErrorIcon(SpellBindingScreen screen, int x, int y) {
+			super(x, y, 15, 15, 32, 0, 16, ERROR_BUTTON_LOCATION, (button) -> {
+			});
+			this.screen = screen;
+		}
+		
+		@Override
+		public void render(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
+			if (screen.menu.errorMessage == null) {
+				return;
+			}
+			super.render(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
+		}
+
+		@Override
+		public void renderToolTip(MatrixStack mStack, int p_230443_2_, int p_230443_3_) {
+			if (screen.menu.errorMessage != null) {
+				screen.renderTooltip(mStack,
+						screen.minecraft.font.split(screen.menu.errorMessage, Math.max(screen.width / 2 - 43, 170)),
+						p_230443_2_, p_230443_3_);
+			}
+		}
+
+	}
 
 	public SpellBindingScreen(SpellBindingContainer container, PlayerInventory playerInventory,
 			ITextComponent textComp) {
@@ -56,6 +84,9 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 		this.spellNameBox.setVisible(true);
 		this.spellNameBox.setTextColor(16777215);
 		this.spellNameBox.setValue(s);
+
+		this.errorWidget = new ErrorIcon(this, this.leftPos + 156, this.topPos + 31);
+		this.addButton(errorWidget);
 		initComponentGui();
 		/*
 		 * this.addButton(new ImageButton(this.leftPos + 5, this.height / 2 - 49, 20,
@@ -117,11 +148,6 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 			this.renderCase(mStack, i + slot.x, j + slot.y, slot == this.componentGui.getCurrentSelectedSlot());
 		}
 		mStack.popPose();
-		if (this.menu.errorMessage != null) {
-			mStack.pushPose();
-			drawString(mStack, this.minecraft.font, this.menu.errorMessage, this.leftPos, this.topPos, -1);
-			mStack.popPose();
-		}
 	}
 
 	private void renderCase(MatrixStack mStack, int x, int y, boolean isSelected) {
