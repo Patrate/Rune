@@ -38,6 +38,57 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 		return Registration.SPELLBINDING_RECIPE;
 	}
 
+	public static String validate(SpellBindingInventory spellBindingInventory) {
+		List<AbstractSpellComponent> list = Lists.newArrayList();
+		boolean hasPaper = false, hasBook = false, hasSocket = false;
+
+		for (int i = 0; i < spellBindingInventory.getContainerSize(); ++i) {
+			ItemStack itemstack = spellBindingInventory.getItem(i);
+			if (!itemstack.isEmpty()) {
+				Item item = itemstack.getItem();
+				if (itemstack.getItem() instanceof BookItem) {
+					if (hasPaper || hasBook || hasSocket) {
+						return "book already present";
+					}
+					hasBook = true;
+					continue;
+					// Comparer à un papier et un socket
+				} else if (itemstack.getItem().getItem() == Items.PAPER) {
+					if (hasPaper || hasBook || hasSocket) {
+						return "paper already present";
+					}
+					hasPaper = true;
+				} else if (itemstack.getItem() == ModItems.EMPTY_SOCKET.get()) {
+					if (hasPaper || hasBook || hasSocket) {
+						return "socket already present";
+					}
+					hasSocket = true;
+				} else if (!(item instanceof RuneItem)) {
+					return "Must contain only runes";
+				} else {
+					list.add(spellBindingInventory.getComponent(i));
+				}
+			}
+		}
+		if (!hasPaper && !hasBook && !hasSocket) {
+			return "Add a book, a paper or a socket";
+		}
+		String errorMessage = SpellBuilder.parseSpellComponents(list, hasSocket);
+		if (errorMessage != null)
+			return errorMessage;
+
+		try {
+			Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
+			if (spell == null) {
+				return "Erreur dans le sort";
+			}
+		} catch (RunePropertiesException e) {
+			e.printStackTrace();
+			return "Erreur: " + e.getMessage();
+		}
+		return null;
+	}
+
 	public boolean matches(SpellBindingInventory spellBindingInventory, World world) {
 		List<ItemStack> list = Lists.newArrayList();
 		boolean hasPaper = false, hasBook = false, hasSocket = false;
@@ -108,7 +159,7 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 		}
 
 		try {
-			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list, hasSocket)) {
+			if ((hasPaper ^ hasBook ^ hasSocket) && SpellBuilder.parseSpellComponents(list, hasSocket) == null) {
 				Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
 				if (spell == null) {
 					System.out.println("Error! buildSpell returned null");

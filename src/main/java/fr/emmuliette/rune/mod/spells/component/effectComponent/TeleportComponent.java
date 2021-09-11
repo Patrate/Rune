@@ -10,6 +10,7 @@ import fr.emmuliette.rune.mod.spells.properties.PropertyFactory;
 import fr.emmuliette.rune.mod.spells.properties.RuneProperties;
 import fr.emmuliette.rune.mod.spells.properties.common.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.variable.BlockPosProperty;
+import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +19,7 @@ import net.minecraft.world.World;
 public class TeleportComponent extends AbstractEffectComponent {
 	public TeleportComponent(AbstractSpellComponent parent) {
 		super(PROPFACT, parent);
+		this.addTag(RestrictionTag.VARIABLE);
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import fr.emmuliette.rune.mod.spells.properties.common.LevelProperty;
 import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
+import fr.emmuliette.rune.mod.spells.tags.RestrictionTag.Context;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -166,19 +167,19 @@ public abstract class AbstractSpellComponent {
 //		return propFactory.build();
 //	}
 
-	public boolean validate(AbstractSpellComponent other) {
+	public boolean validate(AbstractSpellComponent other, Context context) {
 		if (getTags().getBuildTag() == null) {
 			RuneMain.LOGGER.error("BuildTag is null for component " + this.getClass().getSimpleName());
 			return false;
 		}
-		return getTags().getBuildTag().isAllowedAsNext(other.getTags().getBuildTag());
+		return (getTags().getBuildTag().isAllowedAsNext(other.getTags().getBuildTag()) && validate(context));
 	}
 
-	public boolean validate() {
+	public boolean validate(Context context) {
 		MainTag tags = getTags();
 		for (Tag t : tags.getTagSet()) {
 			if (t instanceof RestrictionTag) {
-				if (!((RestrictionTag) t).isValid())
+				if (!((RestrictionTag) t).isValid(this, context))
 					return false;
 			}
 		}

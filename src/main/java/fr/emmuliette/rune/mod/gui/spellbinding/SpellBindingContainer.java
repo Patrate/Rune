@@ -6,6 +6,7 @@ import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.items.ModItems;
+import fr.emmuliette.rune.mod.specialRecipes.SpellRecipe;
 import fr.emmuliette.rune.mod.sync.SyncHandler;
 import fr.emmuliette.rune.setup.Registration;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,6 +36,7 @@ public class SpellBindingContainer extends Container {
 	private final CraftResultInventory resultSlots = new CraftResultInventory();
 	private final IWorldPosCallable access;
 	private final PlayerEntity player;
+	String errorMessage;
 
 	public SpellBindingContainer(int containerId, PlayerInventory playerInventory, PacketBuffer data) {
 		this(containerId, playerInventory, IWorldPosCallable.NULL);
@@ -42,6 +44,7 @@ public class SpellBindingContainer extends Container {
 
 	public SpellBindingContainer(int containerId, PlayerInventory playerInventory, IWorldPosCallable postCall) {
 		super(ModContainers.SPELLBINDING.get(), containerId);
+		this.errorMessage = null;
 		this.access = postCall;
 		this.player = playerInventory.player;
 		// Result slot
@@ -107,12 +110,14 @@ public class SpellBindingContainer extends Container {
 		nbt.putInt(CSpellBindingSlotPacket.CONTAINER_ID_NBT, this.containerId);
 		nbt.put(CSpellBindingSlotPacket.PROPERTIES_NBT, this.craftSlots.getProperties());
 		nbt.putString(CSpellBindingSlotPacket.NAME_NBT, this.getSpellName());
-		System.out.println("Sending to server: " + nbt.toString());
+//		System.out.println("Sending to server: " + nbt.toString());
 		SyncHandler.sendToServer(new CSpellBindingSlotPacket(nbt));
+		updateErrorMessage();
 	}
 
 	public void slotChangedCraftingGrid() {
 		slotChangedCraftingGrid(this.containerId, this.player.level, this.player, this.craftSlots, this.resultSlots);
+		updateErrorMessage();
 	}
 
 	public void updateProperties(INBT nbt) {
@@ -120,12 +125,29 @@ public class SpellBindingContainer extends Container {
 		this.access.execute((world, blockPos) -> {
 			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
 		});
+		updateErrorMessage();
 	}
 
 	public void slotsChanged(IInventory slot) {
 		this.access.execute((world, blockPos) -> {
 			slotChangedCraftingGrid(this.containerId, world, this.player, this.craftSlots, this.resultSlots);
 		});
+		updateErrorMessage();
+	}
+
+	private void updateErrorMessage() {
+		if(!this.player.level.isClientSide)
+			return;
+		if (this.craftSlots.getSpellName().isEmpty()) {
+			errorMessage = "Must have a spell name";
+		} else {
+			errorMessage = SpellRecipe.validate(this.craftSlots);
+		}
+		System.out.println("[ERROR] " + errorMessage);
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
 	public void fillCraftSlotsStackedContents(RecipeItemHelper recipe) {
@@ -135,13 +157,6 @@ public class SpellBindingContainer extends Container {
 		this.getCraftSlots().clearContent();
 		this.resultSlots.clearContent();
 	}
-
-//	@Override
-//	public boolean recipeMatches(IRecipe<? super SpellBindingInventory> recipe) {
-//		if (StringUtils.isBlank(this.getSpellName()))
-//			return false;
-//		return recipe.matches(this.getCraftSlots(), this.player.level);
-//	}
 
 	public void removed(PlayerEntity player) {
 		super.removed(player);

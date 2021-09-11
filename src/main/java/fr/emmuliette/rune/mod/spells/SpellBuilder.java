@@ -12,6 +12,7 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectC
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import fr.emmuliette.rune.mod.spells.tags.OtherTag;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
+import fr.emmuliette.rune.mod.spells.tags.RestrictionTag.Context;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
 
@@ -39,7 +40,7 @@ public class SpellBuilder {
 				start = (AbstractCastComponent<?>) current;
 			} else {
 				current.setParent(previous);
-				if (!previous.validate(current) || !previous.addNextPart(current)) {
+				if (!previous.validate(current, Context.BUILD) || !previous.addNextPart(current)) {
 					RuneMain.LOGGER.info("[BUILD SPELL] components " + current.getClass().getSimpleName()
 							+ " can't go after " + previous.getClass().getSimpleName());
 					return null;
@@ -76,9 +77,9 @@ public class SpellBuilder {
 		return retour;
 	}
 
-	public static boolean parseSpellComponents(List<AbstractSpellComponent> componentsList, boolean isSocket) {
+	public static String parseSpellComponents(List<AbstractSpellComponent> componentsList, boolean isSocket) {
 		if (componentsList.size() < 2) {
-			return false;
+			return "Must contain at least 2 components";
 		}
 		boolean requiredCastEffect = false, requiredEffect = false;
 		AbstractSpellComponent previous = null;
@@ -86,7 +87,7 @@ public class SpellBuilder {
 			current.clear();
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
 				if (isSocket && !((AbstractCastEffectComponent) current).getTags().hasTag(OtherTag.SOCKETABLE)) {
-					return false;
+					return "This casting rune can't be socketed";
 				}
 				requiredCastEffect = true;
 			}
@@ -95,19 +96,25 @@ public class SpellBuilder {
 			}
 			if (previous == null) {
 				if (!(current instanceof AbstractCastComponent<?>)) {
-					return false;
+					return "First rune must be cast rune or cast mod rune";
 				}
 			} else {
 				current.setParent(previous);
-				if (!previous.validate(current) || !previous.addNextPart(current)) {
-					// RuneMain.LOGGER.error("INVALID NEXT PART: " +
-					// current.getClass().getSimpleName() + " can't go after " +
-					// previous.getClass().getSimpleName());
-					return false;
+				if (!previous.validate(current, Context.BUILD)) {
+					return current.getClass().getSimpleName() + " isn't valide";
+				}
+				if(!previous.addNextPart(current)) {
+					return current.getClass().getSimpleName() + " can't be after a " + previous.getClass().getSimpleName();
 				}
 			}
 			previous = current;
 		}
-		return (requiredCastEffect && requiredEffect);
+		if(!requiredCastEffect)
+			return "Require a cast rune";
+		
+		if(!requiredEffect)
+			return "Require at least one effect rune";
+		
+		return null;
 	}
 }

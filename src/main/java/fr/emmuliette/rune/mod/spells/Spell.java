@@ -18,6 +18,7 @@ import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import fr.emmuliette.rune.mod.spells.properties.variable.BlockPosProperty;
 import fr.emmuliette.rune.mod.spells.properties.variable.BlockTypeProperty;
 import fr.emmuliette.rune.mod.spells.properties.variable.VariableProperty;
+import fr.emmuliette.rune.mod.spells.tags.RestrictionTag.Context;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
@@ -83,8 +84,11 @@ public class Spell {
 	public Boolean castable(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			BlockPos block, ItemUseContext itemUseContext, boolean channeling) {
 		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext, null);
-		Boolean retour = startingComponent.canCast(context);
-		return retour;
+		for (AbstractSpellComponent component : this.components) {
+			if (!component.validate(Context.CAST))
+				return false;
+		}
+		return startingComponent.canCast(context);
 	}
 
 	public Boolean cast(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,

@@ -117,6 +117,11 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 			this.renderCase(mStack, i + slot.x, j + slot.y, slot == this.componentGui.getCurrentSelectedSlot());
 		}
 		mStack.popPose();
+		if (this.menu.errorMessage != null) {
+			mStack.pushPose();
+			drawString(mStack, this.minecraft.font, this.menu.errorMessage, this.leftPos, this.topPos, -1);
+			mStack.popPose();
+		}
 	}
 
 	private void renderCase(MatrixStack mStack, int x, int y, boolean isSelected) {
@@ -192,7 +197,8 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 	@Override
 	protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType clickType) {
 //		this.minecraft.player.item
-		if (slot != null && slot instanceof SpellBindingRuneSlot && mouseButton == 1 && this.minecraft.player.inventory.getCarried().isEmpty()) {
+		if (slot != null && slot instanceof SpellBindingRuneSlot && mouseButton == 1
+				&& this.minecraft.player.inventory.getCarried().isEmpty()) {
 			if (!slot.equals(selectedSlot)) {
 				selectSlot(slot);
 			}
@@ -200,7 +206,7 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 			return;
 		}
 		super.slotClicked(slot, slotId, mouseButton, clickType);
-		if(selectedSlot != null && !selectedSlot.hasItem()) {
+		if (selectedSlot != null && !selectedSlot.hasItem()) {
 			selectedSlot = null;
 		}
 	}
@@ -220,7 +226,7 @@ public class SpellBindingScreen extends ContainerScreen<SpellBindingContainer> i
 	}
 
 	public void slotChanged(Container container, int slot, ItemStack item) {
-		if(selectedSlot != null && !selectedSlot.hasItem()) {
+		if (selectedSlot != null && !selectedSlot.hasItem()) {
 			selectedSlot = null;
 		}
 	}
