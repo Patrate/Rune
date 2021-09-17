@@ -40,6 +40,14 @@ public abstract class VariableProperty<T> extends Property<T> {
 	public boolean isVariable() {
 		return variable;
 	}
+	
+	public void setVariable(boolean variable) {
+		this.variable = variable;
+	}
+	
+	public boolean variablePossible() {
+		return variablePossible;
+	}
 
 	@Override
 	public final INBT valueToNBT() {

@@ -16,6 +16,7 @@ import fr.emmuliette.rune.mod.spells.properties.blockGrid.GridProperty;
 import fr.emmuliette.rune.mod.spells.properties.common.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.common.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.common.LevelProperty;
+import fr.emmuliette.rune.mod.spells.properties.variable.BlockPosProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.Widget;
@@ -42,6 +43,8 @@ public abstract class PropertyWidget<T extends Property<?>> extends Widget {
 			retour = new EnumWidget(grade, (EnumProperty) property, component, x, y);
 		else if (property instanceof GridProperty)
 			retour = new GridWidget(grade, (GridProperty) property, component, x, y);
+		else if (property instanceof BlockPosProperty)
+			retour = new BlockPosWidget(grade, (BlockPosProperty) property, component, x, y);
 		else
 			return null;
 		retour.page = page;

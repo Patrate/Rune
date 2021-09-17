@@ -4,9 +4,9 @@ import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.PotionEffectComponent;
 import net.minecraft.potion.Effects;
 
-public class ConfusionEffectComponent extends PotionEffectComponent {
+public class NauseaEffectComponent extends PotionEffectComponent {
 
-	public ConfusionEffectComponent(AbstractSpellComponent parent) {
+	public NauseaEffectComponent(AbstractSpellComponent parent) {
 		super(parent, Effects.CONFUSION);
 	}
 

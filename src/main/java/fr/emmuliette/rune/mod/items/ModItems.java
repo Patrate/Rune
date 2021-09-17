@@ -23,7 +23,7 @@ import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.Move
 import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.PhaseBlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.SilenceEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.BlindnessEffectComponent;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.ConfusionEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.NauseaEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.DamageBoostEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.DamageResistanceEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.DigSlowEffectComponent;
@@ -129,7 +129,7 @@ public enum ModItems {
 
 	// VANILLA EFFECTS
 	BLINDNESS_RUNE(new RuneModItem("blindness_rune", RuneMain.RUNE_EFFECT_GROUP, BlindnessEffectComponent.class)),
-	CONFUSION_RUNE(new RuneModItem("confusion_rune", RuneMain.RUNE_EFFECT_GROUP, ConfusionEffectComponent.class)),
+	NAUSEA_RUNE(new RuneModItem("nausea_rune", RuneMain.RUNE_EFFECT_GROUP, NauseaEffectComponent.class)),
 	DAMAGEBOOST_RUNE(
 			new RuneModItem("damage_boost_rune", RuneMain.RUNE_EFFECT_GROUP, DamageBoostEffectComponent.class)),
 	DAMAGERESISTANCE_RUNE(new RuneModItem("damage_resistance_rune", RuneMain.RUNE_EFFECT_GROUP,
@@ -157,12 +157,13 @@ public enum ModItems {
 
 	// Spells
 
-	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
-		@Override
-		protected Supplier<? extends Item> getItemSupplier() {
-			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
-		}
-	}), PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
+//	SPELL(new AdvancedModItem("spell", RuneMain.RUNE_GROUP) {
+//		@Override
+//		protected Supplier<? extends Item> getItemSupplier() {
+//			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(1));
+//		}
+//	}), 
+	PARCHMENT(new AdvancedModItem("parchment", RuneMain.RUNE_GROUP) {
 		@Override
 		protected Supplier<? extends Item> getItemSupplier() {
 			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));

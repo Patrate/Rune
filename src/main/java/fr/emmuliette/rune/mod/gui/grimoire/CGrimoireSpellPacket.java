@@ -4,9 +4,7 @@ import java.util.function.Supplier;
 
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
-import fr.emmuliette.rune.mod.items.spellItems.AbstractSpellItem;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -51,10 +49,11 @@ public class CGrimoireSpellPacket {
 
 				switch (action) {
 				case GET:
-					ItemStack itemstack = AbstractSpellItem.getGrimoireSpell(caster.getGrimoire(), spellId);
-					player.addItem(itemstack);
-					player.inventoryMenu.setSynched(player, true);
-					player.inventoryMenu.broadcastChanges();
+					// TODO remove the get action
+//					ItemStack itemstack = AbstractSpellItem.getGrimoireSpell(caster.getGrimoire(), spellId);
+//					player.addItem(itemstack);
+//					player.inventoryMenu.setSynched(player, true);
+//					player.inventoryMenu.broadcastChanges();
 					break;
 				case REMOVE:
 					caster.getGrimoire().removeSpell(spellId);

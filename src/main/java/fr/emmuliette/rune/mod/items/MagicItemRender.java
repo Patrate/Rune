@@ -34,8 +34,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid = RuneMain.MOD_ID, bus = Bus.FORGE, value = Dist.CLIENT)
 public class MagicItemRender {
-	private static final RenderType PARCHMENT_TEXTURE = RenderType.text(new ResourceLocation(RuneMain.MOD_ID, "textures/handitem/parchment_texture.png"));
-	private static final RenderType SPELL_TEXTURE = RenderType.text(new ResourceLocation(RuneMain.MOD_ID, "textures/handitem/spell_texture.png"));
+	private static final RenderType PARCHMENT_TEXTURE = RenderType
+			.text(new ResourceLocation(RuneMain.MOD_ID, "textures/handitem/parchment_texture.png"));
 
 	@SuppressWarnings("deprecation")
 	public static final RenderMaterial BOOK_LOCATION = new RenderMaterial(AtlasTexture.LOCATION_BLOCKS,
@@ -65,9 +65,8 @@ public class MagicItemRender {
 	public static void renderHandMagicItem(RenderHandEvent event) {
 		ItemStack is = event.getItemStack();
 		Minecraft minecraft = Minecraft.getInstance();
-		if (event.isCanceled() || minecraft.player.isInvisible()
-				|| (is.getItem() != ModItems.PARCHMENT.get() && is.getItem() != ModItems.SPELL.get()
-						&& is.getItem() != ModItems.GRIMOIRE.get() && !(is.getItem() instanceof WandItem)))
+		if (event.isCanceled() || minecraft.player.isInvisible() || (is.getItem() != ModItems.PARCHMENT.get()
+				&& is.getItem() != ModItems.GRIMOIRE.get() && !(is.getItem() instanceof WandItem)))
 			return;
 //		renderArmWithItem(Minecraft.getInstance().player, event.getHand(), event.getItemStack(), event.getMatrixStack(),
 //				event.getBuffers(), 0, 0, event.getLight());
@@ -79,9 +78,6 @@ public class MagicItemRender {
 
 			if (is.getItem() == ModItems.PARCHMENT.get())
 				renderParchment(minecraft, event.getMatrixStack(), event.getBuffers(), event.getLight(), 0f,
-						event.getHand(), 0f, is);
-			if (is.getItem() == ModItems.SPELL.get())
-				renderSpell(minecraft, event.getMatrixStack(), event.getBuffers(), event.getLight(), 0f,
 						event.getHand(), 0f, is);
 			if (is.getItem() == ModItems.GRIMOIRE.get())
 				renderGrimoire(minecraft, event.getMatrixStack(), event.getBuffers(), event.getLight(), 0f,
@@ -143,42 +139,6 @@ public class MagicItemRender {
 		ivertexbuilder.vertex(matrix4f, -7.0F, -27.0F, 0.0F).color(255, 255, 255, 255).uv(0.0F, 0.0F).uv2(light)
 				.endVertex();
 
-		mStack.popPose();
-	}
-
-	private static void renderSpell(Minecraft minecraft, MatrixStack mStack, IRenderTypeBuffer rBuffer, int light,
-			float partialTick, Hand hand, float c, ItemStack iStack) {
-		boolean flag = hand == Hand.MAIN_HAND;
-		HandSide handside = flag ? minecraft.player.getMainArm() : minecraft.player.getMainArm().getOpposite();
-		float f = handside == HandSide.RIGHT ? 1.0F : -1.0F;
-
-		mStack.pushPose();
-		mStack.translate((double) (f * 0.51F), (double) (-0.08F + partialTick * -1.2F), -0.75D);
-		float f1 = MathHelper.sqrt(c);
-		float f2 = MathHelper.sin(f1 * (float) Math.PI);
-		float f3 = -0.5F * f2;
-		float f4 = 0.4F * MathHelper.sin(f1 * ((float) Math.PI * 2F));
-		float f5 = -0.3F * MathHelper.sin(c * (float) Math.PI);
-		mStack.translate((double) (f * f3), (double) (f4 - 0.3F * f2), (double) f5);
-		mStack.mulPose(Vector3f.XP.rotationDegrees(f2 * -45.0F));
-		mStack.mulPose(Vector3f.YP.rotationDegrees(f * f2 * -30.0F));
-
-		mStack.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-		mStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
-		mStack.scale(0.38F, 0.38F, 0.38F);
-		mStack.translate(-0.5D, -0.5D, 0.0D);
-		mStack.scale(0.0078125F, 0.0078125F, 0.0078125F);
-		IVertexBuilder ivertexbuilder = rBuffer.getBuffer(SPELL_TEXTURE);
-
-		Matrix4f matrix4f = mStack.last().pose();
-		ivertexbuilder.vertex(matrix4f, -7.0F, 135.0F, 0.0F).color(255, 255, 255, 255).uv(0.0F, 1.0F).uv2(light)
-				.endVertex();
-		ivertexbuilder.vertex(matrix4f, 135.0F, 135.0F, 0.0F).color(255, 255, 255, 255).uv(1.0F, 1.0F).uv2(light)
-				.endVertex();
-		ivertexbuilder.vertex(matrix4f, 135.0F, -7.0F, 0.0F).color(255, 255, 255, 255).uv(1.0F, 0.0F).uv2(light)
-				.endVertex();
-		ivertexbuilder.vertex(matrix4f, -7.0F, -7.0F, 0.0F).color(255, 255, 255, 255).uv(0.0F, 0.0F).uv2(light)
-				.endVertex();
 		mStack.popPose();
 	}
 

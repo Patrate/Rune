@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 
 import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
+import fr.emmuliette.rune.mod.gui.spellbinding.ErrorIcon.SpellError;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingInventory;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.items.RuneItem;
@@ -39,9 +40,9 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 		return Registration.SPELLBINDING_RECIPE;
 	}
 
-	public static List<String> validate(SpellBindingInventory spellBindingInventory) {
+	public static List<SpellError> validate(SpellBindingInventory spellBindingInventory) {
 		List<AbstractSpellComponent> list = Lists.newArrayList();
-		List<String> retour = new ArrayList<String>();
+		List<SpellError> retour = new ArrayList<SpellError>();
 		boolean hasPaper = false, hasBook = false, hasSocket = false;
 		
 		boolean hasMultiple = false;
@@ -68,30 +69,30 @@ public class SpellRecipe extends SpellBindingRecipe {// implements IRecipe<Spell
 					}
 					hasSocket = true;
 				} else if (!(item instanceof RuneItem)) {
-					retour.add("Item " + itemstack.getDisplayName().getString() + " isn't a rune");
+					retour.add(SpellError.NOT_A_RUNE);
 				} else {
 					list.add(spellBindingInventory.getComponent(i));
 				}
 			}
 		}
 		if (!hasPaper && !hasBook && !hasSocket) {
-			retour.add("Add a book, a paper or a socket");
+			retour.add(SpellError.MISSING_PAPER);
 		} else if(hasMultiple) {
-			retour.add("Multiple book, paper or socket, need only one");
+			retour.add(SpellError.TOO_MUCH_PAPER);
 		}
 		
-		List<String> errorMessage = SpellBuilder.parseSpellComponents(list, hasSocket);
+		List<SpellError> errorMessage = SpellBuilder.parseSpellComponents(list, hasSocket);
 		if (!errorMessage.isEmpty()) {
 			retour.addAll(errorMessage);
 		} else {
 			try {
 				Spell spell = SpellBuilder.buildSpell(spellBindingInventory.getSpellName(), list);
 				if (spell == null) {
-					retour.add("Erreur dans le sort");
+					retour.add(SpellError.GENERIC);
 				}
 			} catch (RunePropertiesException e) {
 				e.printStackTrace();
-				retour.add("Erreur: " + e.getMessage());
+				retour.add(SpellError.EXCEPTION);
 			}
 		}
 		return retour;

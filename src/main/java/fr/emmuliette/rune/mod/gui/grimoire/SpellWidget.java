@@ -6,11 +6,11 @@ import java.util.List;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
+import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireSpellPacket.Action;
 import fr.emmuliette.rune.mod.sync.SyncHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.StringTextComponent;
 
 public class SpellWidget extends Widget {
@@ -30,8 +30,7 @@ public class SpellWidget extends Widget {
 		// Get spell
 		this.buttons.add(new SpellButton(this, parent, grimoire, x, y, 0, 0, (button) -> {
 			SpellButton sButton = (SpellButton) button;
-			sButton.getParent().getSpellServer();
-			// TODO parent.selectSpell(spellId);
+			sButton.getParent().selectSpell();
 		}));
 
 		// Remove spell
@@ -47,13 +46,11 @@ public class SpellWidget extends Widget {
 	public void render(MatrixStack mStack, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
 		if (getSpellId() == -1)
 			return;
-		ItemStack item = grimoire.getItem(getSpellId());
-		if (item == null || item == ItemStack.EMPTY) {
-			this.spellId = -1;
+		ISpell spell = grimoire.getSpell(getSpellId());
+		if (spell == null || spell.getSpell() == null)
 			return;
-		}
 		mStack.pushPose();
-		parent.getFont().draw(mStack, item.getItem().getName(item), x + 20, y + 3, 4210752);
+		parent.getFont().draw(mStack, spell.getSpell().getName(), x + 20, y + 3, 4210752);
 		mStack.popPose();
 
 		for (SpellButton b : buttons) {
@@ -74,9 +71,8 @@ public class SpellWidget extends Widget {
 		return parent.getMinecraft();
 	}
 
-	void getSpellServer() {
-//		parent.getSpellServer(spellId);
-		SyncHandler.sendToServer(new CGrimoireSpellPacket(spellId, Action.GET));
+	void selectSpell() {
+		parent.selectSpell(spellId);
 	}
 
 	void removeSpellServer() {

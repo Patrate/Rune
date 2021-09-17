@@ -5,6 +5,7 @@ import java.util.List;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.exception.RunePropertiesException;
+import fr.emmuliette.rune.mod.gui.spellbinding.ErrorIcon.SpellError;
 import fr.emmuliette.rune.mod.items.RuneItem;
 import fr.emmuliette.rune.mod.spells.component.AbstractSpellComponent;
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastComponent;
@@ -77,15 +78,15 @@ public class SpellBuilder {
 		return retour;
 	}
 
-	public static List<String> parseSpellComponents(List<AbstractSpellComponent> componentsList, boolean isSocket) {
-		List<String> errors = new ArrayList<String>();
+	public static List<SpellError> parseSpellComponents(List<AbstractSpellComponent> componentsList, boolean isSocket) {
+		List<SpellError> errors = new ArrayList<SpellError>();
 		boolean requiredCastEffect = false, requiredEffect = false;
 		AbstractSpellComponent previous = null;
 		for (AbstractSpellComponent current : componentsList) {
 			current.clear();
 			if (!requiredCastEffect && current instanceof AbstractCastEffectComponent) {
 				if (isSocket && !((AbstractCastEffectComponent) current).getTags().hasTag(OtherTag.SOCKETABLE)) {
-					errors.add("This casting rune can't be socketed");
+					errors.add(SpellError.CANT_SOCKET);
 				}
 				requiredCastEffect = true;
 			}
@@ -94,24 +95,24 @@ public class SpellBuilder {
 			}
 			if (previous == null) {
 				if (!(current instanceof AbstractCastComponent<?>)) {
-					errors.add("First rune must be cast rune or cast mod rune");
+					errors.add(SpellError.FIRST_RUNE);
 				}
 			} else {
 				current.setParent(previous);
 				if (!previous.validate(current, Context.BUILD)) {
-					errors.add(current.getClass().getSimpleName() + " isn't valid");
+					errors.add(SpellError.INVALID);
 				}
 				if(!previous.addNextPart(current)) {
-					errors.add(current.getClass().getSimpleName() + " can't be after a " + previous.getClass().getSimpleName());
+					errors.add(SpellError.CANT_SUCCEED);
 				}
 			}
 			previous = current;
 		}
 		if(!requiredCastEffect)
-			errors.add("Require a cast rune");
+			errors.add(SpellError.MISSING_CAST);
 		
 		if(!requiredEffect)
-			errors.add("Require at least one effect rune");
+			errors.add(SpellError.MISSING_EFFECT);
 		
 		return errors;
 	}

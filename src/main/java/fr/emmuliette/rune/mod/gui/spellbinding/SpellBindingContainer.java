@@ -7,6 +7,7 @@ import java.util.Optional;
 import fr.emmuliette.rune.mod.blocks.ModBlocks;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipe;
 import fr.emmuliette.rune.mod.containers.ModContainers;
+import fr.emmuliette.rune.mod.gui.spellbinding.ErrorIcon.SpellError;
 import fr.emmuliette.rune.mod.items.ModItems;
 import fr.emmuliette.rune.mod.specialRecipes.SpellRecipe;
 import fr.emmuliette.rune.mod.sync.SyncHandler;
@@ -26,8 +27,6 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -40,7 +39,7 @@ public class SpellBindingContainer extends Container {
 	private final CraftResultInventory resultSlots = new CraftResultInventory();
 	private final IWorldPosCallable access;
 	private final PlayerEntity player;
-	TextComponent errorMessage;
+	List<SpellError> errorMessage;
 
 	public SpellBindingContainer(int containerId, PlayerInventory playerInventory, PacketBuffer data) {
 		this(containerId, playerInventory, IWorldPosCallable.NULL);
@@ -142,22 +141,18 @@ public class SpellBindingContainer extends Container {
 	private void updateErrorMessage() {
 		if (!this.player.level.isClientSide)
 			return;
-		List<String> errors = new ArrayList<String>();
+		List<SpellError> errors = new ArrayList<SpellError>();
 		if (this.craftSlots.getSpellName().isEmpty()) {
-			errors.add("Must have a spell name\n");
+			errors.add(SpellError.MISSING_SPELL_NAME);
 		}
 		errors.addAll(SpellRecipe.validate(this.craftSlots));
 		if (errors.isEmpty())
 			this.errorMessage = null;
-		else {
-			this.errorMessage = new StringTextComponent("");
-			for (String error : errors) {
-				this.errorMessage.append(new StringTextComponent(error + "\n"));
-			}
-		}
+		else
+			this.errorMessage = errors;
 	}
 
-	public TextComponent getErrorMessage() {
+	public List<SpellError> getErrorMessage() {
 		return errorMessage;
 	}
 

@@ -7,9 +7,6 @@ import java.util.List;
 import fr.emmuliette.rune.exception.RunePropertiesException;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellImpl;
-import fr.emmuliette.rune.mod.items.spellItems.SpellItem;
-import fr.emmuliette.rune.mod.items.spellItems.SpellItem.ItemType;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
@@ -22,9 +19,8 @@ public class Grimoire {
 		spellList = new ArrayList<ISpell>();
 	}
 
-	private void expeditiveSpellRemoval(int spellId) {
-
-	}
+//	private void expeditiveSpellRemoval(int spellId) {
+//	}
 
 	public boolean addSpell(ISpell spell) {
 		addSpellInternal(spell);
@@ -50,19 +46,19 @@ public class Grimoire {
 		return spellList.size();
 	}
 
-	public ItemStack getItem(Integer spellId) {
-		ISpell spell = this.getSpell(spellId);
-		if (spell == null) {
-			System.out.println("Spell is null for id " + spellId);
-			return ItemStack.EMPTY;
-		}
-		if (spell.getSpell() == null) {
-			expeditiveSpellRemoval(spellId);
-			System.out.println("Spell.getSpell() is null for id " + spellId);
-			return ItemStack.EMPTY;
-		}
-		return SpellItem.buildSpellItem(spell.getSpell(), ItemType.SPELL);
-	}
+//	public ItemStack getItem(Integer spellId) {
+//		ISpell spell = this.getSpell(spellId);
+//		if (spell == null) {
+//			System.out.println("Spell is null for id " + spellId);
+//			return ItemStack.EMPTY;
+//		}
+//		if (spell.getSpell() == null) {
+//			expeditiveSpellRemoval(spellId);
+//			System.out.println("Spell.getSpell() is null for id " + spellId);
+//			return ItemStack.EMPTY;
+//		}
+//		return SpellItem.buildSpellItem(spell.getSpell(), ItemType.SPELL);
+//	}
 
 	private void removeSpellInternal(int spellId) {
 		spellList.remove(spellId);

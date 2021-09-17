@@ -2,6 +2,6 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "rune:item/blank_wooden_rune",
-    "layer1": "rune:item/confusion_rune"
+    "layer1": "rune:item/nausea_rune"
   }
 }

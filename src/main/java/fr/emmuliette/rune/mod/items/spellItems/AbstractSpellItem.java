@@ -7,7 +7,6 @@ import fr.emmuliette.rune.exception.CasterCapabilityExceptionSupplier;
 import fr.emmuliette.rune.exception.SpellCapabilityException;
 import fr.emmuliette.rune.exception.SpellCapabilityExceptionSupplier;
 import fr.emmuliette.rune.mod.capabilities.caster.CasterCapability;
-import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.caster.ICaster;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
 import fr.emmuliette.rune.mod.capabilities.spell.SpellCapability;
@@ -40,9 +39,9 @@ import net.minecraftforge.common.MinecraftForge;
 public abstract class AbstractSpellItem extends Item {
 //	public static final String SPELL_ID = "spell_id";
 
-	public static ItemStack getGrimoireSpell(Grimoire grimoire, int spellId) {
-		return grimoire.getItem(spellId);
-	}
+//	public static ItemStack getGrimoireSpell(Grimoire grimoire, int spellId) {
+//		return grimoire.getItem(spellId);
+//	}
 
 	public AbstractSpellItem(Properties prop) {
 		super(prop);
@@ -167,8 +166,9 @@ public abstract class AbstractSpellItem extends Item {
 				return ActionResultType.SUCCESS;
 			} else {
 				if (itemUseContext.getPlayer().isShiftKeyDown()
-						&& (spell.setVariableProperty(itemUseContext.getClickedPos().above()) || spell.setVariableProperty(
-								itemUseContext.getLevel().getBlockState(itemUseContext.getClickedPos())))) {
+						&& (spell.setVariableProperty(itemUseContext.getClickedPos().above())
+								|| spell.setVariableProperty(
+										itemUseContext.getLevel().getBlockState(itemUseContext.getClickedPos())))) {
 					return ActionResultType.SUCCESS;
 				} else {
 					spell.setCacheBlock(itemUseContext.getClickedPos());

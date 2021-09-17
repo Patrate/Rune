@@ -23,5 +23,18 @@
 	"gui.spellbindingscreen.spell_name": "Spell name",
 	"gui.parchment_of": "Parchment of ",
 	"gui.grimoire_of": "Grimoire of ",
-	"gui.socket_of": "Socket of "
+	"gui.socket_of": "Socket of ",
+	
+	"gui.error.spellname": "§4Must have a spell name",
+	"gui.error.notarune": "§4Item isn't a rune",
+	"gui.error.missingpaper": "§4Add a book, a paper or a socket",
+	"gui.error.toomuchpaper": "§4Multiple book, paper or socket",
+	"gui.error.generic": "§4Error in the spell",
+	"gui.error.exception": "§4Error: ",
+	"gui.error.cantsocket": "§4The castable rune can't be socketed",
+	"gui.error.firstrune": "§4First rune must be castable or cast mod",
+	"gui.error.invalid": "§4Invalid rune",
+	"gui.error.cantsucceed": "§4Rune A can't be after rune B",
+	"gui.error.missingcast": "§4Missing cast rune",
+	"gui.error.missingeffect": "§4Missing effect rune"
 }

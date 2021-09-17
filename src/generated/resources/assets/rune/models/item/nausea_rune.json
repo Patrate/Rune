@@ -1,44 +1,44 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "rune:item/confusion_rune"
+    "layer0": "rune:item/nausea_rune"
   },
   "overrides": [
     {
       "predicate": {
         "rune:grade": 0.0
       },
-      "model": "rune:item/wooden_confusion_rune"
+      "model": "rune:item/wooden_nausea_rune"
     },
     {
       "predicate": {
         "rune:grade": 1.0
       },
-      "model": "rune:item/stone_confusion_rune"
+      "model": "rune:item/stone_nausea_rune"
     },
     {
       "predicate": {
         "rune:grade": 2.0
       },
-      "model": "rune:item/iron_confusion_rune"
+      "model": "rune:item/iron_nausea_rune"
     },
     {
       "predicate": {
         "rune:grade": 3.0
       },
-      "model": "rune:item/golden_confusion_rune"
+      "model": "rune:item/golden_nausea_rune"
     },
     {
       "predicate": {
         "rune:grade": 4.0
       },
-      "model": "rune:item/diamond_confusion_rune"
+      "model": "rune:item/diamond_nausea_rune"
     },
     {
       "predicate": {
         "rune:grade": 5.0
       },
-      "model": "rune:item/netherite_confusion_rune"
+      "model": "rune:item/netherite_nausea_rune"
     }
   ]
 }
