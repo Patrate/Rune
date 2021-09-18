@@ -83,7 +83,8 @@ public abstract class RuneProperties {
 	public Collection<? extends ITextComponent> getTooltips(Grade grade) {
 		List<ITextComponent> retour = new ArrayList<ITextComponent>();
 		for (Property<?> prop : getProperties(grade)) {
-			retour.add(new StringTextComponent("§o§7" + prop.getName() + ": §r§7§o" + prop.getValue()));
+//			retour.add(new StringTextComponent("§o§7" + prop.getName() + ": §r§7§o" + prop.getValue()));
+			retour.add(new StringTextComponent(prop.getName() + ": " + prop.getValue()));
 		}
 		return retour;
 	}

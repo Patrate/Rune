@@ -40,8 +40,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	private boolean widthTooNarrow;
 	private Grimoire grimoire;
 	ISpell selectedSpell;
+	int selectedSpellId;
 	private List<SpellWidget> spellWidgets;
-	GrimoireSpellPage spellPage = new GrimoireSpellPage();
+	private GrimoireSpellPage spellPage;
 
 	private float scrollOffs;
 	private boolean scrolling;
@@ -49,6 +50,7 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	public GrimoireScreen(GrimoireContainer container, PlayerInventory playerInventory, ITextComponent textComp) {
 		super(container, playerInventory, textComp);
 		spellWidgets = new ArrayList<SpellWidget>(VIEW_SIZE);
+		selectedSpellId = -1;
 	}
 
 	public int getSpellCount() {
@@ -65,7 +67,12 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 
 	void selectSpell(int spellId) {
 		selectedSpell = grimoire.getSpell(spellId);
+		selectedSpellId = spellId;
 		this.leftPos = this.spellPage.updateScreenPosition(this.widthTooNarrow, this.width, this.imageWidth);
+		for (SpellWidget w : spellWidgets) {
+			w.updatePos(this.widthTooNarrow, this.leftPos + 16);
+		}
+		this.spellPage.selectSpell();
 	}
 
 	protected void init() {
@@ -82,6 +89,8 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	private void initSpellPage() {
+		this.spellPage = new GrimoireSpellPage();
+		this.children.add(this.spellPage);
 		this.spellPage.init(this.width, this.height, this.minecraft, this.widthTooNarrow, this);
 		this.leftPos = this.spellPage.updateScreenPosition(this.widthTooNarrow, this.width, this.imageWidth);
 		this.children.add(this.spellPage);
@@ -94,13 +103,14 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 
 	@Override
 	public void render(MatrixStack mStack, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-		this.renderBackground(mStack);
 		super.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
+		this.renderBackground(mStack);
+		this.renderTooltip(mStack, p_230430_2_, p_230430_3_);
 		if (selectedSpell != null) {
 			spellPage.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
+			spellPage.renderToolTip(mStack, p_230430_2_, p_230430_3_);
 		}
-		this.renderTooltip(mStack, p_230430_2_, p_230430_3_);
-
+		
 	}
 
 	@SuppressWarnings("deprecation")
@@ -124,12 +134,6 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 
 	}
 
-	protected void renderSpellPage(MatrixStack mStack, int mouseX, int mouseY, float useless) {
-		if (getSelectedSpell() == null)
-			return;
-		this.font.draw(mStack, getSelectedSpell().getSpell().getName(), this.width / 2, 8, 4210752);
-	}
-
 	public FontRenderer getFont() {
 		return font;
 	}
@@ -151,12 +155,12 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 			this.scrolling = this.canScroll();
 			return true;
 		}
-//		if (this.grimoireGui.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_)) {
-//			this.setFocused(this.grimoireGui);
-//			return true;
-//		} else {
-		return super.mouseClicked(x, y, p_231044_5_);
-//		}
+		if (this.spellPage.mouseClicked(x, y, p_231044_5_)) {
+			this.setFocused(this.spellPage);
+			return true;
+		} else {
+			return super.mouseClicked(x, y, p_231044_5_);
+		}
 	}
 
 	public boolean mouseReleased(double x, double y, int mouseButton) {
@@ -261,5 +265,9 @@ public class GrimoireScreen extends ContainerScreen<GrimoireContainer> implement
 	}
 
 	public void setContainerData(Container p_71112_1_, int p_71112_2_, int p_71112_3_) {
+	}
+
+	public int getSelectedSpellId() {
+		return selectedSpellId;
 	}
 }

@@ -62,6 +62,10 @@ public class Spell {
 			component.setSpellInternalId(i++);
 		}
 	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getName() {
 		return name;

@@ -7,9 +7,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 
 import fr.emmuliette.rune.mod.capabilities.caster.Grimoire;
 import fr.emmuliette.rune.mod.capabilities.spell.ISpell;
-import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireSpellPacket.Action;
-import fr.emmuliette.rune.mod.sync.SyncHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.text.StringTextComponent;
 
@@ -28,18 +25,39 @@ public class SpellWidget extends Widget {
 		this.buttons = new ArrayList<SpellButton>(3);
 
 		// Get spell
-		this.buttons.add(new SpellButton(this, parent, grimoire, x, y, 0, 0, (button) -> {
-			SpellButton sButton = (SpellButton) button;
-			sButton.getParent().selectSpell();
+		this.buttons.add(new SpellButton(this, x, y, 0, 0, (button) -> {
+			((SpellButton) button).getParent().selectSpell();
 		}));
 
-		// Remove spell
-		this.buttons.add(new SpellButton(this, parent, grimoire, x + 119, y, 16, 0, (button) -> {
-			SpellButton sButton = (SpellButton) button;
-			sButton.getParent().removeSpellServer();
-		}));
+		// Up button
+		this.buttons.add(new SpellButton(this, x + 119, y, 0, 32, (button) -> {
+			((SpellButton) button).getParent().moveSpellUp();
+		}) {
+			@Override
+			protected boolean isVisible() {
+				return getParent().canMoveUp();
+			}
+		});
+
+		// Down button
+		this.buttons.add(new SpellButton(this, x + 105, y, 16, 32, (button) -> {
+			((SpellButton) button).getParent().moveSpellDown();
+		}) {
+			@Override
+			protected boolean isVisible() {
+				return getParent().canMoveDown();
+			}
+		});
 
 		this.visible = (spellId != -1);
+	}
+
+	public void updatePos(boolean menuOpen, int leftPos) {
+		int diff = leftPos - x;
+		this.x = leftPos;
+		for (SpellButton b : buttons) {
+			b.x += diff;
+		}
 	}
 
 	@Override
@@ -54,7 +72,8 @@ public class SpellWidget extends Widget {
 		mStack.popPose();
 
 		for (SpellButton b : buttons) {
-			b.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
+			if (b.isVisible())
+				b.render(mStack, p_230430_2_, p_230430_3_, p_230430_4_);
 		}
 	}
 
@@ -67,16 +86,32 @@ public class SpellWidget extends Widget {
 		return spellId;
 	}
 
-	Minecraft getMinecraft() {
-		return parent.getMinecraft();
-	}
-
-	void selectSpell() {
+	private void selectSpell() {
 		parent.selectSpell(spellId);
 	}
 
-	void removeSpellServer() {
-		SyncHandler.sendToServer(new CGrimoireSpellPacket(spellId, Action.REMOVE));
+	private boolean canMoveUp() {
+		if (spellId < 0)
+			return false;
+		return (spellId + 1) < grimoire.grimoireSize();
+	}
+
+	private boolean canMoveDown() {
+		if (spellId <= 0)
+			return false;
+		return spellId > 0;
+	}
+
+	private void moveSpellUp() {
+		if (spellId < 0)
+			return;
+		grimoire.moveSpell(spellId, spellId + 1);
+	}
+
+	private void moveSpellDown() {
+		if (spellId < 0)
+			return;
+		grimoire.moveSpell(spellId, spellId - 1);
 	}
 
 	@Override
@@ -86,6 +121,5 @@ public class SpellWidget extends Widget {
 				return true;
 		}
 		return false;
-//		return super.mouseClicked(p_231044_1_, p_231044_3_, p_231044_5_);
 	}
 }

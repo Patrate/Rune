@@ -27,6 +27,14 @@ public class Grimoire {
 		return true;
 	}
 
+	public void moveSpell(Integer a, Integer b) {
+		if (a < 0 || b < 0 || a >= spellList.size() || b >= spellList.size())
+			return;
+		ISpell tmpA = this.spellList.get(b);
+		this.spellList.set(b, this.spellList.get(a));
+		this.spellList.set(a, tmpA);
+	}
+
 	public boolean removeSpell(Integer spellId) {
 		removeSpellInternal(spellId);
 		return true;
