@@ -10,8 +10,13 @@ af012f687e5a14fe12380826f87a36c991a9324c assets/rune/blockstates/spelliverse_blo
 e205d73601a0eb597f1d2859a5af99f6967ddb90 assets/rune/models/block/illusion_block.json
 ed645dd63fb0150790db46c7602a29edb1d67025 assets/rune/models/block/mana_ore_block.json
 d2c7137ebb68b748f31d21fc745e30d06f326b2c assets/rune/models/block/phased_block.json
+<<<<<<< Upstream, based on origin/main
 0842c0535f44ad7a6aa78bda0ff46ba4c0088a7f assets/rune/models/block/spellbinding_block.json
 d6c1f07ffb71caa81653e6d605cb02e16159cd77 assets/rune/models/block/spelliverse_block.json
+=======
+64025afc7daf387ba69591bc9528fa5a1f459683 assets/rune/models/block/scripting_block.json
+64025afc7daf387ba69591bc9528fa5a1f459683 assets/rune/models/block/spellbinding_block.json
+>>>>>>> 043ac9a Added sccripting wip
 b5480e0a9e65c7e398d46c2fa226291470718915 assets/rune/models/item/anchor_block_rune.json
 3ba8bfecd2dedb14af62e6bc83f97c0cf65251cf assets/rune/models/item/blank_diamond_rune.json
 aa4a889978cbffdc0a4d211349df8d78c8e9b0c5 assets/rune/models/item/blank_golden_rune.json
@@ -309,7 +314,11 @@ e0590b75ce6adea37fcbf5edb6e8c3c2f0d53bed data/rune/advancements/recipes/rune_ite
 abb7e559c8b1851b8e36cefaf1973ef870a48450 data/rune/advancements/recipes/rune_items/stone_wand.json
 f0af950cf347c2c878dfc6070bca8af62ab22a8f data/rune/advancements/recipes/rune_items/wooden_wand.json
 edc5e9d4b2561f3aaf180cdd1f1c61194942caee data/rune/loot_tables/blocks/caster_block.json
+<<<<<<< Upstream, based on origin/main
 eaf30146a803ab3d7d802297d27ffe92518e9f0c data/rune/loot_tables/blocks/mana_ore_block.json
+=======
+78d0c02e67774b4619d66e9f599baaee02aea57c data/rune/loot_tables/blocks/scripting_block.json
+>>>>>>> 043ac9a Added sccripting wip
 1466dfa00d92aa63af30d295f3b2e261492c0272 data/rune/loot_tables/blocks/spellbinding_block.json
 562b177addeb2a371e273b1b8a0e1e8fa4813022 data/rune/loot_tables/blocks/spelliverse_block.json
 12048d596be3d6e8288031a461f80a6bc7498b1f data/rune/recipes/blank_diamond_rune.json

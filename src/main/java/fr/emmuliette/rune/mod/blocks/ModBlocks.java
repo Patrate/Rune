@@ -2,6 +2,7 @@ package fr.emmuliette.rune.mod.blocks;
 
 import fr.emmuliette.rune.RuneMain;
 import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingBlock;
+import fr.emmuliette.rune.mod.blocks.scripting.ScriptingBlock;
 import fr.emmuliette.rune.mod.blocks.spelliverse.SpelliverseBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -23,6 +24,10 @@ public enum ModBlocks {
 
 	SPELLBINDING_BLOCK(new ModBlock("spellbinding_block", RuneMain.RUNE_GROUP,
 			() -> new SpellBindingBlock(
+					AbstractBlock.Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)))),
+	
+	SCRIPTING_BLOCK(new ModBlock("scripting_block", RuneMain.RUNE_GROUP,
+			() -> new ScriptingBlock(
 					AbstractBlock.Properties.of(Material.WOOD).strength(2.5f).sound(SoundType.WOOD)))),
 
 	SPELLIVERSE_BLOCK(new ModBlock("spelliverse_block", RuneMain.RUNE_GROUP,
