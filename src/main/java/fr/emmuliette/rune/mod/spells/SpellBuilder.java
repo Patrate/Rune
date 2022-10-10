@@ -50,8 +50,6 @@ public class SpellBuilder {
 			for (Tag tag : current.getTags().getTagSet()) {
 				if (tag instanceof SpellTag) {
 					spellTags.add((SpellTag) tag);
-				} else if (tag instanceof RestrictionTag) {
-					// TODO restriction tags
 				}
 			}
 			previous = current;

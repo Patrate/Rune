@@ -35,7 +35,7 @@ public class WandItem extends MagicTieredItem {
 			if (!tag.contains(CURRENT_SPELL))
 				tag.putInt(CURRENT_SPELL, 0);
 			int spellId = tag.getInt(CURRENT_SPELL);
-			if(caster.getGrimoire().getSpell(spellId) == null) {
+			if (caster.getGrimoire().getSpell(spellId) == null) {
 				tag.putInt(CURRENT_SPELL, 0);
 				spellId = 0;
 			}
@@ -67,15 +67,18 @@ public class WandItem extends MagicTieredItem {
 		PlayerEntity player = context.getPlayer();
 		World world = context.getLevel();
 		ItemStack wandItem = context.getItemInHand();
-		if (player.isShiftKeyDown()) {
-			nextSpell(wandItem, player);
-			return ActionResultType.PASS;
-		}
+//		if (player.isShiftKeyDown()) {
+//			nextSpell(wandItem, player);
+//			return ActionResultType.PASS;
+//		}
 		ICaster caster = player.getCapability(CasterCapability.CASTER_CAPABILITY).orElse(null);
 		Spell wandSpell = getCurrentSpell(wandItem, player);
 		if (caster != null && wandSpell != null) {
-			if (wandSpell.cast(caster.getPower(), wandItem, null, world, player, context.getClickedPos(), context,
-					false)) {
+			if (context.getPlayer().isShiftKeyDown() && (wandSpell.setVariableProperty(context.getClickedPos().above())
+					|| wandSpell.setVariableProperty(context.getLevel().getBlockState(context.getClickedPos())))) {
+				return ActionResultType.SUCCESS;
+			} else if (wandSpell.cast(caster.getPower(), wandItem, null, world, player, context.getClickedPos(),
+					context, false)) {
 				return ActionResultType.SUCCESS;
 			}
 			return ActionResultType.PASS;
@@ -86,15 +89,17 @@ public class WandItem extends MagicTieredItem {
 	@Override
 	public ActionResultType interactLivingEntity(ItemStack wandItem, PlayerEntity player, LivingEntity target,
 			Hand hand) {
-		if (player.isShiftKeyDown()) {
-			nextSpell(wandItem, player);
-			return ActionResultType.PASS;
-		}
+//		if (player.isShiftKeyDown()) {
+//			nextSpell(wandItem, player);
+//			return ActionResultType.PASS;
+//		}
 		World world = player.level;
 		ICaster caster = player.getCapability(CasterCapability.CASTER_CAPABILITY).orElse(null);
 		Spell wandSpell = getCurrentSpell(wandItem, player);
 		if (caster != null && wandSpell != null) {
-			if (wandSpell.cast(caster.getPower(), wandItem, target, world, player, null, null, false)) {
+			if (player.isShiftKeyDown() && wandSpell.setVariableProperty(target.getType())) {
+				return ActionResultType.SUCCESS;
+			} else if (wandSpell.cast(caster.getPower(), wandItem, target, world, player, null, null, false)) {
 				return ActionResultType.SUCCESS;
 			}
 			return ActionResultType.PASS;

@@ -29,14 +29,16 @@ public class SpellContext {
 	private Direction casterFacing;
 	private Direction blockDirection;
 	private ItemStack socketItem;
+	private String mode;
 
-	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
+	public SpellContext(String mode, float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
 			ItemUseContext itemUseContext, ItemStack socketItem) {
-		this(power, itemStack, target, world, caster, null, itemUseContext, socketItem);
+		this(mode, power, itemStack, target, world, caster, null, itemUseContext, socketItem);
 	}
 
-	public SpellContext(float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
+	public SpellContext(String mode, float power, ItemStack itemStack, LivingEntity target, World world, Entity caster,
 			BlockPos block, ItemUseContext itemUseContext, ItemStack socketItem) {
+		this.mode = mode;
 		if (target != null) {
 			setLivingEntityContext(power, itemStack, caster, target);
 		} else
@@ -55,7 +57,7 @@ public class SpellContext {
 			this.originalCaster = this.currentCaster;
 		}
 		this.casterFacing = this.currentCaster.getDirection();
-		if(socketItem != null)
+		if (socketItem != null)
 			this.socketItem = socketItem;
 	}
 
@@ -164,12 +166,16 @@ public class SpellContext {
 	public void setCasterFacing(Direction casterFacing) {
 		this.casterFacing = casterFacing;
 	}
-	
+
 	public Direction getBlockDirection() {
 		return blockDirection;
 	}
-	
+
 	public ItemStack getSocketItem() {
 		return socketItem;
+	}
+
+	public String getMode() {
+		return mode;
 	}
 }

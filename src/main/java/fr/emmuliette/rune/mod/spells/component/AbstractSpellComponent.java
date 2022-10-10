@@ -17,6 +17,7 @@ import fr.emmuliette.rune.mod.spells.properties.blockGrid.GridProperty;
 import fr.emmuliette.rune.mod.spells.properties.common.BoolProperty;
 import fr.emmuliette.rune.mod.spells.properties.common.EnumProperty;
 import fr.emmuliette.rune.mod.spells.properties.common.LevelProperty;
+import fr.emmuliette.rune.mod.spells.properties.common.StringProperty;
 import fr.emmuliette.rune.mod.spells.properties.exception.PropertyException;
 import fr.emmuliette.rune.mod.spells.tags.MainTag;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
@@ -34,6 +35,15 @@ public abstract class AbstractSpellComponent {
 	private PropertyFactory propFactory;
 	private int spellInternalId;
 	private MainTag tags;
+	private Spell spell;
+
+	public void setSpell(Spell spell) {
+		this.spell = spell;
+	}
+
+	public Spell getSpell() {
+		return spell;
+	}
 
 	public AbstractSpellComponent(PropertyFactory propFact, AbstractSpellComponent parent) {
 		this.propFactory = propFact;
@@ -109,6 +119,15 @@ public abstract class AbstractSpellComponent {
 		} else {
 			RuneMain.LOGGER.error("unknown bool property " + key + " in component " + this.getClass().getSimpleName());
 			return false;
+		}
+	}
+	
+	public String getStringProperty(String key) {
+		if (properties.getProperty(key) != null) {
+			return ((StringProperty) properties.getProperty(key)).getValue();
+		} else {
+			RuneMain.LOGGER.error("unknown string property " + key + " in component " + this.getClass().getSimpleName());
+			return "";
 		}
 	}
 

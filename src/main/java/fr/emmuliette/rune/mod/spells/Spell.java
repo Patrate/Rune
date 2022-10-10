@@ -42,9 +42,11 @@ public class Spell {
 	private List<AbstractSpellComponent> components;
 	private List<SpellTag> tags;
 	private Cost<?> cost;
+	private List<String> modes;
+	private int modeId;
 
-	public Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components,
-			List<SpellTag> tags) {
+	Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components,
+			List<SpellTag> tags, List<String> modes) {
 		this.name = name;
 		this.startingComponent = startingComponent;
 		this.components = components;
@@ -59,10 +61,18 @@ public class Spell {
 		this.tags = tags;
 		int i = 0;
 		for (AbstractSpellComponent component : components) {
+			component.setSpell(this);
 			component.setSpellInternalId(i++);
 		}
+		this.modes = modes;
+		this.modeId = 0;
 	}
-	
+
+	Spell(String name, AbstractCastComponent<?> startingComponent, List<AbstractSpellComponent> components,
+			List<SpellTag> tags) {
+		this(name, startingComponent, components, tags, new ArrayList<String>());
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -81,13 +91,15 @@ public class Spell {
 
 	public Boolean castSpecial(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			ItemUseContext itemUseContext) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, itemUseContext, null);
+		SpellContext context = new SpellContext(modes.isEmpty() ? "" : modes.get(modeId), power, itemStack, target,
+				world, caster, itemUseContext, null);
 		return startingComponent.specialCast(context);
 	}
 
 	public Boolean castable(float power, ItemStack itemStack, LivingEntity target, World world, LivingEntity caster,
 			BlockPos block, ItemUseContext itemUseContext, boolean channeling) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext, null);
+		SpellContext context = new SpellContext(modes.isEmpty() ? "" : modes.get(modeId), power, itemStack, target,
+				world, caster, block, itemUseContext, null);
 		for (AbstractSpellComponent component : this.components) {
 			if (!component.validate(Context.CAST))
 				return false;
@@ -103,8 +115,8 @@ public class Spell {
 	public Boolean castSocketItem(float power, ItemStack itemStack, LivingEntity target, World world,
 			LivingEntity caster, BlockPos block, ItemUseContext itemUseContext, boolean channeling,
 			ItemStack socketItem) {
-		SpellContext context = new SpellContext(power, itemStack, target, world, caster, block, itemUseContext,
-				socketItem);
+		SpellContext context = new SpellContext(modes.isEmpty() ? "" : modes.get(modeId), power, itemStack, target,
+				world, caster, block, itemUseContext, socketItem);
 		Boolean canCast = startingComponent.canCast(context);
 		if (canCast == null || canCast == true) {
 			if (caster != null)

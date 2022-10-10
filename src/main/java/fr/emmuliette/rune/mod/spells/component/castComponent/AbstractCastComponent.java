@@ -186,6 +186,7 @@ public abstract class AbstractCastComponent<T extends AbstractSpellComponent> ex
 		return result;
 	}
 
+	@Override
 	public boolean addChildren(AbstractSpellComponent newEffect) {
 		if (canAddChildren(newEffect)) {
 			addChildrenInternal(newEffect);
