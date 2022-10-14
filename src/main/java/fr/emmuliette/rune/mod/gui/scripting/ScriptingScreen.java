@@ -18,7 +18,7 @@ import net.minecraft.util.text.ITextComponent;
 public class ScriptingScreen extends ContainerScreen<ScriptingContainer> implements IContainerListener {
 	public static final ResourceLocation SCRIPTING_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/scripting.png");
-	private static final int WIDTH = 165, HEIGHT = 75, PIX_SIZE = 6;
+	public static final int WIDTH = 165, HEIGHT = 75, PIX_SIZE = 4;
 
 	private int drawLeft, drawTop, drawRight, drawBottom;
 
@@ -52,7 +52,7 @@ public class ScriptingScreen extends ContainerScreen<ScriptingContainer> impleme
 		if (this.menu.getPoints().size() < 2)
 			return;
 		mStack.pushPose();
-		RenderSystem.color4f(.5F,1.0F,1.0F,1.0F);
+		RenderSystem.color4f(.5F, 1.0F, 1.0F, 1.0F);
 		this.minecraft.getTextureManager().bind(SCRIPTING_LOCATION);
 		for (Point p : this.menu.getPoints()) {
 			this.blit(mStack, drawLeft + p.x, drawTop + p.y, 36, 166, PIX_SIZE, PIX_SIZE);
@@ -74,8 +74,17 @@ public class ScriptingScreen extends ContainerScreen<ScriptingContainer> impleme
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int clickType) {
 		if (mouseX >= drawLeft && mouseX <= drawRight && mouseY >= drawTop && mouseY <= drawBottom) {
-			System.out.println("clic: " + mouseX + "/" + mouseY + "/" + clickType);
-			menu.addPoint(mouseX - drawLeft, mouseY - drawTop, PIX_SIZE);
+			switch (clickType) {
+			case 0:
+				menu.addPoint(mouseX - drawLeft, mouseY - drawTop, PIX_SIZE);
+				break;
+			case 1:
+				menu.removePoint(mouseX - drawLeft, mouseY - drawTop, PIX_SIZE);
+				break;
+			case 2:
+				menu.runMatrix();
+				break;
+			}
 		}
 		/*
 		 * if(mouseX >= this.leftPos && mouseX <= this.leftPos + this.imageWidth) {
@@ -89,7 +98,14 @@ public class ScriptingScreen extends ContainerScreen<ScriptingContainer> impleme
 		double mX = mouseX + deltaX;
 		double mY = mouseY + deltaY;
 		if (mX >= drawLeft && mX <= drawRight && mY >= drawTop && mY <= drawBottom) {
-			menu.addPoint(mouseX - drawLeft, mouseY - drawTop, PIX_SIZE);
+			switch (clicType) {
+			case 0:
+				menu.addPoint(mouseX - drawLeft, mouseY - drawTop, PIX_SIZE);
+				break;
+			case 1:
+				menu.removePoint(mouseX - drawLeft, mouseY - drawTop, PIX_SIZE);
+				break;
+			}
 		}
 		// System.out.println("drag: " + mouseX + "/" + mouseY + " to " + deltaX + "/" +
 		// deltaY + " " + clicType);
