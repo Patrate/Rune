@@ -23,7 +23,6 @@ import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.Move
 import fr.emmuliette.rune.mod.spells.component.effectComponent.blockEffects.PhaseBlockEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.SilenceEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.BlindnessEffectComponent;
-import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.NauseaEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.DamageBoostEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.DamageResistanceEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.DigSlowEffectComponent;
@@ -35,6 +34,7 @@ import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vani
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.LevitationEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.MoveDownEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.MoveSpeedEffectComponent;
+import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.NauseaEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.NightVisionEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.PoisonEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.potionEffect.vanilla.RegenerationEffectComponent;
@@ -178,7 +178,16 @@ public enum ModItems {
 		protected Supplier<? extends Item> getItemSupplier() {
 			return () -> new SpellItem(new Item.Properties().tab(getGroup()).stacksTo(64));
 		}
-	});
+	}),
+	
+	MASTER_GRIMOIRE(new AdvancedModItem("master_grimoire", RuneMain.RUNE_GROUP) {
+		@Override
+		protected Supplier<? extends Item> getItemSupplier() {
+			return () -> new GrimoireItem(new Item.Properties().tab(getGroup()).stacksTo(1));
+		}
+	})
+	
+	;
 
 	private ModItem entity;
 

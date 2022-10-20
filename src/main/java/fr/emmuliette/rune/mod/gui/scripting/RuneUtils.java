@@ -1,11 +1,50 @@
 package fr.emmuliette.rune.mod.gui.scripting;
 
 import java.awt.geom.Path2D;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+
+import fr.emmuliette.rune.mod.items.ModItems;
+import net.minecraft.item.Item;
 
 public class RuneUtils {
 
-	public static Double[][] pathToMatrix(int w, int h, double[][] coord) {
+	public static final ModItems[] runeItems = { ModItems.PROJECTILE_RUNE, ModItems.TOUCH_RUNE, ModItems.SELF_RUNE,
+			ModItems.LOAD_RUNE, ModItems.CHARGE_RUNE, ModItems.CHANNEL_RUNE, ModItems.TOGGLE_RUNE,
+			ModItems.MAGIC_ENTITY_RUNE, ModItems.FIRE_RUNE, ModItems.DAMAGE_RUNE, ModItems.TELEPORT_RUNE,
+			ModItems.SILENCE_RUNE, ModItems.MOVE_BLOCK_RUNE, ModItems.ILLUSION_BLOCK_RUNE, ModItems.PHASE_BLOCK_RUNE,
+			ModItems.ANCHOR_BLOCK_RUNE, ModItems.BLINDNESS_RUNE, ModItems.NAUSEA_RUNE, ModItems.DAMAGEBOOST_RUNE,
+			ModItems.DAMAGERESISTANCE_RUNE, ModItems.DIGSLOW_RUNE, ModItems.DIGSPEED_RUNE, ModItems.FIRERESISTANCE_RUNE,
+			ModItems.GLOW_RUNE, ModItems.INVISIBILITY_RUNE, ModItems.JUMP_RUNE, ModItems.LEVITATION_RUNE,
+			ModItems.MOVESLOW_RUNE, ModItems.MOVESPEED_RUNE, ModItems.NIGHTVISION_RUNE, ModItems.POISON_RUNE,
+			ModItems.REGENERATION_RUNE, ModItems.SLOWFALL_RUNE, ModItems.WATERBREATHING_RUNE, ModItems.WEAKNESS_RUNE,
+			ModItems.WITHER_RUNE };
+
+	private static Map<Item, Double[][]> runeMap;
+
+	public static Set<Item> getRunes() {
+		return runeMap.keySet();
+	}
+
+	public static void register() {
+		runeMap = new HashMap<Item, Double[][]>();
+		Random runeRandom = new Random(69); // TODO change with world seed
+		for (ModItems c : runeItems) {
+			runeMap.put(c.get(), makePath(8, runeRandom));
+		}
+	}
+
+	public static Double[][] getRune(int size, Item rune) {
+		if (!runeMap.containsKey(rune)) {
+			System.out.println("ERREUR NOT A RUNE " + rune);
+			return null;
+		}
+		return pathToMatrix(size, size, runeMap.get(rune));
+	}
+
+	public static Double[][] pathToMatrix(int w, int h, Double[][] coord) {
 		int p = coord.length;
 		Path2D.Double path = new Path2D.Double();
 		path.moveTo(coord[0][0] * w, coord[0][1] * h);
@@ -36,8 +75,8 @@ public class RuneUtils {
 		return matrix;
 	}
 
-	public static double[][] makePath(int p, Random rand) {
-		double[][] coord = new double[p][2];
+	public static Double[][] makePath(int p, Random rand) {
+		Double[][] coord = new Double[p][2];
 
 		double xMin = Double.MAX_VALUE, xMax = 0, yMin = Double.MAX_VALUE, yMax = 0;
 
@@ -105,19 +144,26 @@ public class RuneUtils {
 		}
 
 		double score = ((double) ok / (double) max) * (1 - ((double) err * 0.01));
-		double perc = (double) ok / (double) max;
-		System.out.println("score = " + score + ", max = " + max + ", perc = " + perc + " (" + ok + "/" + err + ")");
+		// double perc = (double) ok / (double) max;
+		// System.out.println("score = " + score + ", max = " + max + ", perc = " + perc
+		// + " (" + ok + "/" + err + ")");
 		return score;
 	}
 
-	public static void testMatrix(Integer[][] matrix, double[][] rune) {
-		Double[][] runeMatrix = pathToMatrix(matrix.length, matrix[0].length, rune);
-
-		printMatrix(matrix);
-		System.out.print("\n");
-		printMatrix(runeMatrix);
-		System.out.print("\n");
-		System.out.print("Dist: " + matrixDistance(matrix, runeMatrix));
+	public static Item testMatrix(Integer[][] matrix) {
+		// printMatrix(matrix);
+		Item maxRune = null;
+		double max = 0.;
+		for (Item c : runeMap.keySet()) {
+			Double[][] runeMatrix = pathToMatrix(matrix.length, matrix[0].length, runeMap.get(c));
+			double score = matrixDistance(matrix, runeMatrix);
+			// System.out.println(c.get().getRegistryName() + ": " + score);
+			if (score > max) {
+				max = score;
+				maxRune = c;
+			}
+		}
+		return maxRune;
 	}
 
 	public static void printMatrix(Number[][] matrix) {

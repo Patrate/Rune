@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import fr.emmuliette.rune.RuneMain;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
@@ -18,7 +19,7 @@ import net.minecraft.util.text.ITextComponent;
 public class ScriptingScreen extends ContainerScreen<ScriptingContainer> implements IContainerListener {
 	public static final ResourceLocation SCRIPTING_LOCATION = new ResourceLocation(RuneMain.MOD_ID,
 			"textures/gui/scripting.png");
-	public static final int WIDTH = 165, HEIGHT = 75, PIX_SIZE = 4;
+	public static final int WIDTH = 60, HEIGHT = 60, PIX_SIZE = 2;
 
 	private int drawLeft, drawTop, drawRight, drawBottom;
 
@@ -28,11 +29,17 @@ public class ScriptingScreen extends ContainerScreen<ScriptingContainer> impleme
 
 	protected void init() {
 		super.init();
-		drawLeft = this.leftPos + 5;
-		drawTop = this.topPos + 5;
+		drawLeft = this.leftPos + 13;
+		drawTop = this.topPos + 12;
 		drawRight = drawLeft + WIDTH;
 		drawBottom = drawTop + HEIGHT;
-		// this.menu.addSlotListener(this);
+		this.menu.addSlotListener(this);
+		this.addButton(new ImageButton(this.leftPos + 84, this.topPos + 32, 20, 18, 54, 166, 18, SCRIPTING_LOCATION, (button) -> {
+			menu.clear();
+		}));
+		this.addButton(new ImageButton(this.leftPos + 84, this.topPos + 57, 20, 18, 74, 166, 18, SCRIPTING_LOCATION, (button) -> {
+			menu.runMatrix();
+		}));
 	}
 
 	public void tick() {
@@ -80,9 +87,6 @@ public class ScriptingScreen extends ContainerScreen<ScriptingContainer> impleme
 				break;
 			case 1:
 				menu.removePoint(mouseX - drawLeft, mouseY - drawTop, PIX_SIZE);
-				break;
-			case 2:
-				menu.runMatrix();
 				break;
 			}
 		}

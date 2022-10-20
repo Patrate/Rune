@@ -11,6 +11,7 @@ import fr.emmuliette.rune.mod.capabilities.spell.SpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoire.CGrimoireSpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoireItem.CLearnSpellPacket;
 import fr.emmuliette.rune.mod.gui.grimoireItem.SOpenGrimoirePacket;
+import fr.emmuliette.rune.mod.gui.scripting.CGetRunePacket;
 import fr.emmuliette.rune.mod.gui.spellbinding.CSpellBindingSlotPacket;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -47,6 +48,8 @@ public class SyncHandler {
 
 		HANDLER.registerMessage(disc++, CSpellBindingSlotPacket.class, CSpellBindingSlotPacket::encode,
 				CSpellBindingSlotPacket::decode, CSpellBindingSlotPacket.Handler::handle);
+		HANDLER.registerMessage(disc++, CGetRunePacket.class, CGetRunePacket::encode, CGetRunePacket::decode,
+				CGetRunePacket.Handler::handle);
 		HANDLER.registerMessage(disc++, CGrimoireSpellPacket.class, CGrimoireSpellPacket::encode,
 				CGrimoireSpellPacket::decode, CGrimoireSpellPacket.Handler::handle);
 		HANDLER.registerMessage(disc++, SOpenGrimoirePacket.class, SOpenGrimoirePacket::encode,

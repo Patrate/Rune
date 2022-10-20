@@ -9,6 +9,7 @@ import fr.emmuliette.rune.mod.blocks.spellBinding.SpellBindingRecipeSerializer;
 import fr.emmuliette.rune.mod.containers.ModContainers;
 import fr.emmuliette.rune.mod.effects.ModEffects;
 import fr.emmuliette.rune.mod.gui.grimoire.GrimoireScreen;
+import fr.emmuliette.rune.mod.gui.scripting.RuneUtils;
 import fr.emmuliette.rune.mod.gui.scripting.ScriptingScreen;
 import fr.emmuliette.rune.mod.gui.spellbinding.SpellBindingScreen;
 import fr.emmuliette.rune.mod.gui.spelliverse.SpelliverseScreen;
@@ -131,6 +132,7 @@ public class Registration {
 	public static void setup() {
 		ModCapabilities.register();
 		RuneRecipe.register();
+		RuneUtils.register();
 	}
 
 	// For client only stuff (rendering)
