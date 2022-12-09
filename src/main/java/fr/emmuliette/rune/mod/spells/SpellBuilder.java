@@ -12,7 +12,6 @@ import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastCompone
 import fr.emmuliette.rune.mod.spells.component.castComponent.AbstractCastEffectComponent;
 import fr.emmuliette.rune.mod.spells.component.effectComponent.AbstractEffectComponent;
 import fr.emmuliette.rune.mod.spells.tags.OtherTag;
-import fr.emmuliette.rune.mod.spells.tags.RestrictionTag;
 import fr.emmuliette.rune.mod.spells.tags.RestrictionTag.Context;
 import fr.emmuliette.rune.mod.spells.tags.SpellTag;
 import fr.emmuliette.rune.mod.spells.tags.Tag;
